@@ -29,7 +29,7 @@ jobs:
       - name: Install FFmpeg
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg espeak-ng
 
       - name: Install Python dependencies
         run: |
@@ -40,23 +40,23 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Validate animation script
-        run: python stick_animate.py --script demo/mystery_hallway.json --validate-only
+        run: python stick_animate.py --script demo/empty_platform.json --validate-only
 
       - name: Render MP4 on GitHub runner
-        run: python stick_animate.py --script demo/mystery_hallway.json --output output/mystery-hallway.mp4
+        run: python stick_animate.py --script demo/empty_platform.json --output output/empty-platform.mp4
 
       - name: Verify generated video
         run: |
-          test -s output/mystery-hallway.mp4
-          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/mystery-hallway.mp4
-          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json output/mystery-hallway.mp4
+          test -s output/empty-platform.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/empty-platform.mp4
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json output/empty-platform.mp4
           test -s output/audio-cues.json
           python -c 'import json; c=json.load(open("output/audio-cues.json")); assert c and all(x.get("evidence") for x in c); print("Verified scene-grounded audio cues:", [x["event"] for x in c])'
 
       - name: Upload rendered video and poster
         uses: actions/upload-artifact@v4
         with:
-          name: stick-animate-demo-${{ github.run_number }}
+          name: stick-animate-empty-platform-${{ github.run_number }}
           path: output/*
           if-no-files-found: error
           retention-days: 30
