@@ -11,7 +11,6 @@ from typing import Any
 
 from agent_runtime import AgentUnavailable, FreeLLM
 from scene_designer import design_story
-from stick_animate import validate_script
 
 
 class ScriptAnalystAgent:
@@ -110,7 +109,18 @@ def _validate_plan(plan: dict[str, Any], duration: float) -> None:
             "primary_action": "idle", "lighting_mood": "story_motivated",
             "continuity_from_previous": "preserve_story_continuity",
         })
-    validate_script(plan)
+    # Keep validation independent of the renderer to avoid circular imports.
+    previous_end = 0.0
+    for index, scene in enumerate(plan["scenes"]):
+        start, end = float(scene["start"]), float(scene["end"])
+        if start < previous_end - 0.02 or end <= start or end > duration + 0.05:
+            raise ValueError(f"Invalid or overlapping timing in scene {index}")
+        previous_end = end
+        actor = scene.get("actor", {})
+        keys = actor.get("keyframes", []) if isinstance(actor, dict) else []
+        times = [float(key["t"]) for key in keys]
+        if times and (times != sorted(times) or times[0] < 0 or times[-1] > 1):
+            raise ValueError(f"Invalid actor keyframes in scene {index}")
 
 
 def design_production(story: str, duration: float, title: str = "Untitled Story",
