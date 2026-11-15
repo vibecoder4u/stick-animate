@@ -112,6 +112,12 @@ def design_story(story: str, duration: float, title: str = "Untitled Story", fps
             else:
                 merged.append(beat)
         beats = merged
+    # Keep a human protagonist visible across environment-only story beats.
+    # Explicit animal species in an individual beat always takes precedence.
+    has_human_protagonist = bool(re.search(
+        r"\b(he|she|him|her|his|hers|boy|girl|man|woman|person|detective|stranger|traveller|traveler)\b",
+        story.lower(),
+    ))
     count = len(beats)
     base = duration / count
     scenes = []
@@ -150,9 +156,12 @@ def design_story(story: str, duration: float, title: str = "Untitled Story", fps
         if any(w in beat.lower() for w in ("rain", "raining", "storm")):
             scene["weather"] = "rain"
         species = _species(beat)
+        if species is None and has_human_protagonist:
+            species = "human"
         if pose != "idle" or species:
             scene["actor"] = {
                 "species": species or "human",
+                "character_id": "protagonist" if species == "human" else f"{species}-{i+1}",
                 "scale": 1.0, "wardrobe": "coat", "hair": "short",
                 "expression": "fear" if pose in ("fear", "look_back", "listen") else "neutral",
                 "keyframes": [
