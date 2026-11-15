@@ -7,7 +7,7 @@ on:
     inputs:
       story:
         description: "Paste the complete story/script to animate"
-        required: false
+        required: true
         type: string
       title:
         description: "Video title"
@@ -55,16 +55,15 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Prepare story input
+        if: github.event_name == 'workflow_dispatch'
         env:
           STORY_TEXT: ${{ inputs.story }}
         run: |
-          if [ -n "$STORY_TEXT" ]; then
-            printf '%s' "$STORY_TEXT" > input-story.txt
-          else
-            cp demo/empty_platform_story.txt input-story.txt
-          fi
+          test -n "$STORY_TEXT"
+          printf '%s' "$STORY_TEXT" > input-story.txt
 
       - name: Validate animation script
+        if: github.event_name == 'workflow_dispatch'
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           VIDEO_TITLE: ${{ inputs.title || 'THE EMPTY PLATFORM' }}
@@ -72,6 +71,7 @@ jobs:
         run: python stick_animate.py --story-file input-story.txt --duration "$VIDEO_DURATION" --title "$VIDEO_TITLE" --output output/animated-story.mp4 --validate-only
 
       - name: Render MP4 on GitHub runner
+        if: github.event_name == 'workflow_dispatch'
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           VIDEO_TITLE: ${{ inputs.title || 'THE EMPTY PLATFORM' }}
@@ -79,6 +79,7 @@ jobs:
         run: python stick_animate.py --story-file input-story.txt --duration "$VIDEO_DURATION" --title "$VIDEO_TITLE" --output output/animated-story.mp4
 
       - name: Verify generated video
+        if: github.event_name == 'workflow_dispatch'
         run: |
           test -s output/animated-story.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/animated-story.mp4
@@ -87,6 +88,7 @@ jobs:
           python -c 'import json; c=json.load(open("output/audio-cues.json")); assert c and all(x.get("evidence") for x in c); print("Verified scene-grounded audio cues:", [x["event"] for x in c])'
 
       - name: Upload rendered video and poster
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: stick-animate-scene-designer-${{ github.run_number }}
