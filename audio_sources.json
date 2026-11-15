@@ -1,0 +1,38 @@
+{
+  "policy": "Asset-specific verification required; source website alone does not grant blanket clearance.",
+  "required_metadata": [
+    "title",
+    "creator",
+    "asset_url",
+    "license_id",
+    "license_url",
+    "commercial_use",
+    "attribution",
+    "retrieved_at",
+    "sha256"
+  ],
+  "reject_if": [
+    "commercial_use is not explicitly true",
+    "license is CC BY-NC or non-commercial",
+    "license metadata missing or ambiguous",
+    "provider terms prohibit automated download"
+  ],
+  "research_sources": [
+    {
+      "name": "Mixkit Free Sound Effects",
+      "url": "https://mixkit.co/free-sound-effects/",
+      "status": "research_source_only"
+    },
+    {
+      "name": "Pixabay Sound Effects",
+      "url": "https://pixabay.com/sound-effects/",
+      "status": "research_source_only"
+    },
+    {
+      "name": "Freesound",
+      "url": "https://freesound.org/",
+      "status": "per_asset_license_check_required"
+    }
+  ],
+  "approved_assets": []
+}
