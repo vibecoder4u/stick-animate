@@ -12,6 +12,8 @@ import wave
 from pathlib import Path
 from typing import Any
 
+from scene_understanding_agent import analyse_script
+
 SAMPLE_RATE = 22050
 ALLOWED_EVENTS = {"door_open", "footsteps", "rain", "wind", "bird_wings", "bird_call"}
 
@@ -19,10 +21,12 @@ ALLOWED_EVENTS = {"door_open", "footsteps", "rain", "wind", "bird_wings", "bird_
 def plan_scene_audio(script: dict[str, Any]) -> list[dict[str, Any]]:
     """Infer only cues supported by visible scene/action data."""
     cues: list[dict[str, Any]] = []
+    understanding = analyse_script(script)
     scenes = script["scenes"]
     previous_door = 0.0
     for index, scene in enumerate(scenes):
         start, end = float(scene["start"]), float(scene["end"])
+        scene_report = understanding["scenes"][index]
         environment = scene.get("environment", "")
         door = float(scene.get("door_open", 0.0))
         if door > previous_door + 0.08:
@@ -33,19 +37,15 @@ def plan_scene_audio(script: dict[str, Any]) -> list[dict[str, Any]]:
 
         actor = scene.get("actor", {})
         keys = actor.get("keyframes", [])
-        moving_pose = any(k.get("pose") in ("walk", "run") for k in keys)
-        moves_position = len(keys) > 1 and any(
-            abs(float(b.get("x", 0)) - float(a.get("x", 0))) > 18
-            for a, b in zip(keys, keys[1:])
-        )
-        if moving_pose and moves_position:
+        actor_moves = any(a["moves"] and a["visible"] for a in scene_report["actors"])
+        if actor_moves:
             cues.append({"event": "footsteps", "start": start,
                          "duration": max(0.5, end-start),
                          "evidence": "visible actor has walk/run pose and positional movement",
                          "source": "animation_keyframes"})
 
         # Rain is emitted only when the script explicitly selects a rain environment.
-        if environment == "rainroom":
+        if environment == "rainroom" or scene.get("weather") == "rain":
             cues.append({"event": "rain", "start": start, "duration": end-start,
                          "evidence": "environment=rainroom", "source": "scene_environment"})
         # Wind is allowed only for an explicitly exposed outdoor environment.
@@ -54,7 +54,7 @@ def plan_scene_audio(script: dict[str, Any]) -> list[dict[str, Any]]:
                          "evidence": "outdoor environment with weather=wind",
                          "source": "scene_environment"})
         # Bird sounds require a visible bird actor, never merely an outdoor background.
-        visible_bird = any(a.get("species") == "bird" for a in scene.get("actors", []))
+        visible_bird = any(a["species"] == "bird" and a["visible"] for a in scene_report["actors"])
         if visible_bird:
             cues.append({"event": "bird_wings", "start": start, "duration": 0.8,
                          "evidence": "visible actor species=bird", "source": "character_manifest"})
