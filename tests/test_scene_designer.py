@@ -34,6 +34,16 @@ class SceneDesignerTests(unittest.TestCase):
             design_story("A story.", 0)
 
 
+    def test_human_protagonist_stays_visible_across_environment_beats(self):
+        plan = design_story(
+            "At midnight the train left the station. A gate opened by itself. "
+            "He heard a clang in the tunnel. He ran toward the exit.", 24
+        )
+        actors = [scene.get("actor") for scene in plan["scenes"]]
+        self.assertTrue(all(actor for actor in actors))
+        self.assertTrue(all(actor["species"] == "human" for actor in actors))
+        self.assertEqual(len({actor["character_id"] for actor in actors}), 1)
+
     def test_free_planner_assigns_species_specific_actors(self):
         plan = design_story(
             "A dog runs through the forest. A bird flies above the river. "
