@@ -48,8 +48,8 @@ jobs:
       - name: Verify generated video
         run: |
           test -s output/designed-empty-platform.mp4
-          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/empty-platform.mp4
-          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json output/empty-platform.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/designed-empty-platform.mp4
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json output/designed-empty-platform.mp4
           test -s output/audio-cues.json
           python -c 'import json; c=json.load(open("output/audio-cues.json")); assert c and all(x.get("evidence") for x in c); print("Verified scene-grounded audio cues:", [x["event"] for x in c])'
 
