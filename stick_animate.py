@@ -13,6 +13,7 @@ from typing import Any
 from PIL import Image, ImageDraw, ImageFont
 
 from audio_director import render_audio
+from scene_understanding_agent import analyse_script
 
 W, H = 1280, 720
 FPS = 24
@@ -444,6 +445,8 @@ def render(script_path: Path, output: Path) -> Path:
         audio_path = Path(temp_dir) / "scene-audio.wav"
         audio_cues = render_audio(script, audio_path)
         (output.parent / "audio-cues.json").write_text(json.dumps(audio_cues, indent=2), encoding="utf-8")
+        understanding = analyse_script(script)
+        (output.parent / "scene-understanding.json").write_text(json.dumps(understanding, indent=2), encoding="utf-8")
         cmd = [
             "ffmpeg", "-y", "-loglevel", "error",
             "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(fps), "-i", "-",
