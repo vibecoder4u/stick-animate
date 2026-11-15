@@ -15,6 +15,7 @@ from PIL import Image, ImageDraw, ImageFont
 from audio_director import render_audio
 from scene_understanding_agent import analyse_script
 from scene_designer import design_story
+from production_agents import design_production
 
 W, H = 1280, 720
 FPS = 24
@@ -614,7 +615,7 @@ def main() -> None:
     if args.story_file:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         script_path = args.output.parent / (args.output.stem + "-scene-plan.json")
-        plan = design_story(args.story_file.read_text(encoding="utf-8"), args.duration, args.title)
+        plan = design_production(args.story_file.read_text(encoding="utf-8"), args.duration, args.title)
         script_path.write_text(json.dumps(plan, indent=2), encoding="utf-8")
         print(f"Scene Designer created {len(plan['scenes'])} shots: {script_path}")
     data = json.loads(script_path.read_text(encoding="utf-8"))
