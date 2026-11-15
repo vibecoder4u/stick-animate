@@ -14,7 +14,7 @@
       "weather": "rain",
       "caption": "THE LAST TRAIN LEFT AT 2:17 A.M.",
       "subcaption": "BUT SOMEONE WAS STILL WAITING.",
-      "narration": "At 2:17 in the morning, the last train pulled away. The platform was supposed to be empty.",
+      "narration": "At 2:17 a.m., the last train left. The platform was empty.",
       "camera": {
         "zoom_start": 1,
         "zoom_end": 1.045,
@@ -51,7 +51,7 @@
       "door_glow": 0.35,
       "caption": "THEN THE SERVICE GATE SLID OPEN.",
       "subcaption": "NO TRAIN. NO OPERATOR. NO SOUND.",
-      "narration": "Then, behind him, the locked service gate began to open. There was no train on the tracks. No operator in sight.",
+      "narration": "Then the locked service gate slowly opened by itself.",
       "camera": {
         "zoom_start": 1.01,
         "zoom_end": 1.06,
@@ -95,7 +95,7 @@
       "door_glow": 0.7,
       "caption": "A METAL CLANG ECHOED BELOW.",
       "subcaption": "SOMETHING HAD ENTERED THE TUNNEL.",
-      "narration": "A metal clang echoed from below. He looked down the stairs, and saw a light moving where no one should be.",
+      "narration": "A metal clang echoed below. Something moved in the tunnel.",
       "visual_events": [
         {
           "type": "metal_clang",
@@ -137,7 +137,7 @@
       "environment": "corridor",
       "caption": "HE RAN FOR THE EXIT.",
       "subcaption": "THE FOOTSTEPS FOLLOWED — TOO CLOSE.",
-      "narration": "He ran for the exit. His footsteps pounded against the tiles. Then another set answered from directly behind him.",
+      "narration": "He ran. Behind him, another set of footsteps began running.",
       "camera": {
         "zoom_start": 1,
         "zoom_end": 1.05,
@@ -175,7 +175,7 @@
       "shadow_opacity": 1,
       "caption": "THE EXIT WAS ALREADY OPEN.",
       "subcaption": "SOMEONE WAS WAITING ON THE OTHER SIDE.",
-      "narration": "The exit door stood open. But the shadow waiting beyond it was not his. And it had been there all along.",
+      "narration": "The exit stood open. The shadow waiting there was not his.",
       "camera": {
         "zoom_start": 1.035,
         "zoom_end": 1.09,
