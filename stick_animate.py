@@ -93,6 +93,12 @@ def gradient_background(kind: str) -> Image.Image:
         "rainroom": ((20, 34, 48), (5, 10, 18)),
         "street": ((26, 34, 47), (5, 8, 14)),
     }
+    palettes.update({
+        "platform": ((25, 39, 55), (4, 9, 16)),
+        "service_gate": ((22, 34, 48), (4, 8, 15)),
+        "tunnel": ((13, 23, 35), (1, 4, 9)),
+        "exit": ((30, 38, 48), (5, 8, 14)),
+    })
     top, bottom = palettes.get(kind, palettes["corridor"])
     image = Image.new("RGB", (W, H))
     draw = ImageDraw.Draw(image)
@@ -100,6 +106,36 @@ def gradient_background(kind: str) -> Image.Image:
         p = y / (H - 1)
         color = tuple(int(top[i] * (1 - p) + bottom[i] * p) for i in range(3))
         draw.line((0, y, W, y), fill=color)
+    if kind == "platform":
+        # A recognisable underground railway platform: canopy, columns, tracks,
+        # platform edge, station signage, bench and a stopped train in the distance.
+        draw.rectangle((0, 92, W, 390), fill=(15, 26, 39))
+        draw.polygon([(0, 92), (W, 92), (1110, 205), (170, 205)], fill=(31, 45, 59))
+        for x in (110, 390, 670, 950, 1190):
+            draw.polygon([(x-18, 175), (x+18, 175), (x+31, 520), (x-31, 520)], fill=(49, 63, 76))
+            draw.rectangle((x-24, 180, x+24, 196), fill=(112, 130, 145))
+        for x in (170, 450, 730, 1010):
+            draw.polygon([(x-58, 108), (x+58, 108), (x+36, 120), (x-36, 120)], fill=(194, 205, 207))
+            draw.line((x-42, 114, x+42, 114), fill=(239, 226, 185), width=3)
+        # Tracks recede to a vanishing point; sleepers and rails make the location legible.
+        draw.polygon([(0, 548), (W, 548), (W, H), (0, H)], fill=(5, 9, 15))
+        for x0, x1 in ((430, 80), (850, 1200)):
+            draw.line((x0, 545, x1, 720), fill=(119, 135, 148), width=7)
+        for i in range(10):
+            y = 565 + i*18
+            half = 30 + i*24
+            draw.line((640-half, y, 640+half, y), fill=(64, 76, 86), width=5)
+        draw.line((0, 525, W, 525), fill=(222, 185, 92), width=7)
+        draw.line((0, 535, W, 535), fill=(100, 112, 119), width=2)
+        # Distant train car, windows and station sign.
+        draw.rectangle((465, 260, 815, 410), fill=(28, 44, 58), outline=(118, 137, 149), width=5)
+        for x in (490, 555, 620, 685, 750):
+            draw.rectangle((x, 280, x+48, 335), fill=(82, 119, 139), outline=(160, 174, 181), width=2)
+        draw.rectangle((70, 220, 350, 280), fill=(7, 17, 27), outline=(124, 148, 159), width=3)
+        draw.text((91, 233), "PLATFORM  02", font=font(27, True), fill=(225, 230, 222))
+        draw.rectangle((80, 430, 250, 495), fill=(37, 48, 57), outline=(112, 126, 136), width=3)
+        draw.line((90, 430, 90, 500), fill=(112, 126, 136), width=5)
+        return image
     # Architectural planes and a deliberately simple vanishing-point composition.
     draw.polygon([(0, 105), (W, 105), (W, 525), (0, 525)], fill=(17, 25, 38))
     draw.polygon([(0, 525), (W, 525), (W, H), (0, H)], fill=(8, 13, 22))
@@ -115,7 +151,26 @@ def gradient_background(kind: str) -> Image.Image:
         draw.line((x - 40, 117, x + 40, 117), fill=(154, 170, 185), width=2)
     for x in (85, 335, 585, 835, 1085, 1250):
         draw.line((x, 125, x, 520), fill=(25, 36, 50), width=2)
-    if kind == "rainroom":
+    if kind == "service_gate":
+        draw.rectangle((760, 145, 1175, 525), fill=(5, 10, 17), outline=(105, 122, 137), width=12)
+        for x in range(785, 1160, 30):
+            draw.line((x, 160, x, 520), fill=(104, 121, 136), width=7)
+        draw.rectangle((780, 160, 1155, 182), fill=(143, 158, 166))
+        draw.rectangle((790, 480, 1145, 510), fill=(36, 49, 61))
+        draw.text((835, 205), "STAFF ONLY", font=font(22, True), fill=(190, 199, 200))
+    elif kind == "tunnel":
+        draw.polygon([(0, 150), (W, 150), (1010, 540), (270, 540)], fill=(3, 8, 14))
+        draw.arc((250, 120, 1030, 700), 180, 360, fill=(83, 101, 115), width=15)
+        for x in (430, 850):
+            draw.ellipse((x-15, 280, x+15, 310), fill=(224, 185, 105))
+        draw.line((390, 545, 560, 720), fill=(104, 119, 130), width=5)
+        draw.line((890, 545, 720, 720), fill=(104, 119, 130), width=5)
+    elif kind == "exit":
+        draw.rectangle((850, 125, 1160, 525), fill=(3, 7, 13), outline=(112, 126, 138), width=12)
+        draw.rectangle((870, 145, 1140, 505), fill=(18, 32, 43))
+        draw.polygon([(880, 500), (1130, 500), (1230, 720), (760, 720)], fill=(137, 158, 169, 38))
+        draw.rectangle((885, 155, 1125, 188), fill=(135, 151, 160))
+    elif kind == "rainroom":
         draw.rectangle((920, 150, 1190, 510), fill=(7, 15, 27), outline=(87, 113, 133), width=8)
         draw.line((1055, 155, 1055, 505), fill=(69, 91, 111), width=4)
         draw.line((925, 330, 1185, 330), fill=(69, 91, 111), width=4)
@@ -168,6 +223,10 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
     hip_y = -52
     if pose == "crouch":
         head_y, shoulder_y, hip_y = -112, -79, -38
+    elif pose in ("look_back", "listen"):
+        head_y, shoulder_y, hip_y = -150, -105, -52
+    elif pose == "stumble":
+        head_y, shoulder_y, hip_y = -125, -92, -44
     # torso and neck
     d.line((pt(0, head_y + 31), pt(0, shoulder_y)), fill=color, width=max(5, int(9*s)))
     d.line((pt(0, shoulder_y), pt(0, hip_y)), fill=color, width=max(7, int(12*s)))
@@ -201,6 +260,21 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
         d.line((pt(22, shoulder_y), pt(53, -112), pt(95, -133)), fill=color, width=max(5, int(8*s)), joint="curve")
         d.line((pt(-10, hip_y), pt(-17, -22), pt(-18, 0)), fill=color, width=max(6, int(9*s)))
         d.line((pt(10, hip_y), pt(18, -22), pt(21, 0)), fill=color, width=max(6, int(9*s)))
+    elif pose == "look_back":
+        d.line((pt(-22, shoulder_y), pt(-48, -78), pt(-58, -55)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(43, -122), pt(58, -145)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-18, -24), pt(-20, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(10, hip_y), pt(18, -24), pt(20, 0)), fill=color, width=max(6, int(9*s)))
+    elif pose == "listen":
+        d.line((pt(-22, shoulder_y), pt(-43, -80), pt(-38, -45)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(37, -88), pt(29, -52)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-18, -24), pt(-18, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(10, hip_y), pt(18, -24), pt(18, 0)), fill=color, width=max(6, int(9*s)))
+    elif pose == "stumble":
+        d.line((pt(-22, shoulder_y), pt(-50, -132), pt(-75, -122)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(45, -68), pt(65, -48)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-42, -20), pt(-57, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(10, hip_y), pt(28, -16), pt(45, 0)), fill=color, width=max(6, int(9*s)))
     elif pose == "fear":
         for side in (-1, 1):
             d.line((pt(side*22, shoulder_y), pt(side*45, -135), pt(side*30, -176)), fill=color, width=max(5, int(8*s)), joint="curve")
@@ -245,7 +319,22 @@ def draw_caption(image: Image.Image, text: str, subtext: str = "") -> None:
 def paint_environment_details(image: Image.Image, kind: str, t: float) -> None:
     """Add layered set dressing so locations read as places, not empty gradients."""
     d = ImageDraw.Draw(image, "RGBA")
-    if kind == "corridor":
+    if kind == "platform":
+        # Rain blowing across the open track end and reflected station lamps.
+        for i in range(55):
+            x = (i*71 + int(t*110)) % W
+            y = 210 + (i*43) % 330
+            d.line((x, y, x-4, y+17), fill=(125, 164, 185, 100), width=1)
+        d.polygon([(0, 538), (W, 538), (W, 558), (0, 558)], fill=(211, 176, 91, 65))
+    elif kind == "service_gate":
+        d.rectangle((775, 150, 1165, 520), outline=(142, 157, 169, 170), width=4)
+        d.text((805, 120), "MAINTENANCE ACCESS", font=font(17, True), fill=(184, 197, 204, 190))
+    elif kind == "tunnel":
+        d.ellipse((595, 310, 685, 400), fill=(219, 174, 91, 35))
+        d.line((0, 540, W, 540), fill=(74, 91, 105, 130), width=3)
+    elif kind == "exit":
+        d.text((900, 105), "EXIT", font=font(24, True), fill=(194, 210, 204, 220))
+    elif kind == "corridor":
         # Recessed wall panels, skirting, numbered doors and practical sconces.
         for x in (95, 365, 635, 905, 1175):
             d.rounded_rectangle((x-88, 168, x+88, 494), radius=5, outline=(75, 91, 110, 145), width=3)
@@ -351,9 +440,10 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
     # A soft moving pool of light and a subtle practical flicker.
     d = ImageDraw.Draw(image)
     flicker = 0.92 + 0.08 * math.sin(global_t * 13.0)
-    d.polygon([(640, 130), (930, 130), (1120, 530), (430, 530)], fill=(40, 55, 72))
-    d.line((640, 130, 430, 530), fill=(49, 65, 82), width=2)
-    d.line((930, 130, 1120, 530), fill=(49, 65, 82), width=2)
+    if kind not in ("platform", "service_gate", "tunnel", "exit"):
+        d.polygon([(640, 130), (930, 130), (1120, 530), (430, 530)], fill=(40, 55, 72))
+        d.line((640, 130, 430, 530), fill=(49, 65, 82), width=2)
+        d.line((930, 130, 1120, 530), fill=(49, 65, 82), width=2)
     opening = float(scene.get("door_open", 0.0))
     glow = float(scene.get("door_glow", 0.0)) * flicker
     draw_door(d, opening, glow)
@@ -363,8 +453,8 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         px = (i * 97 + int(global_t * (8 + i % 5))) % W
         py = (i * 53 + int(global_t * (3 + i % 4))) % 570
         d.ellipse((px, py, px+2, py+2), fill=(79, 102, 126))
-    if kind == "rainroom":
-        for i in range(75):
+    if kind in ("platform", "street", "rainroom"):
+        for i in range(75 if kind == "rainroom" else 42):
             px = (i * 41 + int(global_t * 95)) % W
             py = (i * 67 + int(global_t * 220)) % H
             d.line((px, py, px-5, py+15), fill=(86, 126, 154), width=1)
