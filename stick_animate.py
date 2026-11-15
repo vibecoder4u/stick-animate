@@ -98,6 +98,7 @@ def gradient_background(kind: str) -> Image.Image:
         "service_gate": ((22, 34, 48), (4, 8, 15)),
         "tunnel": ((13, 23, 35), (1, 4, 9)),
         "exit": ((30, 38, 48), (5, 8, 14)),
+        "trackside": ((17, 30, 43), (2, 6, 12)),
     })
     top, bottom = palettes.get(kind, palettes["corridor"])
     image = Image.new("RGB", (W, H))
@@ -106,6 +107,24 @@ def gradient_background(kind: str) -> Image.Image:
         p = y / (H - 1)
         color = tuple(int(top[i] * (1 - p) + bottom[i] * p) for i in range(3))
         draw.line((0, y, W, y), fill=color)
+    if kind == "trackside":
+        # Low track-level chase shot: rails, sleepers, train flank and signal.
+        draw.rectangle((0, 100, W, 460), fill=(9, 18, 29))
+        draw.polygon([(0, 300), (W, 300), (W, 720), (0, 720)], fill=(5, 9, 15))
+        draw.polygon([(0, 170), (W, 170), (1050, 410), (220, 410)], fill=(23, 37, 50))
+        draw.rectangle((40, 185, 330, 430), fill=(20, 34, 47), outline=(105, 124, 139), width=5)
+        for x in (75, 145, 215, 285):
+            draw.rectangle((x, 220, x+48, 315), fill=(63, 99, 120), outline=(139, 157, 166), width=2)
+        draw.line((360, 390, 120, 720), fill=(139, 153, 160), width=8)
+        draw.line((910, 390, 1160, 720), fill=(139, 153, 160), width=8)
+        for i in range(11):
+            y = 420 + i*28
+            half = 260 + i*22
+            draw.line((640-half, y, 640+half, y), fill=(62, 74, 83), width=7)
+        draw.line((1060, 100, 1060, 430), fill=(105, 120, 133), width=8)
+        draw.ellipse((1037, 145, 1083, 191), fill=(197, 49, 46))
+        draw.ellipse((1044, 202, 1076, 234), fill=(55, 74, 84))
+        return image
     if kind == "platform":
         # A recognisable underground railway platform: canopy, columns, tracks,
         # platform edge, station signage, bench and a stopped train in the distance.
@@ -319,7 +338,10 @@ def draw_caption(image: Image.Image, text: str, subtext: str = "") -> None:
 def paint_environment_details(image: Image.Image, kind: str, t: float, opening: float = 0.0) -> None:
     """Add layered set dressing so locations read as places, not empty gradients."""
     d = ImageDraw.Draw(image, "RGBA")
-    if kind == "platform":
+    if kind == "trackside":
+        d.ellipse((1027, 135, 1093, 201), fill=(205, 45, 38, 35))
+        d.line((0, 445, W, 445), fill=(102, 119, 130, 100), width=2)
+    elif kind == "platform":
         # Rain blowing across the open track end and reflected station lamps.
         for i in range(55):
             x = (i*71 + int(t*110)) % W
@@ -441,7 +463,7 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
     # A soft moving pool of light and a subtle practical flicker.
     d = ImageDraw.Draw(image)
     flicker = 0.92 + 0.08 * math.sin(global_t * 13.0)
-    if kind not in ("platform", "service_gate", "tunnel", "exit"):
+    if kind not in ("platform", "service_gate", "tunnel", "exit", "trackside"):
         d.polygon([(640, 130), (930, 130), (1120, 530), (430, 530)], fill=(40, 55, 72))
         d.line((640, 130, 430, 530), fill=(49, 65, 82), width=2)
         d.line((930, 130, 1120, 530), fill=(49, 65, 82), width=2)
