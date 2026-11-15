@@ -15,7 +15,7 @@ from typing import Any
 from scene_understanding_agent import analyse_script
 
 SAMPLE_RATE = 22050
-ALLOWED_EVENTS = {"door_open", "footsteps", "rain", "wind", "bird_wings", "bird_call"}
+ALLOWED_EVENTS = {"door_open", "footsteps", "rain", "wind", "bird_wings", "bird_call", "heartbeat", "metal_clang"}
 
 
 def plan_scene_audio(script: dict[str, Any]) -> list[dict[str, Any]]:
@@ -58,6 +58,15 @@ def plan_scene_audio(script: dict[str, Any]) -> list[dict[str, Any]]:
         if visible_bird:
             cues.append({"event": "bird_wings", "start": start, "duration": 0.8,
                          "evidence": "visible actor species=bird", "source": "character_manifest"})
+        frightened = isinstance(actor, dict) and actor.get("expression") == "fear" and any(a["visible"] for a in scene_report["actors"])
+        if frightened:
+            cues.append({"event": "heartbeat", "start": start + 0.25, "duration": min(2.5, end-start-0.25),
+                         "evidence": "visible actor expression=fear", "source": "character_expression"})
+        for event in scene.get("visual_events", []):
+            if event.get("type") == "metal_clang":
+                cues.append({"event": "metal_clang", "start": start + float(event.get("at", 0)),
+                             "duration": 0.9, "evidence": str(event.get("evidence", "visible metal impact")),
+                             "source": "visual_event_manifest"})
     return cues
 
 
@@ -98,6 +107,13 @@ def _event_sample(event: str, t: float, rng: random.Random) -> float:
         return pulse * (rng.random()*2-1) * 0.11
     if event == "bird_call":
         return 0.12 * math.sin(2*math.pi*(1150+220*math.sin(t*5))*t) * math.exp(-t*2)
+    if event == "heartbeat":
+        phase = t % 0.82
+        beat = math.exp(-((phase-0.08)/0.045)**2) + 0.72*math.exp(-((phase-0.22)/0.055)**2)
+        return 0.24 * beat * math.sin(2*math.pi*48*t)
+    if event == "metal_clang":
+        envelope = math.exp(-t*4.8)
+        return envelope * (0.24*math.sin(2*math.pi*310*t) + 0.13*math.sin(2*math.pi*527*t) + (rng.random()*2-1)*0.05)
     return 0.0
 
 
@@ -105,6 +121,20 @@ def render_audio(script: dict[str, Any], output: Path) -> list[dict[str, Any]]:
     duration = float(script["duration"])
     cues = plan_scene_audio(script)
     validate_audio_cues(cues, duration)
+    import subprocess
+    import tempfile
+    speech = []
+    with tempfile.TemporaryDirectory(prefix="stick-narration-") as tmp:
+        for i, scene in enumerate(script["scenes"]):
+            line = str(scene.get("narration", scene.get("voiceover", ""))).strip()
+            if not line:
+                continue
+            speech_path = Path(tmp) / ("line-" + str(i) + ".wav")
+            subprocess.run(["espeak-ng", "-v", "en-us", "-s", "148", "-p", "38", "-a", "165",
+                            "-w", str(speech_path), line], check=True, capture_output=True)
+            with wave.open(str(speech_path), "rb") as spoken:
+                samples = list(struct.unpack("<" + "h" * spoken.getnframes(), spoken.readframes(spoken.getnframes())))
+                speech.append((int((float(scene["start"]) + 0.35) * SAMPLE_RATE), samples))
     rng = random.Random(20261115)
     total = int(duration * SAMPLE_RATE)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -116,6 +146,10 @@ def render_audio(script: dict[str, Any], output: Path) -> list[dict[str, Any]]:
         for n in range(total):
             t = n / SAMPLE_RATE
             sample = 0.0
+            for offset, spoken_samples in speech:
+                speech_index = n - offset
+                if 0 <= speech_index < len(spoken_samples):
+                    sample += (spoken_samples[speech_index] / 32768.0) * 0.72
             for cue in cues:
                 local = t - float(cue["start"])
                 if 0 <= local <= float(cue["duration"]):
