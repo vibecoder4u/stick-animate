@@ -239,11 +239,112 @@ def draw_caption(image: Image.Image, text: str, subtext: str = "") -> None:
         d.text((94, 111), subtext, font=sf, fill=(151, 190, 205))
 
 
+def paint_environment_details(image: Image.Image, kind: str, t: float) -> None:
+    """Add layered set dressing so locations read as places, not empty gradients."""
+    d = ImageDraw.Draw(image, "RGBA")
+    if kind == "corridor":
+        # Recessed wall panels, skirting, numbered doors and practical sconces.
+        for x in (95, 365, 635, 905, 1175):
+            d.rounded_rectangle((x-88, 168, x+88, 494), radius=5, outline=(75, 91, 110, 145), width=3)
+            d.line((x-72, 185, x+72, 185), fill=(91, 108, 127, 110), width=2)
+            d.rectangle((x-7, 205, x+7, 245), fill=(169, 190, 204, 85))
+            d.ellipse((x+58, 345, x+65, 352), fill=(201, 161, 105, 180))
+        # Low, warm practical light pools.
+        for x in (260, 770, 1120):
+            d.ellipse((x-100, 480, x+100, 555), fill=(175, 135, 83, 17))
+    elif kind == "stairwell":
+        d.line((105, 180, 105, 520), fill=(111, 128, 145, 190), width=9)
+        d.line((105, 180, 470, 180), fill=(111, 128, 145, 190), width=8)
+        for i in range(9):
+            y = 260 + i*27
+            x = 790 + i*37
+            d.line((x, y, min(1180, x+250), y), fill=(91, 107, 125, 145), width=3)
+        d.rectangle((140, 205, 260, 270), outline=(93, 114, 132, 130), width=3)
+        d.text((164, 220), "B2", font=font(26, True), fill=(163, 183, 198, 170))
+    elif kind == "rainroom":
+        # Condensation streaks and a cold window reflection.
+        for i in range(18):
+            x = 930 + (i*37)%245
+            y = 165 + (i*59)%320
+            d.line((x, y, x-3, y+35+(i%4)*12), fill=(133, 177, 198, 80), width=2)
+        d.rectangle((940, 175, 1170, 490), outline=(125, 161, 181, 130), width=2)
+    elif kind == "street":
+        # Storefront signage, lamp posts, wet pavement reflections.
+        d.rectangle((100, 175, 270, 225), fill=(10, 16, 25, 220), outline=(116, 139, 157, 130), width=2)
+        d.text((117, 186), "NIGHT SHOP", font=font(17, True), fill=(183, 199, 209, 210))
+        d.line((720, 120, 720, 505), fill=(75, 91, 108, 210), width=7)
+        d.ellipse((695, 105, 745, 135), fill=(196, 166, 112, 185))
+        for x in (180, 430, 930, 1110):
+            d.polygon([(x-48, 526), (x+48, 526), (x+100, 615), (x-100, 615)], fill=(79, 112, 133, 24))
+    elif kind == "ship":
+        d.arc((110, 110, 1170, 640), 185, 355, fill=(108, 132, 148, 170), width=8)
+        for x in (180, 430, 850, 1100):
+            d.ellipse((x-25, 220, x+25, 270), outline=(156, 179, 190, 190), width=5)
+            d.ellipse((x-12, 233, x+12, 257), fill=(102, 157, 178, 90))
+        d.rectangle((80, 430, 1200, 445), fill=(70, 89, 105, 130))
+        d.text((100, 455), "DECK 03  /  RESTRICTED", font=font(16, True), fill=(148, 173, 188, 190))
+    elif kind == "forest":
+        for i in range(13):
+            x = (i*113 + 25) % W
+            width = 22 + (i%3)*13
+            d.polygon([(x-width, 520), (x-8, 130+(i%4)*28), (x+width, 520)], fill=(8, 22, 23, 205))
+            d.line((x, 250, x-65, 330), fill=(19, 42, 39, 200), width=9)
+            d.line((x, 310, x+58, 370), fill=(19, 42, 39, 200), width=8)
+        d.ellipse((420, 180, 860, 610), fill=(139, 170, 124, 12))
+    # A fine film-grain pass, deterministic per frame.
+    rng = random.Random(int(t*24)+991)
+    for _ in range(650):
+        x, y = rng.randrange(W), rng.randrange(22, H-22)
+        c = 255 if rng.random() > .5 else 0
+        d.point((x, y), fill=(c, c, c, 12))
+
+
+def draw_character_design(image: Image.Image, actor: dict[str, Any], pose_data: dict[str, Any]) -> None:
+    """Add readable wardrobe, hair and facial expression to the base skeleton."""
+    x, y = float(pose_data.get("x", 640)), float(pose_data.get("y", 610))
+    scale = float(actor.get("scale", 1.0))
+    facing = 1 if int(pose_data.get("facing", 1)) >= 0 else -1
+    wardrobe = actor.get("wardrobe", "hoodie")
+    accent = tuple(actor.get("accent_rgb", [87, 151, 177]))
+    d = ImageDraw.Draw(image)
+    # Clothing follows the torso; it remains intentionally graphic and readable.
+    if wardrobe == "coat":
+        d.polygon([(x-19*scale, y-111*scale), (x+19*scale, y-111*scale),
+                   (x+27*scale, y-54*scale), (x+15*scale, y-45*scale),
+                   (x-15*scale, y-45*scale), (x-27*scale, y-54*scale)],
+                  fill=(35, 48, 63), outline=accent)
+        d.line((x, y-105*scale, x+3*scale, y-49*scale), fill=(150, 165, 177), width=max(2,int(3*scale)))
+    elif wardrobe == "hoodie":
+        d.arc((x-27*scale, y-145*scale, x+27*scale, y-92*scale), 180, 360, fill=accent, width=max(3,int(5*scale)))
+        d.line((x-17*scale, y-101*scale, x-23*scale, y-58*scale), fill=accent, width=max(3,int(4*scale)))
+        d.line((x+17*scale, y-101*scale, x+23*scale, y-58*scale), fill=accent, width=max(3,int(4*scale)))
+    # Hair silhouette and eyebrows distinguish the character from a blank circle.
+    hx, hy = int(x), int(y-145*scale)
+    hair = actor.get("hair", "short")
+    if hair == "long":
+        d.pieslice((hx-30*scale, hy-32*scale, hx+30*scale, hy+30*scale), 180, 350, fill=(29, 31, 37))
+        d.ellipse((hx-31*scale, hy-5*scale, hx-18*scale, hy+45*scale), fill=(29,31,37))
+    elif hair == "cap":
+        d.pieslice((hx-31*scale, hy-35*scale, hx+31*scale, hy+22*scale), 180, 360, fill=(29, 39, 51))
+        d.line((hx, hy-28*scale, hx+30*scale*facing, hy-19*scale), fill=accent, width=max(2,int(4*scale)))
+    else:
+        d.arc((hx-30*scale, hy-32*scale, hx+30*scale, hy+18*scale), 185, 355, fill=(29,31,37), width=max(5,int(9*scale)))
+    expression = actor.get("expression", "neutral")
+    eye_y = hy-4*scale
+    eye_x = hx+facing*10*scale
+    if expression == "fear":
+        d.ellipse((eye_x-4*scale, eye_y-4*scale, eye_x+4*scale, eye_y+4*scale), fill=(12,19,28))
+        d.arc((hx-11*scale, hy+5*scale, hx+11*scale, hy+22*scale), 190, 350, fill=(55,25,29), width=2)
+    elif expression == "determined":
+        d.line((eye_x-5*scale, eye_y-5*scale, eye_x+5*scale, eye_y-2*scale), fill=(23,31,40), width=3)
+
+
 def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, global_t: float, bg_cache: dict[str, Image.Image]) -> Image.Image:
     kind = scene.get("environment", "corridor")
     if kind not in bg_cache:
         bg_cache[kind] = gradient_background(kind)
     image = bg_cache[kind].copy()
+    paint_environment_details(image, kind, global_t)
     # A soft moving pool of light and a subtle practical flicker.
     d = ImageDraw.Draw(image)
     flicker = 0.92 + 0.08 * math.sin(global_t * 13.0)
@@ -276,6 +377,7 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
             str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
             global_t, float(actor.get("scale", 1.0)),
         )
+        draw_character_design(image, actor, pose_data)
     caption = scene.get("caption", "")
     sub = scene.get("subcaption", "")
     # Fade captions in and out at shot boundaries.
