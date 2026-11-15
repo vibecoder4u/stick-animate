@@ -1,0 +1,199 @@
+{
+  "title": "THE 2:17 HALLWAY",
+  "size": [
+    1280,
+    720
+  ],
+  "fps": 24,
+  "duration": 30,
+  "scenes": [
+    {
+      "start": 0,
+      "end": 6,
+      "environment": "corridor",
+      "door_open": 0,
+      "door_glow": 0,
+      "caption": "2:17 A.M. THE POWER DIED.",
+      "subcaption": "THE BUILDING WAS SUPPOSED TO BE EMPTY.",
+      "camera": {
+        "zoom_start": 1,
+        "zoom_end": 1.04,
+        "pan": -0.08
+      },
+      "actor": {
+        "scale": 1,
+        "keyframes": [
+          {
+            "t": 0,
+            "x": 160,
+            "y": 608,
+            "pose": "walk",
+            "facing": 1
+          },
+          {
+            "t": 1,
+            "x": 440,
+            "y": 608,
+            "pose": "idle",
+            "facing": 1
+          }
+        ]
+      }
+    },
+    {
+      "start": 6,
+      "end": 12,
+      "environment": "corridor",
+      "door_open": 0.58,
+      "door_glow": 0.45,
+      "caption": "THEN THE DOOR OPENED.",
+      "subcaption": "NO ONE HAD TOUCHED THE HANDLE.",
+      "camera": {
+        "zoom_start": 1.02,
+        "zoom_end": 1.055,
+        "pan": 0.08
+      },
+      "actor": {
+        "scale": 1,
+        "keyframes": [
+          {
+            "t": 0,
+            "x": 445,
+            "y": 608,
+            "pose": "idle",
+            "facing": 1
+          },
+          {
+            "t": 0.55,
+            "x": 460,
+            "y": 608,
+            "pose": "reach",
+            "facing": 1
+          },
+          {
+            "t": 1,
+            "x": 430,
+            "y": 608,
+            "pose": "fear",
+            "facing": 1
+          }
+        ]
+      }
+    },
+    {
+      "start": 12,
+      "end": 18,
+      "environment": "corridor",
+      "door_open": 1,
+      "door_glow": 0.85,
+      "caption": "SOMEONE WAS WAITING IN THE DARK.",
+      "subcaption": "IT DID NOT MOVE. IT DID NOT NEED TO.",
+      "shadow": true,
+      "shadow_x": 990,
+      "shadow_opacity": 0.86,
+      "camera": {
+        "zoom_start": 1.03,
+        "zoom_end": 1.075,
+        "pan": -0.04
+      },
+      "actor": {
+        "scale": 1,
+        "keyframes": [
+          {
+            "t": 0,
+            "x": 430,
+            "y": 608,
+            "pose": "fear",
+            "facing": 1
+          },
+          {
+            "t": 1,
+            "x": 385,
+            "y": 608,
+            "pose": "fear",
+            "facing": -1
+          }
+        ]
+      }
+    },
+    {
+      "start": 18,
+      "end": 24,
+      "environment": "stairwell",
+      "door_open": 1,
+      "door_glow": 0.6,
+      "caption": "HE RAN. THE FOOTSTEPS DID NOT.",
+      "subcaption": "SOMETHING WAS FOLLOWING THE SOUND.",
+      "shadow": true,
+      "shadow_x": 1030,
+      "shadow_opacity": 0.7,
+      "camera": {
+        "zoom_start": 1,
+        "zoom_end": 1.045,
+        "pan": 0.15
+      },
+      "actor": {
+        "scale": 1.02,
+        "keyframes": [
+          {
+            "t": 0,
+            "x": 390,
+            "y": 608,
+            "pose": "run",
+            "facing": 1
+          },
+          {
+            "t": 1,
+            "x": 820,
+            "y": 608,
+            "pose": "run",
+            "facing": 1
+          }
+        ]
+      }
+    },
+    {
+      "start": 24,
+      "end": 30,
+      "environment": "corridor",
+      "door_open": 1,
+      "door_glow": 1,
+      "caption": "IT WAS ALREADY BEHIND HIM.",
+      "subcaption": "THE END.",
+      "shadow": true,
+      "shadow_x": 650,
+      "shadow_opacity": 1,
+      "camera": {
+        "zoom_start": 1.035,
+        "zoom_end": 1.08,
+        "pan": -0.12
+      },
+      "actor": {
+        "scale": 1,
+        "keyframes": [
+          {
+            "t": 0,
+            "x": 835,
+            "y": 608,
+            "pose": "run",
+            "facing": -1
+          },
+          {
+            "t": 0.22,
+            "x": 800,
+            "y": 608,
+            "pose": "fear",
+            "facing": -1
+          },
+          {
+            "t": 1,
+            "x": 800,
+            "y": 608,
+            "pose": "fear",
+            "facing": -1
+          }
+        ]
+      }
+    }
+  ]
+}
