@@ -10,7 +10,7 @@
     {
       "start": 0,
       "end": 6,
-      "environment": "street",
+      "environment": "platform",
       "weather": "rain",
       "caption": "THE LAST TRAIN LEFT AT 2:17 A.M.",
       "subcaption": "BUT SOMEONE WAS STILL WAITING.",
@@ -46,7 +46,7 @@
     {
       "start": 6,
       "end": 12,
-      "environment": "corridor",
+      "environment": "service_gate",
       "door_open": 0.65,
       "door_glow": 0.35,
       "caption": "THEN THE SERVICE GATE SLID OPEN.",
@@ -68,20 +68,27 @@
             "x": 410,
             "y": 608,
             "pose": "idle",
+            "facing": 1
+          },
+          {
+            "t": 0.35,
+            "x": 410,
+            "y": 608,
+            "pose": "look_back",
             "facing": -1
           },
           {
-            "t": 0.45,
-            "x": 410,
+            "t": 0.72,
+            "x": 380,
             "y": 608,
-            "pose": "fear",
+            "pose": "stumble",
             "facing": -1
           },
           {
             "t": 1,
             "x": 390,
             "y": 608,
-            "pose": "fear",
+            "pose": "look_back",
             "facing": -1
           }
         ]
@@ -90,7 +97,7 @@
     {
       "start": 12,
       "end": 18,
-      "environment": "stairwell",
+      "environment": "tunnel",
       "door_open": 1,
       "door_glow": 0.7,
       "caption": "A METAL CLANG ECHOED BELOW.",
@@ -118,15 +125,29 @@
             "t": 0,
             "x": 390,
             "y": 608,
-            "pose": "fear",
+            "pose": "listen",
+            "facing": -1
+          },
+          {
+            "t": 0.38,
+            "x": 390,
+            "y": 608,
+            "pose": "look_back",
+            "facing": -1
+          },
+          {
+            "t": 0.72,
+            "x": 350,
+            "y": 608,
+            "pose": "stumble",
             "facing": -1
           },
           {
             "t": 1,
             "x": 330,
             "y": 608,
-            "pose": "fear",
-            "facing": -1
+            "pose": "run",
+            "facing": 1
           }
         ]
       }
@@ -134,7 +155,7 @@
     {
       "start": 18,
       "end": 24,
-      "environment": "corridor",
+      "environment": "platform",
       "caption": "HE RAN FOR THE EXIT.",
       "subcaption": "THE FOOTSTEPS FOLLOWED — TOO CLOSE.",
       "narration": "He ran. Behind him, another set of footsteps began running.",
@@ -157,8 +178,15 @@
             "facing": 1
           },
           {
+            "t": 0.5,
+            "x": 590,
+            "y": 608,
+            "pose": "run",
+            "facing": 1
+          },
+          {
             "t": 1,
-            "x": 800,
+            "x": 900,
             "y": 608,
             "pose": "run",
             "facing": 1
@@ -169,7 +197,7 @@
     {
       "start": 24,
       "end": 30,
-      "environment": "corridor",
+      "environment": "exit",
       "shadow": true,
       "shadow_x": 650,
       "shadow_opacity": 1,
@@ -189,14 +217,28 @@
         "keyframes": [
           {
             "t": 0,
-            "x": 800,
+            "x": 900,
             "y": 608,
-            "pose": "fear",
+            "pose": "run",
+            "facing": 1
+          },
+          {
+            "t": 0.42,
+            "x": 940,
+            "y": 608,
+            "pose": "stumble",
+            "facing": -1
+          },
+          {
+            "t": 0.72,
+            "x": 940,
+            "y": 608,
+            "pose": "look_back",
             "facing": -1
           },
           {
             "t": 1,
-            "x": 800,
+            "x": 940,
             "y": 608,
             "pose": "fear",
             "facing": -1
