@@ -13,7 +13,8 @@ ENVIRONMENT_RULES = [
     ("platform", ("railway station", "train station", "platform", "last train", "train")),
     ("service_gate", ("service gate", "locked gate", "staff only", "maintenance door")),
     ("tunnel", ("tunnel", "underground", "subway tunnel")),
-    ("trackside", ("railway track", "tracks", "trackside", "train tracks")),\n    ("exit", ("exit", "exit door", "fire escape", "outside")),
+    ("trackside", ("railway track", "tracks", "trackside", "train tracks")),
+    ("exit", ("exit", "exit door", "fire escape", "outside")),
     ("stairwell", ("stairs", "staircase", "stairwell", "steps")),
     ("street", ("street", "road", "alley", "sidewalk", "city")),
     ("rainroom", ("window", "bedroom", "living room", "apartment", "house", "room")),
@@ -34,10 +35,10 @@ FOCUS_RULES = [
 
 def split_beats(story: str) -> list[str]:
     # Keep short dialogue fragments together; discard empty whitespace.
-    parts = re.split(r"(?<=[.!?])\\s+(?=[A-Z0-9\"'])", story.strip())
+    parts = re.split(r"(?<=[.!?])\s+(?=[A-Z0-9\"'])", story.strip())
     beats = [p.strip() for p in parts if p.strip()]
     if len(beats) == 1 and len(beats[0]) > 260:
-        beats = [p.strip() for p in re.split(r"[,;:]\\s+", beats[0]) if p.strip()]
+        beats = [p.strip() for p in re.split(r"[,;:]\s+", beats[0]) if p.strip()]
     return beats
 
 def _environment(text: str, previous: str | None) -> str:
@@ -128,7 +129,7 @@ def design_story(story: str, duration: float, title: str = "Untitled Story", fps
         }
         if any(w in beat.lower() for w in ("rain", "raining", "storm")):
             scene["weather"] = "rain"
-        if pose != "idle" or re.search(r"\\b(he|she|they|man|woman|boy|girl|person|someone)\\b", beat, re.I):
+        if pose != "idle" or re.search(r"\b(he|she|they|man|woman|boy|girl|person|someone)\b", beat, re.I):
             scene["actor"] = {
                 "scale": 1.0, "wardrobe": "coat", "hair": "short",
                 "expression": "fear" if pose in ("fear", "look_back", "listen") else "neutral",
