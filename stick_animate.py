@@ -16,6 +16,7 @@ from audio_director import render_audio
 from scene_understanding_agent import analyse_script
 from scene_designer import design_story
 from production_agents import design_production
+from character_rigs import draw_species_character
 
 W, H = 1280, 720
 FPS = 24
@@ -487,15 +488,22 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         sx = int(scene.get("shadow_x", 990))
         opacity = float(scene.get("shadow_opacity", 1.0)) * min(1.0, max(0.0, local_t * 2))
         draw_shadow(image, sx, 526, global_t, opacity)
-    actor = scene.get("actor", {})
-    if actor:
+    # Render a cast, not just one hard-coded protagonist. Each species is
+    # dispatched to its own anatomy rig; humans keep the existing human rig.
+    cast = scene.get("actors", [])
+    primary = scene.get("actor")
+    if primary:
+        cast = [primary] + [a for a in cast if a is not primary]
+    for actor in cast:
         pose_data = sample_keyframes(actor.get("keyframes", []), local_t)
-        draw_character(
-            image, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
-            str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
-            global_t, float(actor.get("scale", 1.0)),
-        )
-        draw_character_design(image, actor, pose_data)
+        species = str(actor.get("species", "human")).lower()
+        if not draw_species_character(image, actor, pose_data, global_t):
+            draw_character(
+                image, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
+                str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
+                global_t, float(actor.get("scale", 1.0)),
+            )
+            draw_character_design(image, actor, pose_data)
     caption = scene.get("caption", "")
     sub = scene.get("subcaption", "")
     # Fade captions in and out at shot boundaries.
