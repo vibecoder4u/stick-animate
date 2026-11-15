@@ -13,7 +13,7 @@ from typing import Any
 from PIL import Image, ImageDraw, ImageFont
 
 from audio_director import render_audio
-from scene_understanding_agent import analyse_script
+from scene_understanding_agent import analyse_script\nfrom scene_designer import design_story
 
 W, H = 1280, 720
 FPS = 24
@@ -601,17 +601,27 @@ def render(script_path: Path, output: Path) -> Path:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Render a script-driven 2D animated short.")
+    parser = argparse.ArgumentParser(description="Design and render a multi-scene 2D animated video.")
     parser.add_argument("--script", type=Path, default=Path("demo/mystery_hallway.json"))
+    parser.add_argument("--story-file", type=Path, help="Plain-text story; Scene Designer will create a multi-shot plan.")
+    parser.add_argument("--duration", type=float, default=30.0, help="Target duration when using --story-file.")
+    parser.add_argument("--title", default="Untitled Story", help="Video title when using --story-file.")
     parser.add_argument("--output", type=Path, default=Path("output/mystery-hallway.mp4"))
     parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
-    data = json.loads(args.script.read_text(encoding="utf-8"))
+    script_path = args.script
+    if args.story_file:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        script_path = args.output.parent / (args.output.stem + "-scene-plan.json")
+        plan = design_story(args.story_file.read_text(encoding="utf-8"), args.duration, args.title)
+        script_path.write_text(json.dumps(plan, indent=2), encoding="utf-8")
+        print(f"Scene Designer created {len(plan['scenes'])} shots: {script_path}")
+    data = json.loads(script_path.read_text(encoding="utf-8"))
     validate_script(data)
     if args.validate_only:
         print(f"Script valid: {len(data['scenes'])} scenes, {data['duration']} seconds.")
     else:
-        render(args.script, args.output)
+        render(script_path, args.output)
 
 
 if __name__ == "__main__":
