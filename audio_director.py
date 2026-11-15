@@ -47,7 +47,7 @@ def plan_scene_audio(script: dict[str, Any]) -> list[dict[str, Any]]:
         # Rain is emitted only when the script explicitly selects a rain environment.
         if environment == "rainroom" or scene.get("weather") == "rain":
             cues.append({"event": "rain", "start": start, "duration": end-start,
-                         "evidence": "environment=rainroom", "source": "scene_environment"})
+                         "evidence": f"environment={environment}; weather={scene.get('weather', 'unspecified')}", "source": "scene_environment"})
         # Wind is allowed only for an explicitly exposed outdoor environment.
         if environment in ("street", "forest") and scene.get("weather") == "wind":
             cues.append({"event": "wind", "start": start, "duration": end-start,
