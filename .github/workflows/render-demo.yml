@@ -4,6 +4,21 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      story:
+        description: "Paste the complete story/script to animate"
+        required: false
+        type: string
+      title:
+        description: "Video title"
+        required: false
+        type: string
+        default: "My Animated Story"
+      duration:
+        description: "Video duration in seconds"
+        required: false
+        type: number
+        default: 30
 
 permissions:
   contents: read
@@ -39,21 +54,35 @@ jobs:
       - name: Run engine tests
         run: python -m unittest discover -s tests -v
 
+      - name: Prepare story input
+        env:
+          STORY_TEXT: ${{ inputs.story }}
+        run: |
+          if [ -n "$STORY_TEXT" ]; then
+            printf '%s' "$STORY_TEXT" > input-story.txt
+          else
+            cp demo/empty_platform_story.txt input-story.txt
+          fi
+
       - name: Validate animation script
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: python stick_animate.py --story-file demo/empty_platform_story.txt --duration 30 --title "THE EMPTY PLATFORM" --output output/designed-empty-platform.mp4 --validate-only
+          VIDEO_TITLE: ${{ inputs.title || 'THE EMPTY PLATFORM' }}
+          VIDEO_DURATION: ${{ inputs.duration || 30 }}
+        run: python stick_animate.py --story-file input-story.txt --duration "$VIDEO_DURATION" --title "$VIDEO_TITLE" --output output/animated-story.mp4 --validate-only
 
       - name: Render MP4 on GitHub runner
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: python stick_animate.py --story-file demo/empty_platform_story.txt --duration 30 --title "THE EMPTY PLATFORM" --output output/designed-empty-platform.mp4
+          VIDEO_TITLE: ${{ inputs.title || 'THE EMPTY PLATFORM' }}
+          VIDEO_DURATION: ${{ inputs.duration || 30 }}
+        run: python stick_animate.py --story-file input-story.txt --duration "$VIDEO_DURATION" --title "$VIDEO_TITLE" --output output/animated-story.mp4
 
       - name: Verify generated video
         run: |
-          test -s output/designed-empty-platform.mp4
-          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/designed-empty-platform.mp4
-          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json output/designed-empty-platform.mp4
+          test -s output/animated-story.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/animated-story.mp4
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json output/animated-story.mp4
           test -s output/audio-cues.json
           python -c 'import json; c=json.load(open("output/audio-cues.json")); assert c and all(x.get("evidence") for x in c); print("Verified scene-grounded audio cues:", [x["event"] for x in c])'
 
