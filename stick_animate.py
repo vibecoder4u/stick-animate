@@ -13,7 +13,8 @@ from typing import Any
 from PIL import Image, ImageDraw, ImageFont
 
 from audio_director import render_audio
-from scene_understanding_agent import analyse_script\nfrom scene_designer import design_story
+from scene_understanding_agent import analyse_script
+from scene_designer import design_story
 
 W, H = 1280, 720
 FPS = 24
