@@ -40,9 +40,13 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Validate animation script
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python stick_animate.py --story-file demo/empty_platform_story.txt --duration 30 --title "THE EMPTY PLATFORM" --output output/designed-empty-platform.mp4 --validate-only
 
       - name: Render MP4 on GitHub runner
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python stick_animate.py --story-file demo/empty_platform_story.txt --duration 30 --title "THE EMPTY PLATFORM" --output output/designed-empty-platform.mp4
 
       - name: Verify generated video
