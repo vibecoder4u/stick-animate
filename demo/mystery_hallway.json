@@ -37,7 +37,15 @@
             "pose": "idle",
             "facing": 1
           }
-        ]
+        ],
+        "wardrobe": "hoodie",
+        "hair": "short",
+        "accent_rgb": [
+          82,
+          157,
+          183
+        ],
+        "expression": "neutral"
       }
     },
     {
@@ -77,7 +85,15 @@
             "pose": "fear",
             "facing": 1
           }
-        ]
+        ],
+        "wardrobe": "hoodie",
+        "hair": "short",
+        "accent_rgb": [
+          82,
+          157,
+          183
+        ],
+        "expression": "fear"
       }
     },
     {
@@ -113,7 +129,15 @@
             "pose": "fear",
             "facing": -1
           }
-        ]
+        ],
+        "wardrobe": "hoodie",
+        "hair": "short",
+        "accent_rgb": [
+          82,
+          157,
+          183
+        ],
+        "expression": "fear"
       }
     },
     {
@@ -149,7 +173,15 @@
             "pose": "run",
             "facing": 1
           }
-        ]
+        ],
+        "wardrobe": "coat",
+        "hair": "short",
+        "accent_rgb": [
+          82,
+          157,
+          183
+        ],
+        "expression": "determined"
       }
     },
     {
@@ -192,7 +224,15 @@
             "pose": "fear",
             "facing": -1
           }
-        ]
+        ],
+        "wardrobe": "hoodie",
+        "hair": "short",
+        "accent_rgb": [
+          82,
+          157,
+          183
+        ],
+        "expression": "fear"
       }
     }
   ]
