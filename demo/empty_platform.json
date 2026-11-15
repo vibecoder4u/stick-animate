@@ -1,0 +1,208 @@
+{
+  "title": "THE EMPTY PLATFORM",
+  "size": [
+    1280,
+    720
+  ],
+  "fps": 24,
+  "duration": 30,
+  "scenes": [
+    {
+      "start": 0,
+      "end": 6,
+      "environment": "street",
+      "weather": "rain",
+      "caption": "THE LAST TRAIN LEFT AT 2:17 A.M.",
+      "subcaption": "BUT SOMEONE WAS STILL WAITING.",
+      "narration": "At 2:17 in the morning, the last train pulled away. The platform was supposed to be empty.",
+      "camera": {
+        "zoom_start": 1,
+        "zoom_end": 1.045,
+        "pan": -0.06
+      },
+      "actor": {
+        "scale": 1,
+        "wardrobe": "coat",
+        "hair": "short",
+        "expression": "neutral",
+        "keyframes": [
+          {
+            "t": 0,
+            "x": 180,
+            "y": 608,
+            "pose": "walk",
+            "facing": 1
+          },
+          {
+            "t": 1,
+            "x": 410,
+            "y": 608,
+            "pose": "idle",
+            "facing": 1
+          }
+        ]
+      }
+    },
+    {
+      "start": 6,
+      "end": 12,
+      "environment": "corridor",
+      "door_open": 0.65,
+      "door_glow": 0.35,
+      "caption": "THEN THE SERVICE GATE SLID OPEN.",
+      "subcaption": "NO TRAIN. NO OPERATOR. NO SOUND.",
+      "narration": "Then, behind him, the locked service gate began to open. There was no train on the tracks. No operator in sight.",
+      "camera": {
+        "zoom_start": 1.01,
+        "zoom_end": 1.06,
+        "pan": 0.08
+      },
+      "actor": {
+        "scale": 1,
+        "wardrobe": "coat",
+        "hair": "short",
+        "expression": "fear",
+        "keyframes": [
+          {
+            "t": 0,
+            "x": 410,
+            "y": 608,
+            "pose": "idle",
+            "facing": -1
+          },
+          {
+            "t": 0.45,
+            "x": 410,
+            "y": 608,
+            "pose": "fear",
+            "facing": -1
+          },
+          {
+            "t": 1,
+            "x": 390,
+            "y": 608,
+            "pose": "fear",
+            "facing": -1
+          }
+        ]
+      }
+    },
+    {
+      "start": 12,
+      "end": 18,
+      "environment": "stairwell",
+      "door_open": 1,
+      "door_glow": 0.7,
+      "caption": "A METAL CLANG ECHOED BELOW.",
+      "subcaption": "SOMETHING HAD ENTERED THE TUNNEL.",
+      "narration": "A metal clang echoed from below. He looked down the stairs, and saw a light moving where no one should be.",
+      "visual_events": [
+        {
+          "type": "metal_clang",
+          "at": 0.55,
+          "evidence": "visible service gate strikes its metal stop as it reaches fully open"
+        }
+      ],
+      "camera": {
+        "zoom_start": 1.02,
+        "zoom_end": 1.075,
+        "pan": -0.04
+      },
+      "actor": {
+        "scale": 1,
+        "wardrobe": "coat",
+        "hair": "short",
+        "expression": "fear",
+        "keyframes": [
+          {
+            "t": 0,
+            "x": 390,
+            "y": 608,
+            "pose": "fear",
+            "facing": -1
+          },
+          {
+            "t": 1,
+            "x": 330,
+            "y": 608,
+            "pose": "fear",
+            "facing": -1
+          }
+        ]
+      }
+    },
+    {
+      "start": 18,
+      "end": 24,
+      "environment": "corridor",
+      "caption": "HE RAN FOR THE EXIT.",
+      "subcaption": "THE FOOTSTEPS FOLLOWED — TOO CLOSE.",
+      "narration": "He ran for the exit. His footsteps pounded against the tiles. Then another set answered from directly behind him.",
+      "camera": {
+        "zoom_start": 1,
+        "zoom_end": 1.05,
+        "pan": 0.13
+      },
+      "actor": {
+        "scale": 1.02,
+        "wardrobe": "coat",
+        "hair": "short",
+        "expression": "determined",
+        "keyframes": [
+          {
+            "t": 0,
+            "x": 330,
+            "y": 608,
+            "pose": "run",
+            "facing": 1
+          },
+          {
+            "t": 1,
+            "x": 800,
+            "y": 608,
+            "pose": "run",
+            "facing": 1
+          }
+        ]
+      }
+    },
+    {
+      "start": 24,
+      "end": 30,
+      "environment": "corridor",
+      "shadow": true,
+      "shadow_x": 650,
+      "shadow_opacity": 1,
+      "caption": "THE EXIT WAS ALREADY OPEN.",
+      "subcaption": "SOMEONE WAS WAITING ON THE OTHER SIDE.",
+      "narration": "The exit door stood open. But the shadow waiting beyond it was not his. And it had been there all along.",
+      "camera": {
+        "zoom_start": 1.035,
+        "zoom_end": 1.09,
+        "pan": -0.1
+      },
+      "actor": {
+        "scale": 1,
+        "wardrobe": "coat",
+        "hair": "short",
+        "expression": "fear",
+        "keyframes": [
+          {
+            "t": 0,
+            "x": 800,
+            "y": 608,
+            "pose": "fear",
+            "facing": -1
+          },
+          {
+            "t": 1,
+            "x": 800,
+            "y": 608,
+            "pose": "fear",
+            "facing": -1
+          }
+        ]
+      }
+    }
+  ]
+}
