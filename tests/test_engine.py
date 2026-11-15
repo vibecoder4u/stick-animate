@@ -47,5 +47,29 @@ class AnimationEngineTests(unittest.TestCase):
             stick_animate.validate_script(invalid)
 
 
+    def test_multi_character_scene_renders_human_dog_and_bird(self):
+        scene = {
+            "start": 0, "end": 5, "environment": "forest",
+            "actors": [
+                {"species": "human", "scale": 0.75, "keyframes": [
+                    {"t": 0, "x": 360, "y": 610, "pose": "idle", "facing": 1},
+                    {"t": 1, "x": 370, "y": 610, "pose": "look_back", "facing": -1},
+                ]},
+                {"species": "dog", "scale": 0.8, "keyframes": [
+                    {"t": 0, "x": 570, "y": 610, "pose": "run", "facing": 1},
+                    {"t": 1, "x": 630, "y": 610, "pose": "run", "facing": 1},
+                ]},
+                {"species": "bird", "scale": 0.9, "keyframes": [
+                    {"t": 0, "x": 820, "y": 410, "pose": "fly", "facing": 1},
+                    {"t": 1, "x": 900, "y": 360, "pose": "fly", "facing": 1},
+                ]},
+            ],
+        }
+        script = {"title": "Multi Character Test", "duration": 5, "fps": 24, "scenes": [scene]}
+        frame = stick_animate.make_frame(script, scene, 0.5, 2.5, {})
+        self.assertEqual(frame.size, (1280, 720))
+        self.assertEqual(frame.mode, "RGB")
+
+
 if __name__ == "__main__":
     unittest.main()
