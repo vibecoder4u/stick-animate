@@ -316,7 +316,7 @@ def draw_caption(image: Image.Image, text: str, subtext: str = "") -> None:
         d.text((94, 111), subtext, font=sf, fill=(151, 190, 205))
 
 
-def paint_environment_details(image: Image.Image, kind: str, t: float) -> None:
+def paint_environment_details(image: Image.Image, kind: str, t: float, opening: float = 0.0) -> None:
     """Add layered set dressing so locations read as places, not empty gradients."""
     d = ImageDraw.Draw(image, "RGBA")
     if kind == "platform":
@@ -436,7 +436,8 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
     if kind not in bg_cache:
         bg_cache[kind] = gradient_background(kind)
     image = bg_cache[kind].copy()
-    paint_environment_details(image, kind, global_t)
+    opening = float(scene.get("door_open", 0.0))
+    paint_environment_details(image, kind, global_t, opening)
     # A soft moving pool of light and a subtle practical flicker.
     d = ImageDraw.Draw(image)
     flicker = 0.92 + 0.08 * math.sin(global_t * 13.0)
@@ -444,9 +445,9 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         d.polygon([(640, 130), (930, 130), (1120, 530), (430, 530)], fill=(40, 55, 72))
         d.line((640, 130, 430, 530), fill=(49, 65, 82), width=2)
         d.line((930, 130, 1120, 530), fill=(49, 65, 82), width=2)
-    opening = float(scene.get("door_open", 0.0))
     glow = float(scene.get("door_glow", 0.0)) * flicker
-    draw_door(d, opening, glow)
+    if kind == "corridor" and (opening > 0 or glow > 0):
+        draw_door(d, opening, glow)
     # Environmental motion: drifting dust or rainfall.
     rng = random.Random(int(global_t * 24) + 811)
     for i in range(28):
