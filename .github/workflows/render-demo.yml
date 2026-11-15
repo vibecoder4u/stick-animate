@@ -40,14 +40,14 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Validate animation script
-        run: python stick_animate.py --script demo/empty_platform.json --validate-only
+        run: python stick_animate.py --story-file demo/empty_platform_story.txt --duration 30 --title "THE EMPTY PLATFORM" --output output/designed-empty-platform.mp4 --validate-only
 
       - name: Render MP4 on GitHub runner
-        run: python stick_animate.py --script demo/empty_platform.json --output output/empty-platform.mp4
+        run: python stick_animate.py --story-file demo/empty_platform_story.txt --duration 30 --title "THE EMPTY PLATFORM" --output output/designed-empty-platform.mp4
 
       - name: Verify generated video
         run: |
-          test -s output/empty-platform.mp4
+          test -s output/designed-empty-platform.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/empty-platform.mp4
           ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json output/empty-platform.mp4
           test -s output/audio-cues.json
@@ -56,7 +56,7 @@ jobs:
       - name: Upload rendered video and poster
         uses: actions/upload-artifact@v4
         with:
-          name: stick-animate-empty-platform-${{ github.run_number }}
+          name: stick-animate-scene-designer-${{ github.run_number }}
           path: output/*
           if-no-files-found: error
           retention-days: 30
