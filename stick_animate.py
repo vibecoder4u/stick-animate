@@ -223,7 +223,7 @@ def draw_shadow(image: Image.Image, x: int, foot_y: int, t: float, opacity: floa
     d.line((x+sway, foot_y-105, x+42+sway, foot_y-86), fill=(0, 0, 0, int(220*opacity)), width=15)
     d.line((x+sway, foot_y-48, x-22+sway, foot_y), fill=(0, 0, 0, int(230*opacity)), width=18)
     d.line((x+sway, foot_y-48, x+24+sway, foot_y), fill=(0, 0, 0, int(230*opacity)), width=18)
-    image.alpha_composite(layer)
+    image.paste(Image.alpha_composite(image.convert("RGBA"), layer).convert("RGB"))
 
 
 def draw_caption(image: Image.Image, text: str, subtext: str = "") -> None:
@@ -233,7 +233,7 @@ def draw_caption(image: Image.Image, text: str, subtext: str = "") -> None:
     f = font(30, True)
     sf = font(17, False)
     # restrained editorial caption, not a full-screen template card
-    d.rounded_rectangle((68, 54, 760, 139 if subtext else 112), radius=10, fill=(4, 8, 15, 185))
+    d.rounded_rectangle((68, 54, 760, 139 if subtext else 112), radius=10, fill=(4, 8, 15))
     d.text((92, 69), text, font=f, fill=(237, 242, 247), stroke_width=1, stroke_fill=(3, 5, 9))
     if subtext:
         d.text((94, 111), subtext, font=sf, fill=(151, 190, 205))
