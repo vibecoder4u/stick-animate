@@ -241,7 +241,9 @@ def draw_caption(image: Image.Image, text: str, subtext: str = "") -> None:
 
 def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, global_t: float, bg_cache: dict[str, Image.Image]) -> Image.Image:
     kind = scene.get("environment", "corridor")
-    image = bg_cache.setdefault(kind, gradient_background(kind)).copy()
+    if kind not in bg_cache:
+        bg_cache[kind] = gradient_background(kind)
+    image = bg_cache[kind].copy()
     # A soft moving pool of light and a subtle practical flicker.
     d = ImageDraw.Draw(image)
     flicker = 0.92 + 0.08 * math.sin(global_t * 13.0)
