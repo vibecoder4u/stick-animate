@@ -56,8 +56,28 @@ def _focus(text: str) -> str:
             return focus
     return "character_action"
 
+def _species(text: str) -> str | None:
+    lowered = text.lower()
+    rules = [
+        ("dinosaur", ("dinosaur", "t-rex", "trex", "velociraptor")),
+        ("dog", ("dog", "puppy", "hound", "wolf")),
+        ("cat", ("cat", "kitten", "feline")),
+        ("bird", ("bird", "eagle", "owl", "crow", "parrot", "sparrow")),
+        ("fish", ("fish", "shark", "whale", "dolphin")),
+    ]
+    for species, words in rules:
+        if any(re.search(r"\b" + re.escape(word) + r"\b", lowered) for word in words):
+            return species
+    if re.search(r"\b(boy|girl|man|woman|person|he|she|they|someone|human)\b", lowered):
+        return "human"
+    return None
+
 def _pose(text: str) -> str:
     lowered = text.lower()
+    if any(w in lowered for w in ("swam", "swimming", "underwater", "dives")):
+        return "swim"
+    if any(w in lowered for w in ("flew", "flying", "soared", "flapped", "takes flight")):
+        return "fly"
     if any(w in lowered for w in ("ran", "running", "chased", "sprinted", "fled", "escape")):
         return "run"
     if any(w in lowered for w in ("looked back", "turned", "noticed", "saw", "watched")):
@@ -129,8 +149,10 @@ def design_story(story: str, duration: float, title: str = "Untitled Story", fps
         }
         if any(w in beat.lower() for w in ("rain", "raining", "storm")):
             scene["weather"] = "rain"
-        if pose != "idle" or re.search(r"\b(he|she|they|man|woman|boy|girl|person|someone)\b", beat, re.I):
+        species = _species(beat)
+        if pose != "idle" or species:
             scene["actor"] = {
+                "species": species or "human",
                 "scale": 1.0, "wardrobe": "coat", "hair": "short",
                 "expression": "fear" if pose in ("fear", "look_back", "listen") else "neutral",
                 "keyframes": [
