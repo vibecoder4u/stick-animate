@@ -13,7 +13,7 @@ ENVIRONMENT_RULES = [
     ("platform", ("railway station", "train station", "platform", "last train", "train")),
     ("service_gate", ("service gate", "locked gate", "staff only", "maintenance door")),
     ("tunnel", ("tunnel", "underground", "subway tunnel")),
-    ("trackside", ("railway track", "tracks", "trackside", "train tracks")),
+    ("trackside", ("railway track", "tracks", "trackside", "train tracks")),\n    ("exit", ("exit", "exit door", "fire escape", "outside")),
     ("stairwell", ("stairs", "staircase", "stairwell", "steps")),
     ("street", ("street", "road", "alley", "sidewalk", "city")),
     ("rainroom", ("window", "bedroom", "living room", "apartment", "house", "room")),
