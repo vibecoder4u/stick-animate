@@ -76,7 +76,7 @@ def sample_keyframes(keyframes: list[dict[str, Any]], progress: float) -> dict[s
             result = dict(left)
             result["x"] = float(left.get("x", 640)) + (float(right.get("x", 640)) - float(left.get("x", 640))) * u
             result["y"] = float(left.get("y", 610)) + (float(right.get("y", 610)) - float(left.get("y", 610))) * u
-            if u > 0.5:
+            if u >= 0.5:
                 result["pose"] = right.get("pose", result.get("pose", "idle"))
                 result["facing"] = right.get("facing", result.get("facing", 1))
             return result
