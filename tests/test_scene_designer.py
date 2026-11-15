@@ -34,5 +34,16 @@ class SceneDesignerTests(unittest.TestCase):
             design_story("A story.", 0)
 
 
+    def test_free_planner_assigns_species_specific_actors(self):
+        plan = design_story(
+            "A dog runs through the forest. A bird flies above the river. "
+            "A dinosaur roars beside the cave.", 30, "Wild Night"
+        )
+        species = [scene.get("actor", {}).get("species") for scene in plan["scenes"]]
+        self.assertIn("dog", species)
+        self.assertIn("bird", species)
+        self.assertIn("dinosaur", species)
+
+
 if __name__ == "__main__":
     unittest.main()
