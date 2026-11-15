@@ -1,0 +1,395 @@
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import random
+import subprocess
+import tempfile
+import wave
+from pathlib import Path
+from typing import Any
+
+from PIL import Image, ImageDraw, ImageFont
+
+W, H = 1280, 720
+FPS = 24
+COLORS = {
+    "ink": (8, 12, 20), "wall": (21, 29, 43), "floor": (13, 19, 29),
+    "light": (235, 241, 250), "muted": (151, 167, 188),
+    "cyan": (111, 207, 225), "red": (190, 65, 67),
+}
+
+
+def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    paths = [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf" if bold else
+        "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf",
+    ]
+    for path in paths:
+        if Path(path).exists():
+            return ImageFont.truetype(path, size)
+    return ImageFont.load_default()
+
+
+def validate_script(data: dict[str, Any]) -> None:
+    required = ("title", "duration", "fps", "scenes")
+    missing = [key for key in required if key not in data]
+    if missing:
+        raise ValueError("Missing script fields: " + ", ".join(missing))
+    if not isinstance(data["scenes"], list) or not data["scenes"]:
+        raise ValueError("Script needs at least one scene")
+    if float(data["duration"]) <= 0 or int(data["fps"]) <= 0:
+        raise ValueError("Duration and fps must be positive")
+    previous_end = 0.0
+    for index, scene in enumerate(data["scenes"]):
+        start, end = float(scene["start"]), float(scene["end"])
+        if start < 0 or end <= start or end > float(data["duration"]) + 0.001:
+            raise ValueError(f"Invalid scene timing at scene {index}")
+        if start < previous_end - 0.001:
+            raise ValueError("Scenes must be ordered and cannot overlap")
+        previous_end = end
+        actor = scene.get("actor", {})
+        keys = actor.get("keyframes", [])
+        if keys:
+            times = [float(k["t"]) for k in keys]
+            if times != sorted(times) or times[0] < 0 or times[-1] > 1:
+                raise ValueError(f"Invalid actor keyframes in scene {index}")
+
+
+def sample_keyframes(keyframes: list[dict[str, Any]], progress: float) -> dict[str, Any]:
+    if not keyframes:
+        return {"x": 640.0, "y": 610.0, "pose": "idle", "facing": 1}
+    p = min(1.0, max(0.0, progress))
+    if p <= float(keyframes[0]["t"]):
+        return dict(keyframes[0])
+    if p >= float(keyframes[-1]["t"]):
+        return dict(keyframes[-1])
+    for left, right in zip(keyframes, keyframes[1:]):
+        a, b = float(left["t"]), float(right["t"])
+        if a <= p <= b:
+            span = max(0.000001, b - a)
+            u = (p - a) / span
+            u = u * u * (3.0 - 2.0 * u)  # smoothstep
+            result = dict(left)
+            result["x"] = float(left.get("x", 640)) + (float(right.get("x", 640)) - float(left.get("x", 640))) * u
+            result["y"] = float(left.get("y", 610)) + (float(right.get("y", 610)) - float(left.get("y", 610))) * u
+            if u > 0.5:
+                result["pose"] = right.get("pose", result.get("pose", "idle"))
+                result["facing"] = right.get("facing", result.get("facing", 1))
+            return result
+    return dict(keyframes[-1])
+
+
+def gradient_background(kind: str) -> Image.Image:
+    palettes = {
+        "corridor": ((18, 27, 42), (5, 8, 15)),
+        "stairwell": ((24, 34, 48), (6, 10, 18)),
+        "rainroom": ((20, 34, 48), (5, 10, 18)),
+        "street": ((26, 34, 47), (5, 8, 14)),
+    }
+    top, bottom = palettes.get(kind, palettes["corridor"])
+    image = Image.new("RGB", (W, H))
+    draw = ImageDraw.Draw(image)
+    for y in range(H):
+        p = y / (H - 1)
+        color = tuple(int(top[i] * (1 - p) + bottom[i] * p) for i in range(3))
+        draw.line((0, y, W, y), fill=color)
+    # Architectural planes and a deliberately simple vanishing-point composition.
+    draw.polygon([(0, 105), (W, 105), (W, 525), (0, 525)], fill=(17, 25, 38))
+    draw.polygon([(0, 525), (W, 525), (W, H), (0, H)], fill=(8, 13, 22))
+    draw.line((0, 525, W, 525), fill=(53, 67, 83), width=3)
+    vp = (640, 260)
+    for x in range(-500, 1801, 210):
+        draw.line((vp[0], vp[1], x, H), fill=(28, 39, 53), width=2)
+    for y in (565, 610, 675):
+        draw.line((0, y, W, y), fill=(21, 31, 44), width=2)
+    # Repeating ceiling lights and wall seams.
+    for x in (165, 445, 725, 1005):
+        draw.polygon([(x - 58, 112), (x + 58, 112), (x + 34, 123), (x - 34, 123)], fill=(73, 91, 111))
+        draw.line((x - 40, 117, x + 40, 117), fill=(154, 170, 185), width=2)
+    for x in (85, 335, 585, 835, 1085, 1250):
+        draw.line((x, 125, x, 520), fill=(25, 36, 50), width=2)
+    if kind == "rainroom":
+        draw.rectangle((920, 150, 1190, 510), fill=(7, 15, 27), outline=(87, 113, 133), width=8)
+        draw.line((1055, 155, 1055, 505), fill=(69, 91, 111), width=4)
+        draw.line((925, 330, 1185, 330), fill=(69, 91, 111), width=4)
+    elif kind == "stairwell":
+        draw.polygon([(820, 525), (1170, 245), (1170, 525)], fill=(10, 16, 26))
+        for i in range(7):
+            y = 280 + i * 34
+            x = 850 + i * 42
+            draw.line((x, y, 1170, y), fill=(50, 63, 80), width=5)
+    elif kind == "street":
+        draw.rectangle((70, 160, 300, 500), fill=(10, 17, 28), outline=(40, 56, 73), width=5)
+        draw.rectangle((340, 195, 570, 500), fill=(9, 15, 25), outline=(40, 56, 73), width=5)
+        draw.rectangle((980, 115, 1210, 500), fill=(9, 15, 25), outline=(40, 56, 73), width=5)
+    return image
+
+
+def draw_door(draw: ImageDraw.ImageDraw, opening: float = 0.0, glow: float = 0.0) -> None:
+    x0, y0, x1, y1 = 890, 188, 1090, 526
+    draw.rectangle((x0 - 13, y0 - 13, x1 + 13, y1 + 8), fill=(5, 9, 16), outline=(82, 98, 116), width=7)
+    # Door leaf pivots from its right edge; opening reveals a narrow strip of light.
+    reveal = int(154 * min(1.0, max(0.0, opening)))
+    draw.rectangle((x0 + 8, y0 + 8, x1 - 8, y1), fill=(4, 7, 12))
+    if reveal:
+        draw.rectangle((x1 - reveal, y0 + 8, x1 - 7, y1 - 2), fill=(154, 178, 194))
+        draw.rectangle((x1 - reveal + 3, y0 + 12, x1 - 10, y1 - 8), fill=(218, 229, 237))
+    if glow > 0:
+        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ld = ImageDraw.Draw(layer)
+        alpha = int(95 * min(1, glow))
+        ld.polygon([(x1 - 175, y0 + 8), (x1 + 20, y0 + 8), (x1 + 220, H), (x1 - 310, H)], fill=(129, 190, 215, alpha))
+        overlay = Image.alpha_composite(Image.new("RGBA", (W, H)), layer)
+        # Caller composites separately; drawing a subtle source glow is enough here.
+        draw.rectangle((x1 - 9, y0 + 5, x1 + 1, y1), fill=(180, 211, 225))
+
+
+def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facing: int, t: float, scale: float = 1.0) -> None:
+    d = ImageDraw.Draw(image)
+    phase = t * (11.5 if pose == "run" else 7.0)
+    stride = math.sin(phase)
+    f = 1 if facing >= 0 else -1
+    s = scale
+    def pt(px: float, py: float) -> tuple[int, int]:
+        return (int(x + px * s * f), int(foot_y + py * s))
+    color = (222, 231, 239)
+    shadow = (3, 6, 11)
+    d.ellipse((x - 32*s, foot_y - 11*s, x + 32*s, foot_y + 5*s), fill=(2, 5, 9))
+    # Local skeleton, with small procedural motion layered over authored poses.
+    head_y = -145
+    shoulder_y = -104
+    hip_y = -52
+    if pose == "crouch":
+        head_y, shoulder_y, hip_y = -112, -79, -38
+    # torso and neck
+    d.line((pt(0, head_y + 31), pt(0, shoulder_y)), fill=color, width=max(5, int(9*s)))
+    d.line((pt(0, shoulder_y), pt(0, hip_y)), fill=color, width=max(7, int(12*s)))
+    # Head: clean readable silhouette with two tiny facial marks.
+    hx, hy = pt(0, head_y)
+    r = 29*s
+    d.ellipse((hx-r, hy-r, hx+r, hy+r), fill=color)
+    eye_x = hx + f * 10*s
+    d.ellipse((eye_x-2*s, hy-5*s, eye_x+2*s, hy-1*s), fill=(26, 36, 48))
+    # Neck/shoulder joints
+    d.ellipse((pt(-24, shoulder_y-5)[0]-5*s, pt(-24, shoulder_y-5)[1]-5*s,
+               pt(-24, shoulder_y-5)[0]+5*s, pt(-24, shoulder_y-5)[1]+5*s), fill=color)
+    d.ellipse((pt(24, shoulder_y-5)[0]-5*s, pt(24, shoulder_y-5)[1]-5*s,
+               pt(24, shoulder_y-5)[0]+5*s, pt(24, shoulder_y-5)[1]+5*s), fill=color)
+
+    if pose in ("walk", "run"):
+        amp = 33 if pose == "run" else 23
+        lift = 17 if pose == "run" else 8
+        for side in (-1, 1):
+            swing = stride * amp * side
+            knee = (side * 12 + swing * 0.52, -26 - abs(stride) * 4)
+            ankle = (side * 13 + swing, -max(0, lift * max(0, stride * side)))
+            d.line((pt(side*10, hip_y), pt(*knee), pt(*ankle)), fill=color, width=max(6, int(9*s)), joint="curve")
+        arm_amp = 24 if pose == "run" else 16
+        for side in (-1, 1):
+            elbow = (side * 39 - stride * arm_amp * side, -70)
+            hand = (side * 47 - stride * arm_amp * 1.5 * side, -43)
+            d.line((pt(side*22, shoulder_y), pt(*elbow), pt(*hand)), fill=color, width=max(5, int(8*s)), joint="curve")
+    elif pose == "reach":
+        d.line((pt(-22, shoulder_y), pt(-42, -72), pt(-48, -35)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(53, -112), pt(95, -133)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-17, -22), pt(-18, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(10, hip_y), pt(18, -22), pt(21, 0)), fill=color, width=max(6, int(9*s)))
+    elif pose == "fear":
+        for side in (-1, 1):
+            d.line((pt(side*22, shoulder_y), pt(side*45, -135), pt(side*30, -176)), fill=color, width=max(5, int(8*s)), joint="curve")
+            d.line((pt(side*10, hip_y), pt(side*16, -24), pt(side*18, 0)), fill=color, width=max(6, int(9*s)))
+    elif pose == "crouch":
+        for side in (-1, 1):
+            d.line((pt(side*20, shoulder_y), pt(side*43, -52), pt(side*54, -78)), fill=color, width=max(5, int(8*s)), joint="curve")
+            d.line((pt(side*10, hip_y), pt(side*35, -8), pt(side*24, 0)), fill=color, width=max(6, int(9*s)))
+    else:
+        d.line((pt(-22, shoulder_y), pt(-40, -75), pt(-44, -42)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(40, -75), pt(44, -42)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-16, -24), pt(-18, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(10, hip_y), pt(16, -24), pt(18, 0)), fill=color, width=max(6, int(9*s)))
+
+
+def draw_shadow(image: Image.Image, x: int, foot_y: int, t: float, opacity: float = 1.0) -> None:
+    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    sway = math.sin(t * 2.2) * 5
+    d.ellipse((x-26+sway, foot_y-184, x+26+sway, foot_y-132), fill=(0, 0, 0, int(225*opacity)))
+    d.line((x+sway, foot_y-134, x+sway, foot_y-48), fill=(0, 0, 0, int(235*opacity)), width=27)
+    d.line((x+sway, foot_y-105, x-35+sway, foot_y-65), fill=(0, 0, 0, int(220*opacity)), width=15)
+    d.line((x+sway, foot_y-105, x+42+sway, foot_y-86), fill=(0, 0, 0, int(220*opacity)), width=15)
+    d.line((x+sway, foot_y-48, x-22+sway, foot_y), fill=(0, 0, 0, int(230*opacity)), width=18)
+    d.line((x+sway, foot_y-48, x+24+sway, foot_y), fill=(0, 0, 0, int(230*opacity)), width=18)
+    image.alpha_composite(layer)
+
+
+def draw_caption(image: Image.Image, text: str, subtext: str = "") -> None:
+    if not text:
+        return
+    d = ImageDraw.Draw(image)
+    f = font(30, True)
+    sf = font(17, False)
+    # restrained editorial caption, not a full-screen template card
+    d.rounded_rectangle((68, 54, 760, 139 if subtext else 112), radius=10, fill=(4, 8, 15, 185))
+    d.text((92, 69), text, font=f, fill=(237, 242, 247), stroke_width=1, stroke_fill=(3, 5, 9))
+    if subtext:
+        d.text((94, 111), subtext, font=sf, fill=(151, 190, 205))
+
+
+def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, global_t: float, bg_cache: dict[str, Image.Image]) -> Image.Image:
+    kind = scene.get("environment", "corridor")
+    image = bg_cache.setdefault(kind, gradient_background(kind)).copy()
+    # A soft moving pool of light and a subtle practical flicker.
+    d = ImageDraw.Draw(image)
+    flicker = 0.92 + 0.08 * math.sin(global_t * 13.0)
+    d.polygon([(640, 130), (930, 130), (1120, 530), (430, 530)], fill=(40, 55, 72))
+    d.line((640, 130, 430, 530), fill=(49, 65, 82), width=2)
+    d.line((930, 130, 1120, 530), fill=(49, 65, 82), width=2)
+    opening = float(scene.get("door_open", 0.0))
+    glow = float(scene.get("door_glow", 0.0)) * flicker
+    draw_door(d, opening, glow)
+    # Environmental motion: drifting dust or rainfall.
+    rng = random.Random(int(global_t * 24) + 811)
+    for i in range(28):
+        px = (i * 97 + int(global_t * (8 + i % 5))) % W
+        py = (i * 53 + int(global_t * (3 + i % 4))) % 570
+        d.ellipse((px, py, px+2, py+2), fill=(79, 102, 126))
+    if kind == "rainroom":
+        for i in range(75):
+            px = (i * 41 + int(global_t * 95)) % W
+            py = (i * 67 + int(global_t * 220)) % H
+            d.line((px, py, px-5, py+15), fill=(86, 126, 154), width=1)
+    if scene.get("shadow"):
+        sx = int(scene.get("shadow_x", 990))
+        opacity = float(scene.get("shadow_opacity", 1.0)) * min(1.0, max(0.0, local_t * 2))
+        draw_shadow(image, sx, 526, global_t, opacity)
+    actor = scene.get("actor", {})
+    if actor:
+        pose_data = sample_keyframes(actor.get("keyframes", []), local_t)
+        draw_character(
+            image, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
+            str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
+            global_t, float(actor.get("scale", 1.0)),
+        )
+    caption = scene.get("caption", "")
+    sub = scene.get("subcaption", "")
+    # Fade captions in and out at shot boundaries.
+    fade = min(1.0, local_t * 5.0, (1.0 - local_t) * 5.0)
+    if caption and fade > 0:
+        draw_caption(image, caption, sub)
+    # Letterbox and slight push-in camera movement.
+    d = ImageDraw.Draw(image)
+    d.rectangle((0, 0, W, 22), fill=(0, 0, 0))
+    d.rectangle((0, H-22, W, H), fill=(0, 0, 0))
+    camera = scene.get("camera", {})
+    zoom0, zoom1 = float(camera.get("zoom_start", 1.0)), float(camera.get("zoom_end", 1.035))
+    zoom = zoom0 + (zoom1 - zoom0) * local_t
+    pan = float(camera.get("pan", 0.0))
+    if zoom > 1.0001 or abs(pan) > 0.01:
+        nw, nh = int(W * zoom), int(H * zoom)
+        enlarged = image.resize((nw, nh), Image.Resampling.LANCZOS)
+        cx = (nw - W) // 2 + int(pan * (nw - W) / 2)
+        cy = (nh - H) // 2
+        image = enlarged.crop((max(0, cx), max(0, cy), max(0, cx)+W, max(0, cy)+H))
+    return image.convert("RGB")
+
+
+def write_ambience(path: Path, duration: float, sample_rate: int = 22050) -> None:
+    total = int(duration * sample_rate)
+    with wave.open(str(path), "wb") as wav:
+        wav.setnchannels(2)
+        wav.setsampwidth(2)
+        wav.setframerate(sample_rate)
+        chunk = bytearray()
+        for n in range(total):
+            t = n / sample_rate
+            fade = min(1.0, t * 1.5, max(0.0, (duration - t) * 2.0))
+            drone = 0.11 * math.sin(2 * math.pi * 48 * t) + 0.035 * math.sin(2 * math.pi * 73 * t)
+            pulse_phase = t % 1.08
+            pulse = 0.0
+            if pulse_phase < 0.18:
+                pulse = math.sin(math.pi * pulse_phase / 0.18) ** 3 * (1 - pulse_phase / 0.18)
+            thump = 0.15 * pulse * math.sin(2 * math.pi * (58 - 18 * pulse_phase) * t)
+            shimmer = 0.018 * math.sin(2 * math.pi * (220 + 18 * math.sin(t * 0.7)) * t)
+            value = max(-0.85, min(0.85, (drone + thump + shimmer) * fade))
+            sample = int(value * 32767)
+            chunk.extend((sample.to_bytes(2, "little", signed=True)) * 2)
+            if len(chunk) >= 65536:
+                wav.writeframesraw(chunk)
+                chunk.clear()
+        if chunk:
+            wav.writeframesraw(chunk)
+
+
+def render(script_path: Path, output: Path) -> Path:
+    script = json.loads(script_path.read_text(encoding="utf-8"))
+    validate_script(script)
+    width, height = script.get("size", [W, H])
+    if [int(width), int(height)] != [W, H]:
+        raise ValueError(f"This build currently renders at {W}x{H}; script size must match.")
+    fps = int(script.get("fps", FPS))
+    duration = float(script["duration"])
+    output.parent.mkdir(parents=True, exist_ok=True)
+    poster_path = output.with_name(output.stem + "-poster.png")
+    with tempfile.TemporaryDirectory(prefix="stick-animate-") as temp_dir:
+        audio_path = Path(temp_dir) / "ambience.wav"
+        write_ambience(audio_path, duration)
+        cmd = [
+            "ffmpeg", "-y", "-loglevel", "error",
+            "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(fps), "-i", "-",
+            "-i", str(audio_path), "-map", "0:v:0", "-map", "1:a:0",
+            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+            "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k",
+            "-shortest", "-movflags", "+faststart", str(output),
+        ]
+        process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+        bg_cache: dict[str, Image.Image] = {}
+        total_frames = int(round(duration * fps))
+        try:
+            assert process.stdin is not None
+            for frame_no in range(total_frames):
+                t = frame_no / fps
+                scene = next((s for s in script["scenes"] if float(s["start"]) <= t < float(s["end"])), script["scenes"][-1])
+                span = float(scene["end"]) - float(scene["start"])
+                local_t = min(1.0, max(0.0, (t - float(scene["start"])) / span))
+                frame = make_frame(script, scene, local_t, t, bg_cache)
+                if frame_no == total_frames // 2:
+                    frame.save(poster_path, quality=95)
+                process.stdin.write(frame.tobytes())
+            process.stdin.close()
+            error = process.stderr.read() if process.stderr else b""
+            code = process.wait()
+            if code != 0:
+                raise RuntimeError("FFmpeg render failed: " + error.decode("utf-8", "replace")[-4000:])
+        except (BrokenPipeError, OSError):
+            if process.stdin and not process.stdin.closed:
+                process.stdin.close()
+            error = process.stderr.read() if process.stderr else b""
+            process.wait()
+            raise RuntimeError("Video encoder stopped unexpectedly: " + error.decode("utf-8", "replace")[-4000:])
+    if not output.exists() or output.stat().st_size < 100_000:
+        raise RuntimeError("MP4 was not created or is unexpectedly small")
+    print(f"Rendered {output} ({output.stat().st_size:,} bytes)")
+    print(f"Poster: {poster_path}")
+    return poster_path
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Render a script-driven 2D animated short.")
+    parser.add_argument("--script", type=Path, default=Path("demo/mystery_hallway.json"))
+    parser.add_argument("--output", type=Path, default=Path("output/mystery-hallway.mp4"))
+    parser.add_argument("--validate-only", action="store_true")
+    args = parser.parse_args()
+    data = json.loads(args.script.read_text(encoding="utf-8"))
+    validate_script(data)
+    if args.validate_only:
+        print(f"Script valid: {len(data['scenes'])} scenes, {data['duration']} seconds.")
+    else:
+        render(args.script, args.output)
+
+
+if __name__ == "__main__":
+    main()
