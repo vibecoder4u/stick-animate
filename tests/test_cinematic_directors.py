@@ -7,6 +7,10 @@ from transition_director import apply_transition
 class CinematicDirectorTests(unittest.TestCase):
     def test_camera_keyframes_ease_zoom_and_focus(self):
         image = Image.new("RGB", (1280, 720), "navy")
+        from PIL import ImageDraw
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((120, 100, 380, 500), fill="orange")
+        draw.rectangle((850, 180, 1120, 600), fill="cyan")
         scene = {"camera": {"keyframes": [
             {"t": 0, "focus_x": 640, "focus_y": 360, "zoom": 1.0},
             {"t": 1, "focus_x": 800, "focus_y": 330, "zoom": 1.2}
