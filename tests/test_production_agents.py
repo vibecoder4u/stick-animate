@@ -27,7 +27,7 @@ class ProductionAgentTests(unittest.TestCase):
             _validate_plan(plan)
 
     def test_ai_plan_must_cover_each_script_paragraph(self):
-        story = "Alex meets Milo.\\n\\nThey rescue Tia.\\n\\nBruno helps move the tree."
+        story = "Alex meets Milo.\n\nThey rescue Tia.\n\nBruno helps move the tree."
         short_plan = {"scenes": [{"start": 0, "end": 2}, {"start": 2, "end": 4}]}
         with self.assertRaisesRegex(ValueError, "Story coverage incomplete"):
             _validate_plan(short_plan, story=story)
