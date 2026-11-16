@@ -29,7 +29,7 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
     """Draw an animal rig or a simple story prop. Humans use the fallback rig."""
     species = str(actor.get("species", "human")).lower().replace("-", "_")
     supported = {"monkey", "turtle", "bear", "dog", "cat", "bird", "fish",
-                 "dinosaur", "trex", "t_rex", "fallen_tree", "apple_cluster", "apple"}
+                 "dinosaur", "trex", "t_rex", "elephant", "deer", "fox", "rabbit", "fallen_tree", "apple_cluster", "apple"}
     if species in {"human", "boy", "girl", "man", "woman", "old_man"} or species not in supported:
         return False
 
@@ -75,7 +75,7 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
         return True
 
     defaults = {"monkey": (151,96,59), "turtle": (104,151,91), "bear": (132,91,63),
-                "dog": (174,133,94), "cat": (174,133,94)}
+                "dog": (174,133,94), "cat": (174,133,94), "elephant": (145,151,158), "deer": (166,119,76), "fox": (205,105,43), "rabbit": (222,216,205)}
     coat = _rgb(actor.get("body_rgb"), defaults.get(species, (190,203,211)))
     dark = _rgb(actor.get("marking_rgb"), (58,49,43))
     eye = (18,24,30)
@@ -83,7 +83,7 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
     # Each species has a deliberately different gait frequency and weight.
     rates = {"monkey": 11.5, "turtle": 3.1, "bear": 5.0, "dog": 8.5,
              "cat": 9.5, "bird": 7.0, "fish": 8.0, "dinosaur": 6.0,
-             "trex": 6.0}
+             "trex": 6.0, "elephant": 3.2, "deer": 8.0, "fox": 8.8, "rabbit": 10.0}
     gait_active = action in {"walk", "run", "jump", "fly", "swim"}
     phase = t * rates.get(species, 7.0) * (1.35 if action == "run" else 1.0)
     stride = math.sin(phase)
@@ -174,6 +174,65 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
         d.polygon([p(-55,-55),p(-91,-84+tail),p(-88,-25+tail)],fill=dark)
         d.polygon([p(-4,-83),p(20,-111),p(30,-77)],fill=dark)
         ellipse(43,-67,5,6,eye)
+    elif species == "elephant":
+        bob = math.sin(phase*2) * (2.5 if gait_active else 0.8)
+        ellipse(-2,-65+bob,70,48,coat,dark,4)
+        ellipse(43,-112+bob,43,39,coat,dark,3)
+        ellipse(12,-145+bob,24,30,coat,dark,3)
+        ellipse(67,-125+bob,17,25,coat,dark,3)
+        # Long curved trunk and two visible tusks.
+        _line(d,[p(75,-103+bob),p(91,-78+bob),p(88,-49+bob+lean),p(72,-42+bob+lean)],coat,max(12,int(23*scale)))
+        for side in (-1,1):
+            _line(d,[p(60+side*7,-91+bob),p(77+side*8,-85+bob)],(238,224,190),max(3,int(6*scale)))
+        ellipse(55,-124+bob,4,5,eye)
+        for side,offset in ((-1,0),(1,math.pi)):
+            swing=math.sin(phase+offset)*10 if gait_active else 0
+            _line(d,[p(-35+side*55,-40+bob),p(-35+side*55+swing,-18),p(-35+side*55+swing,-1)],coat,max(10,int(19*scale)))
+    elif species == "deer":
+        bob=math.sin(phase*2)*(4 if gait_active else 1)
+        ellipse(-5,-54+bob,53,29,coat,dark,3)
+        ellipse(42,-99+bob,25,34,coat,dark,3)
+        _line(d,[p(52,-115+bob),p(65,-139+bob),p(72,-154+bob)],coat,max(7,int(10*scale)))
+        _line(d,[p(64,-137+bob),p(50,-151+bob)],coat,max(4,int(6*scale)))
+        _line(d,[p(69,-147+bob),p(84,-158+bob)],coat,max(4,int(6*scale)))
+        d.polygon([p(29,-119+bob),p(18,-137+bob),p(40,-126+bob)],fill=dark)
+        ellipse(56,-108+bob,3,4,eye)
+        for side,offset in ((-1,0),(1,math.pi)):
+            swing=math.sin(phase+offset)*22 if gait_active else 0
+            hip=-32 if side<0 else 27
+            _line(d,[p(hip,-38+bob),p(hip+swing*.5,-18),p(hip+swing,-1)],coat,max(6,int(11*scale)))
+        for k in range(5):
+            ellipse(-35+k*12,-60+bob,2,3,(239,224,195))
+    elif species == "fox":
+        bob=math.sin(phase*2)*(3 if gait_active else 1)
+        ellipse(-4,-50+bob,60,28,coat,dark,3)
+        ellipse(43,-86+bob,29,27,coat,dark,3)
+        d.polygon([p(25,-103+bob),p(22,-139+bob),p(46,-111+bob)],fill=coat,outline=dark)
+        d.polygon([p(52,-107+bob),p(69,-137+bob),p(69,-98+bob)],fill=coat,outline=dark)
+        d.polygon([p(61,-82+bob),p(91,-72+bob),p(62,-64+bob)],fill=(224,190,151))
+        ellipse(52,-91+bob,3,4,eye)
+        tail=math.sin(t*3.5)*7
+        _line(d,[p(-48,-52+bob),p(-83,-45+tail),p(-112,-61+tail)],coat,max(15,int(25*scale)))
+        ellipse(-111,-61+tail,13,10,(239,226,205),dark,2)
+        for side,offset in ((-1,0),(1,math.pi)):
+            swing=math.sin(phase+offset)*19 if gait_active else 0
+            hip=-30 if side<0 else 27
+            _line(d,[p(hip,-34+bob),p(hip+swing*.5,-17),p(hip+swing,-1)],coat,max(6,int(11*scale)))
+    elif species == "rabbit":
+        bob=math.sin(phase*2)*(5 if gait_active else 1)
+        ellipse(-2,-45+bob,43,28,coat,dark,3)
+        ellipse(35,-78+bob,25,24,coat,dark,3)
+        # Tall ears make the silhouette immediately readable.
+        for dx,lean_ear in ((23,-4),(43,5)):
+            _line(d,[p(dx,-94+bob),p(dx+lean_ear,-132+bob),p(dx+lean_ear+2,-158+bob)],coat,max(9,int(15*scale)))
+            _line(d,[p(dx,-99+bob),p(dx+lean_ear,-132+bob),p(dx+lean_ear+2,-151+bob)],(193,145,145),max(3,int(6*scale)))
+        ellipse(47,-82+bob,3,4,eye)
+        ellipse(60,-70+bob,5,4,(238,190,184))
+        for side,offset in ((-1,0),(1,math.pi)):
+            swing=math.sin(phase+offset)*24 if gait_active else 0
+            hip=-24 if side<0 else 23
+            _line(d,[p(hip,-28+bob),p(hip+swing*.5,-14),p(hip+swing,-1)],coat,max(7,int(12*scale)))
+        ellipse(-38,-40+bob,10,10,(245,241,231),dark,2)
     else:  # dinosaur / T-rex
         tail=math.sin(t*2.5)*10
         ellipse(0,-75,55,42,coat,dark,4); ellipse(43,-124,36,27,coat,dark,3)
@@ -193,4 +252,4 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
 
 
 def available_species() -> tuple[str, ...]:
-    return ("human", "monkey", "turtle", "bear", "dog", "cat", "bird", "fish", "dinosaur")
+    return ("human", "monkey", "turtle", "bear", "dog", "cat", "bird", "fish", "dinosaur", "elephant", "deer", "fox", "rabbit")
