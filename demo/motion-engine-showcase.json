@@ -1,0 +1,134 @@
+{
+  "title": "Motion Engine Showcase — Diagonal Approach and Turn",
+  "duration": 8,
+  "fps": 24,
+  "size": [
+    1280,
+    720
+  ],
+  "scenes": [
+    {
+      "start": 0,
+      "end": 8,
+      "environment": "forest",
+      "caption": "A new motion test",
+      "subcaption": "Diagonal travel • depth staging • body turns",
+      "actors": [
+        {
+          "id": "human-prototype",
+          "species": "human",
+          "scale": 1.05,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            90,
+            180,
+            205
+          ],
+          "path_points": [
+            {
+              "t": 0,
+              "x": 230,
+              "y": 625,
+              "depth": -0.35
+            },
+            {
+              "t": 0.42,
+              "x": 590,
+              "y": 540,
+              "depth": 0.25
+            },
+            {
+              "t": 1,
+              "x": 900,
+              "y": 620,
+              "depth": 0.75
+            }
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "pose": "walk",
+              "facing": "right",
+              "body_angle": -8
+            },
+            {
+              "t": 0.35,
+              "pose": "run",
+              "facing": "right",
+              "body_angle": 8
+            },
+            {
+              "t": 0.62,
+              "pose": "crouch",
+              "facing": "right",
+              "body_angle": -14
+            },
+            {
+              "t": 0.82,
+              "pose": "look_back",
+              "facing": "left",
+              "body_angle": 12
+            },
+            {
+              "t": 1,
+              "pose": "idle",
+              "facing": "left",
+              "body_angle": 0
+            }
+          ]
+        },
+        {
+          "id": "dog-prototype",
+          "species": "dog",
+          "scale": 0.9,
+          "body_rgb": [
+            176,
+            132,
+            88
+          ],
+          "path_points": [
+            {
+              "t": 0,
+              "x": 1050,
+              "y": 630,
+              "depth": 0.7
+            },
+            {
+              "t": 0.5,
+              "x": 820,
+              "y": 570,
+              "depth": 0.2
+            },
+            {
+              "t": 1,
+              "x": 620,
+              "y": 625,
+              "depth": -0.2
+            }
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "pose": "run",
+              "facing": "left",
+              "action_progress": 0
+            },
+            {
+              "t": 0.5,
+              "pose": "walk",
+              "facing": "left",
+              "action_progress": 0.5
+            },
+            {
+              "t": 1,
+              "pose": "idle",
+              "facing": "right",
+              "action_progress": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
