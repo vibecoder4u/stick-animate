@@ -1,5 +1,6 @@
 from __future__ import annotations
 """Story-led production planner. Auto timing is the default."""
+import json
 import math
 import re
 from typing import Any
@@ -147,6 +148,8 @@ def design_production(story: str, duration: float | None = None, title: str = "U
             "pipeline": "local-fallback-no-api", "duration_policy": duration_mode,
             "natural_duration_seconds": plan["duration"]})
         return plan
+    capabilities = capability_profile()
+    capability_context = json.dumps(capabilities, sort_keys=True)
     system = (
         "You are the master preproduction brain of a professional 2D animation studio. "
         "In ONE response produce a complete renderer-ready JSON scene plan for this exact story. "
