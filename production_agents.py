@@ -64,7 +64,7 @@ def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int
                 if isinstance(manifest, dict) and manifest.get("species"):
                     rendered_species.add(str(manifest["species"]).lower().replace("-", "_"))
         for species, aliases in species_aliases.items():
-            if any(re.search(r"(?<!\\w)" + re.escape(alias) + r"(?!\\w)", story.lower()) for alias in aliases):
+            if any(re.search(r"(?<!\w)" + re.escape(alias) + r"(?!\w)", story.lower()) for alias in aliases):
                 if species not in rendered_species:
                     raise ValueError(f"Story coverage incomplete: no actor manifest for species {species}")
         for match in re.finditer(r"\b([A-Z][a-z]+)\s+(?:the\s+)?(Elephant|Deer|Fox|Rabbit|Monkey|Turtle|Bear|Dog|Cat|Bird|Fish|Dinosaur)\b", story):
