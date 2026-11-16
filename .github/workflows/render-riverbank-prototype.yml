@@ -47,13 +47,13 @@ jobs:
 
       - name: Render new Riverbank Rescue test (no AI API required)
         run: |
-          python stick_animate.py --script demo/riverbank-rescue.json --output output/riverbank-rescue.mp4
+          STICK_ANIMATE_OFFLINE_AUDIO=1 python stick_animate.py --script demo/riverbank-rescue.json --output output/riverbank-rescue.mp4
           test -s output/riverbank-rescue.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/riverbank-rescue.mp4
 
       - name: Render nine-character ensemble test
         run: |
-          python stick_animate.py --script demo/forest-friends-ensemble.json --output output/forest-friends-ensemble.mp4
+          STICK_ANIMATE_OFFLINE_AUDIO=1 python stick_animate.py --script demo/forest-friends-ensemble.json --output output/forest-friends-ensemble.mp4
           test -s output/forest-friends-ensemble.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/forest-friends-ensemble.mp4
 
