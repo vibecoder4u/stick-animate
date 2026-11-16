@@ -3,7 +3,7 @@ name: Render Riverbank Rescue prototype
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, ai-asset-generation]
     paths:
       - "stick_animate.py"
       - "production_agents.py"
