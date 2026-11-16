@@ -29,7 +29,7 @@ def evaluate_motion(pose: dict[str, Any], actor: dict[str, Any], global_t: float
                 break
     depth = max(-1.0, min(1.0, float(out.get("depth", 0.0))))
     out["depth"] = depth
-    out["depth_scale"] = max(0.62, min(1.42, 1.0 + depth*0.30))
+    out["depth_scale"] = max(0.62, min(1.42, 1.0 + depth*0.42))
     out["body_angle"] = float(out.get("body_angle", 0.0))
     out["head_angle"] = float(out.get("head_angle", 0.0))
     if "gait_phase" in out:
@@ -44,8 +44,8 @@ def validate_path_points(points: Any) -> None:
     if not isinstance(points, list) or len(points) < 2:
         raise ValueError("path_points must contain at least two points")
     times = [float(p["t"]) for p in points]
-    if times != sorted(times) or times[0] < 0 or times[-1] > 1:
-        raise ValueError("path_points times must be ordered within 0..1")
+    if any(b <= a for a, b in zip(times, times[1:])) or times[0] < 0 or times[-1] > 1:
+        raise ValueError("path_points times must be strictly increasing within 0..1")
     for point in points:
         if "x" not in point or "y" not in point:
             raise ValueError("Each path point requires x and y")
