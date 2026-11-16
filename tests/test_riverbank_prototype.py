@@ -5,6 +5,7 @@ from pathlib import Path
 from PIL import Image, ImageChops
 
 from character_rigs import draw_species_character
+from stick_animate import sample_keyframes, validate_script
 
 
 class RiverbankPrototypeTests(unittest.TestCase):
