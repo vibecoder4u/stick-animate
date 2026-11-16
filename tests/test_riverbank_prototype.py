@@ -45,5 +45,35 @@ class RiverbankPrototypeTests(unittest.TestCase):
             ).getbbox())
 
 
+    def test_timeline_gap_is_rejected_instead_of_reusing_last_scene(self):
+        bad = {
+            "title": "gap", "duration": 2, "fps": 24,
+            "scenes": [
+                {"start": 0, "end": 0.8},
+                {"start": 1.0, "end": 2.0},
+            ],
+        }
+        with self.assertRaisesRegex(ValueError, "Timeline gap"):
+            validate_script(bad)
+
+    def test_all_cast_keyframes_are_validated_and_numeric_controls_interpolate(self):
+        bad = {
+            "title": "bad cast", "duration": 1, "fps": 24,
+            "scenes": [{"start": 0, "end": 1, "actors": [
+                {"species": "bear", "keyframes": [
+                    {"t": 0, "x": 0}, {"t": 0.8, "x": 10}, {"t": 0.4, "x": 20}
+                ]}
+            ]}],
+        }
+        with self.assertRaisesRegex(ValueError, "Invalid keyframes"):
+            validate_script(bad)
+        sampled = sample_keyframes([
+            {"t": 0, "x": 0, "action_progress": 0.0, "pose": "walk"},
+            {"t": 1, "x": 100, "action_progress": 1.0, "pose": "push"},
+        ], 0.25)
+        self.assertGreater(sampled["x"], 0)
+        self.assertGreater(sampled["action_progress"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()
