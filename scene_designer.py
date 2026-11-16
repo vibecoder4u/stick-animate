@@ -10,6 +10,8 @@ import re
 from typing import Any
 
 ENVIRONMENT_RULES = [
+    ("underwater", ("underwater", "under water", "below the surface", "coral reef")),
+    ("beach", ("beach", "shore", "seaside", "ocean", "sea", "swimming", "swam", "waves")),
     ("platform", ("railway station", "train station", "platform", "last train", "train")),
     ("service_gate", ("service gate", "locked gate", "staff only", "maintenance door")),
     ("tunnel", ("tunnel", "underground", "subway tunnel")),
@@ -153,7 +155,8 @@ def design_story(story: str, duration: float | None = None, title: str = "Untitl
             "start": start, "end": end, "environment": env,
             "description": beat,
             "caption": beat.upper()[:92],
-            "camera": {"shot_type": shot, "zoom_start": z0, "zoom_end": z1, "pan": pan},
+            "camera": {"shot_type": shot, "zoom_start": z0, "zoom_end": z1, "pan": pan,
+                       "track_subject": shot in ("close_up", "medium_action", "low_angle")},
             "shot_design": {
                 "shot_id": f"shot-{i+1:03d}", "shot_type": shot,
                 "location": env, "visual_focus": focus, "primary_action": pose,
