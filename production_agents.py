@@ -45,7 +45,29 @@ def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int
         for triggers, evidence in event_groups:
             if any(term in story.lower() for term in triggers) and not any(term in lowered for term in evidence):
                 raise ValueError(f"Story coverage incomplete: scene plan omitted this event: {triggers[0]}")
-        for match in re.finditer(r"\b([A-Z][a-z]+)\s+the\s+(Monkey|Turtle|Bear|Dog|Cat|Bird|Dinosaur)\b", story):
+        # Ensure every script species is represented by a drawable actor manifest.
+        species_aliases = {
+            "elephant": ("elephant",), "deer": ("deer", "fawn"),
+            "fox": ("fox",), "rabbit": ("rabbit", "bunny", "hare"),
+            "monkey": ("monkey", "ape", "chimpanzee", "gorilla"),
+            "turtle": ("turtle", "tortoise"), "bear": ("bear", "grizzly"),
+            "dog": ("dog", "puppy", "hound", "wolf"), "cat": ("cat", "kitten"),
+            "bird": ("bird", "eagle", "owl", "crow", "parrot", "sparrow"),
+            "fish": ("fish", "shark", "whale", "dolphin"),
+            "dinosaur": ("dinosaur", "t-rex", "trex", "velociraptor"),
+        }
+        rendered_species = set()
+        for scene in plan["scenes"]:
+            manifests = list(scene.get("actors") or [])
+            if scene.get("actor"): manifests.append(scene["actor"])
+            for manifest in manifests:
+                if isinstance(manifest, dict) and manifest.get("species"):
+                    rendered_species.add(str(manifest["species"]).lower().replace("-", "_"))
+        for species, aliases in species_aliases.items():
+            if any(re.search(r"(?<!\w)" + re.escape(alias) + r"(?!\w)", story.lower()) for alias in aliases):
+                if species not in rendered_species:
+                    raise ValueError(f"Story coverage incomplete: no actor manifest for species {species}")
+        for match in re.finditer(r"\b([A-Z][a-z]+)\s+(?:the\s+)?(Elephant|Deer|Fox|Rabbit|Monkey|Turtle|Bear|Dog|Cat|Bird|Fish|Dinosaur)\b", story):
             name, species = match.group(1).lower(), match.group(2).lower()
             if name not in lowered and species not in lowered:
                 raise ValueError(f"Story coverage incomplete: missing character {match.group(1)} the {match.group(2)}")
