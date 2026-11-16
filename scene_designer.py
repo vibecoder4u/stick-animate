@@ -35,7 +35,7 @@ def _has(text: str, term: str) -> bool:
     return bool(re.search(r"(?<!\w)" + re.escape(term.lower()) + r"(?!\w)", text.lower()))
 
 def split_beats(story: str) -> list[str]:
-    parts = re.split(r"(?<=[.!?])\s+(?=[A-Z0-9""'])", story.strip())
+    parts = re.split(r"(?<=[.!?])\s+(?=[A-Z0-9])", story.strip())
     beats = [p.strip() for p in parts if p.strip()]
     if len(beats) == 1 and len(beats[0]) > 260:
         beats = [p.strip() for p in re.split(r"[,;:]\s+", beats[0]) if p.strip()]
