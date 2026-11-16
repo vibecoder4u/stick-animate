@@ -642,31 +642,38 @@
       "caption": "A TEAMWORK TEST",
       "description": "A fallen log blocks the trail; the bear, elephant and human push while the monkey and turtle reach in to help.",
       "camera": {
-        "zoom_start": 1.02,
-        "zoom_end": 1.075,
-        "pan": -0.015
+        "zoom_start": 1.035,
+        "zoom_end": 1.085,
+        "pan": 0.01,
+        "focus_x": 640,
+        "focus_y": 585
       },
       "actors": [
         {
           "species": "fallen_tree",
           "x": 640,
-          "y": 570,
-          "length": 430,
-          "scale": 0.85,
+          "y": 600,
+          "length": 620,
+          "scale": 1,
           "keyframes": [
             {
               "t": 0,
-              "x": 640,
-              "y": 570,
-              "pose": "idle"
+              "x": 620,
+              "y": 600,
+              "angle": -3,
+              "pose": "idle",
+              "facing": 1
             },
             {
               "t": 1,
-              "x": 640,
-              "y": 570,
-              "pose": "idle"
+              "x": 690,
+              "y": 600,
+              "angle": -12,
+              "pose": "idle",
+              "facing": 1
             }
-          ]
+          ],
+          "thickness": 52
         },
         {
           "species": "human",
@@ -675,7 +682,7 @@
           "keyframes": [
             {
               "t": 0,
-              "x": 100,
+              "x": 410,
               "y": 620,
               "pose": "walk",
               "facing": 1,
@@ -683,7 +690,7 @@
             },
             {
               "t": 1,
-              "x": 100,
+              "x": 440,
               "y": 620,
               "pose": "push",
               "facing": 1,
@@ -705,7 +712,7 @@
           "keyframes": [
             {
               "t": 0,
-              "x": 235,
+              "x": 510,
               "y": 620,
               "pose": "walk",
               "facing": 1,
@@ -713,7 +720,7 @@
             },
             {
               "t": 1,
-              "x": 235,
+              "x": 550,
               "y": 620,
               "pose": "reach",
               "facing": 1,
@@ -738,7 +745,7 @@
           "keyframes": [
             {
               "t": 0,
-              "x": 370,
+              "x": 770,
               "y": 628,
               "pose": "walk",
               "facing": 1,
@@ -746,7 +753,7 @@
             },
             {
               "t": 1,
-              "x": 370,
+              "x": 750,
               "y": 628,
               "pose": "reach",
               "facing": 1,
@@ -771,7 +778,7 @@
           "keyframes": [
             {
               "t": 0,
-              "x": 505,
+              "x": 680,
               "y": 625,
               "pose": "walk",
               "facing": 1,
@@ -779,7 +786,7 @@
             },
             {
               "t": 1,
-              "x": 505,
+              "x": 650,
               "y": 625,
               "pose": "push",
               "facing": 1,
@@ -800,20 +807,20 @@
         {
           "species": "fox",
           "character_id": "ember",
-          "scale": 0.72,
+          "scale": 0.48,
           "keyframes": [
             {
               "t": 0,
-              "x": 640,
-              "y": 620,
-              "pose": "walk",
+              "x": 180,
+              "y": 525,
+              "pose": "idle",
               "facing": 1,
               "action_progress": 0
             },
             {
               "t": 1,
-              "x": 640,
-              "y": 620,
+              "x": 180,
+              "y": 525,
               "pose": "idle",
               "facing": 1,
               "action_progress": 1
@@ -833,20 +840,20 @@
         {
           "species": "rabbit",
           "character_id": "pip",
-          "scale": 0.72,
+          "scale": 0.48,
           "keyframes": [
             {
               "t": 0,
-              "x": 775,
-              "y": 620,
-              "pose": "walk",
+              "x": 320,
+              "y": 525,
+              "pose": "idle",
               "facing": 1,
               "action_progress": 0
             },
             {
               "t": 1,
-              "x": 775,
-              "y": 620,
+              "x": 320,
+              "y": 525,
               "pose": "idle",
               "facing": 1,
               "action_progress": 1
@@ -866,20 +873,20 @@
         {
           "species": "deer",
           "character_id": "fern",
-          "scale": 0.72,
+          "scale": 0.48,
           "keyframes": [
             {
               "t": 0,
-              "x": 910,
-              "y": 620,
-              "pose": "walk",
+              "x": 1050,
+              "y": 525,
+              "pose": "idle",
               "facing": 1,
               "action_progress": 0
             },
             {
               "t": 1,
-              "x": 910,
-              "y": 620,
+              "x": 1050,
+              "y": 525,
               "pose": "idle",
               "facing": 1,
               "action_progress": 1
@@ -903,7 +910,7 @@
           "keyframes": [
             {
               "t": 0,
-              "x": 1045,
+              "x": 930,
               "y": 625,
               "pose": "walk",
               "facing": 1,
@@ -911,7 +918,7 @@
             },
             {
               "t": 1,
-              "x": 1045,
+              "x": 900,
               "y": 625,
               "pose": "push",
               "facing": 1,
@@ -932,20 +939,20 @@
         {
           "species": "bird",
           "character_id": "skye",
-          "scale": 0.78,
+          "scale": 0.48,
           "keyframes": [
             {
               "t": 0,
-              "x": 1180,
-              "y": 570,
-              "pose": "walk",
+              "x": 1140,
+              "y": 485,
+              "pose": "fly",
               "facing": 1,
               "action_progress": 0
             },
             {
               "t": 1,
-              "x": 1180,
-              "y": 550,
+              "x": 1140,
+              "y": 485,
               "pose": "fly",
               "facing": 1,
               "action_progress": 1
