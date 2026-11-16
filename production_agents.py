@@ -100,7 +100,7 @@ def design_production(story: str, duration: float | None = None, title: str = "U
         "Preserve every named character and correct species. Give each scene concrete visible actions and all present actors "
         "with species, distinct appearance, scale, accent_rgb, wardrobe, expression and normalized keyframes "
         "(t 0..1, x,y,pose,facing). Use multiple actors when interacting. Include story-specific props, environment, "
-        "camera, lighting, weather and continuity. No generic repeated scenes; do not invent plot events. "
+        "camera, lighting, weather and continuity. No generic repeated scenes; do not invent plot events. Treat every non-empty script paragraph as a distinct narrative unit: give each paragraph at least one dedicated scene, and split paragraphs containing multiple consequential actions into multiple shots. Never summarize several paragraphs into one montage or skip dialogue-driven interactions. Preserve event order and show the actual action, not merely a caption. "
         "Canvas 1280x720, 24fps. Return JSON only with title,size,fps,duration,scenes. Each scene requires start,end,"
         "environment,description,caption,camera,shot_design; actors is an array of actor manifests. "
         "CRITICAL TIMING: decide natural duration independently for every beat from action complexity, dialogue length, "
