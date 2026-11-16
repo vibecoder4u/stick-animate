@@ -1,0 +1,1296 @@
+{
+  "title": "Forest Friends — Ensemble Cast Stress Test",
+  "size": [
+    1280,
+    720
+  ],
+  "fps": 24,
+  "duration": 12,
+  "design_metadata": {
+    "designer": "hand-authored-ensemble-test",
+    "purpose": "nine-character staging, species-specific locomotion, ensemble action, and sound cue coverage"
+  },
+  "scenes": [
+    {
+      "start": 0,
+      "end": 3,
+      "environment": "forest",
+      "caption": "THE FOREST FRIENDS GATHER",
+      "description": "A diverse group of forest friends arrives in a sunlit clearing.",
+      "camera": {
+        "zoom_start": 1,
+        "zoom_end": 1.025,
+        "pan": 0
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "alex",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 65,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 100,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            83,
+            173,
+            204
+          ]
+        },
+        {
+          "species": "monkey",
+          "character_id": "milo",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 200,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 235,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            151,
+            96,
+            59
+          ],
+          "marking_rgb": [
+            58,
+            49,
+            43
+          ]
+        },
+        {
+          "species": "turtle",
+          "character_id": "tia",
+          "scale": 0.78,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 335,
+              "y": 628,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 370,
+              "y": 628,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            104,
+            151,
+            91
+          ],
+          "marking_rgb": [
+            48,
+            91,
+            62
+          ]
+        },
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 470,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 505,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            132,
+            91,
+            63
+          ],
+          "marking_rgb": [
+            58,
+            49,
+            43
+          ]
+        },
+        {
+          "species": "fox",
+          "character_id": "ember",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 605,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 640,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            205,
+            105,
+            43
+          ],
+          "marking_rgb": [
+            87,
+            49,
+            35
+          ]
+        },
+        {
+          "species": "rabbit",
+          "character_id": "pip",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 740,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 775,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            222,
+            216,
+            205
+          ],
+          "marking_rgb": [
+            93,
+            82,
+            78
+          ]
+        },
+        {
+          "species": "deer",
+          "character_id": "fern",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 875,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 910,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            166,
+            119,
+            76
+          ],
+          "marking_rgb": [
+            77,
+            57,
+            43
+          ]
+        },
+        {
+          "species": "elephant",
+          "character_id": "umbo",
+          "scale": 0.62,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 1010,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 1045,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            145,
+            151,
+            158
+          ],
+          "marking_rgb": [
+            66,
+            75,
+            82
+          ]
+        },
+        {
+          "species": "bird",
+          "character_id": "skye",
+          "scale": 0.78,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 1145,
+              "y": 570,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 1180,
+              "y": 570,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            227,
+            174,
+            72
+          ],
+          "marking_rgb": [
+            70,
+            55,
+            38
+          ]
+        }
+      ],
+      "soundscape": [
+        "forest_ambience",
+        "birds"
+      ]
+    },
+    {
+      "start": 3,
+      "end": 6,
+      "environment": "forest",
+      "caption": "EVERYONE HAS A DIFFERENT MOVE",
+      "description": "The monkey and rabbit leap, the deer bounds, and the bird takes flight while the others watch.",
+      "camera": {
+        "zoom_start": 1.01,
+        "zoom_end": 1.06,
+        "pan": 0.015
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "alex",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 100,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 100,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            83,
+            173,
+            204
+          ]
+        },
+        {
+          "species": "monkey",
+          "character_id": "milo",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 235,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 260,
+              "y": 620,
+              "pose": "jump",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            151,
+            96,
+            59
+          ],
+          "marking_rgb": [
+            58,
+            49,
+            43
+          ]
+        },
+        {
+          "species": "turtle",
+          "character_id": "tia",
+          "scale": 0.78,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 370,
+              "y": 628,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 370,
+              "y": 628,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            104,
+            151,
+            91
+          ],
+          "marking_rgb": [
+            48,
+            91,
+            62
+          ]
+        },
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 505,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 505,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            132,
+            91,
+            63
+          ],
+          "marking_rgb": [
+            58,
+            49,
+            43
+          ]
+        },
+        {
+          "species": "fox",
+          "character_id": "ember",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 640,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 640,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            205,
+            105,
+            43
+          ],
+          "marking_rgb": [
+            87,
+            49,
+            35
+          ]
+        },
+        {
+          "species": "rabbit",
+          "character_id": "pip",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 775,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 765,
+              "y": 620,
+              "pose": "jump",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            222,
+            216,
+            205
+          ],
+          "marking_rgb": [
+            93,
+            82,
+            78
+          ]
+        },
+        {
+          "species": "deer",
+          "character_id": "fern",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 910,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 910,
+              "y": 620,
+              "pose": "run",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            166,
+            119,
+            76
+          ],
+          "marking_rgb": [
+            77,
+            57,
+            43
+          ]
+        },
+        {
+          "species": "elephant",
+          "character_id": "umbo",
+          "scale": 0.62,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 1045,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 1045,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            145,
+            151,
+            158
+          ],
+          "marking_rgb": [
+            66,
+            75,
+            82
+          ]
+        },
+        {
+          "species": "bird",
+          "character_id": "skye",
+          "scale": 0.78,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 1180,
+              "y": 570,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 1180,
+              "y": 535,
+              "pose": "fly",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            227,
+            174,
+            72
+          ],
+          "marking_rgb": [
+            70,
+            55,
+            38
+          ]
+        }
+      ],
+      "soundscape": [
+        "forest_ambience",
+        "birds"
+      ]
+    },
+    {
+      "start": 6,
+      "end": 9,
+      "environment": "forest",
+      "caption": "A TEAMWORK TEST",
+      "description": "A fallen log blocks the trail; the bear, elephant and human push while the monkey and turtle reach in to help.",
+      "camera": {
+        "zoom_start": 1.02,
+        "zoom_end": 1.075,
+        "pan": -0.015
+      },
+      "actors": [
+        {
+          "species": "fallen_tree",
+          "x": 640,
+          "y": 570,
+          "length": 430,
+          "scale": 0.85,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 640,
+              "y": 570,
+              "pose": "idle"
+            },
+            {
+              "t": 1,
+              "x": 640,
+              "y": 570,
+              "pose": "idle"
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "alex",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 100,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 100,
+              "y": 620,
+              "pose": "push",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            83,
+            173,
+            204
+          ]
+        },
+        {
+          "species": "monkey",
+          "character_id": "milo",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 235,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 235,
+              "y": 620,
+              "pose": "reach",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            151,
+            96,
+            59
+          ],
+          "marking_rgb": [
+            58,
+            49,
+            43
+          ]
+        },
+        {
+          "species": "turtle",
+          "character_id": "tia",
+          "scale": 0.78,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 370,
+              "y": 628,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 370,
+              "y": 628,
+              "pose": "reach",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            104,
+            151,
+            91
+          ],
+          "marking_rgb": [
+            48,
+            91,
+            62
+          ]
+        },
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 505,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 505,
+              "y": 625,
+              "pose": "push",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            132,
+            91,
+            63
+          ],
+          "marking_rgb": [
+            58,
+            49,
+            43
+          ]
+        },
+        {
+          "species": "fox",
+          "character_id": "ember",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 640,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 640,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            205,
+            105,
+            43
+          ],
+          "marking_rgb": [
+            87,
+            49,
+            35
+          ]
+        },
+        {
+          "species": "rabbit",
+          "character_id": "pip",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 775,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 775,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            222,
+            216,
+            205
+          ],
+          "marking_rgb": [
+            93,
+            82,
+            78
+          ]
+        },
+        {
+          "species": "deer",
+          "character_id": "fern",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 910,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 910,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            166,
+            119,
+            76
+          ],
+          "marking_rgb": [
+            77,
+            57,
+            43
+          ]
+        },
+        {
+          "species": "elephant",
+          "character_id": "umbo",
+          "scale": 0.62,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 1045,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 1045,
+              "y": 625,
+              "pose": "push",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            145,
+            151,
+            158
+          ],
+          "marking_rgb": [
+            66,
+            75,
+            82
+          ]
+        },
+        {
+          "species": "bird",
+          "character_id": "skye",
+          "scale": 0.78,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 1180,
+              "y": 570,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 1180,
+              "y": 550,
+              "pose": "fly",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            227,
+            174,
+            72
+          ],
+          "marking_rgb": [
+            70,
+            55,
+            38
+          ]
+        }
+      ],
+      "soundscape": [
+        "forest_ambience",
+        "birds"
+      ],
+      "visual_events": [
+        {
+          "type": "wood_creak",
+          "at": 1.1,
+          "evidence": "The group leans into the fallen log"
+        },
+        {
+          "type": "wood_impact",
+          "at": 2.35,
+          "evidence": "The log shifts against the forest floor"
+        }
+      ]
+    },
+    {
+      "start": 9,
+      "end": 12,
+      "environment": "forest",
+      "caption": "NINE FRIENDS, ONE FOREST",
+      "description": "The full group walks forward together as the bird flies overhead.",
+      "camera": {
+        "zoom_start": 1,
+        "zoom_end": 1.04,
+        "pan": 0
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "alex",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 75,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 130,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            83,
+            173,
+            204
+          ]
+        },
+        {
+          "species": "monkey",
+          "character_id": "milo",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 210,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 265,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            151,
+            96,
+            59
+          ],
+          "marking_rgb": [
+            58,
+            49,
+            43
+          ]
+        },
+        {
+          "species": "turtle",
+          "character_id": "tia",
+          "scale": 0.78,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 345,
+              "y": 628,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 400,
+              "y": 628,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            104,
+            151,
+            91
+          ],
+          "marking_rgb": [
+            48,
+            91,
+            62
+          ]
+        },
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 480,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 535,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            132,
+            91,
+            63
+          ],
+          "marking_rgb": [
+            58,
+            49,
+            43
+          ]
+        },
+        {
+          "species": "fox",
+          "character_id": "ember",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 615,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 670,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            205,
+            105,
+            43
+          ],
+          "marking_rgb": [
+            87,
+            49,
+            35
+          ]
+        },
+        {
+          "species": "rabbit",
+          "character_id": "pip",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 750,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 805,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            222,
+            216,
+            205
+          ],
+          "marking_rgb": [
+            93,
+            82,
+            78
+          ]
+        },
+        {
+          "species": "deer",
+          "character_id": "fern",
+          "scale": 0.72,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 885,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 940,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            166,
+            119,
+            76
+          ],
+          "marking_rgb": [
+            77,
+            57,
+            43
+          ]
+        },
+        {
+          "species": "elephant",
+          "character_id": "umbo",
+          "scale": 0.62,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 1020,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 1075,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            145,
+            151,
+            158
+          ],
+          "marking_rgb": [
+            66,
+            75,
+            82
+          ]
+        },
+        {
+          "species": "bird",
+          "character_id": "skye",
+          "scale": 0.78,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 1155,
+              "y": 570,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 1210,
+              "y": 570,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ],
+          "body_rgb": [
+            227,
+            174,
+            72
+          ],
+          "marking_rgb": [
+            70,
+            55,
+            38
+          ]
+        }
+      ],
+      "soundscape": [
+        "forest_ambience",
+        "birds"
+      ]
+    }
+  ]
+}
