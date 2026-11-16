@@ -1,26 +1,56 @@
 from __future__ import annotations
 
 """One-call story planner. Specialist execution remains local and deterministic."""
+import math
 from typing import Any
+
 from agent_runtime import AgentUnavailable, FreeLLM
 from scene_designer import design_story
+
 
 def _validate_plan(plan: dict[str, Any], duration: float, fps: int) -> None:
     if not isinstance(plan, dict) or not isinstance(plan.get("scenes"), list) or not plan["scenes"]:
         raise ValueError("AI planner did not return a non-empty scenes array")
+    if duration <= 0 or fps <= 0:
+        raise ValueError("Target duration and fps must be positive")
+
     plan.setdefault("title", "Untitled Story")
     plan.setdefault("size", [1280, 720])
     plan.setdefault("fps", fps)
     plan["duration"] = float(duration)
-    plan["scenes"].sort(key=lambda item: float(item["start"]))
-    if abs(float(plan["scenes"][0]["start"])) > 0.02:
-        raise ValueError("AI plan must start at zero")
-    if abs(float(plan["scenes"][-1]["end"]) - duration) > 0.05:
-        raise ValueError("AI plan must end at target duration")
+
+    # Model-generated timestamps are decimal estimates. Normalize a small
+    # endpoint drift to the requested timeline instead of rejecting an otherwise
+    # valid plan (e.g. a 30s request whose final end is 29.8s).
+    try:
+        plan["scenes"].sort(key=lambda item: float(item["start"]))
+        first = float(plan["scenes"][0]["start"])
+        last = float(plan["scenes"][-1]["end"])
+    except (KeyError, TypeError, ValueError, IndexError) as exc:
+        raise ValueError("AI scenes must contain numeric start/end timestamps") from exc
+    span = last - first
+    if not math.isfinite(first) or not math.isfinite(last) or span <= 0:
+        raise ValueError("AI plan has an invalid timeline")
+    drift = max(abs(first), abs(last - duration))
+    tolerance = max(1.0, duration * 0.10)
+    if drift > tolerance:
+        raise ValueError(
+            f"AI plan timeline ({first:.3f}s–{last:.3f}s) differs too much "
+            f"from requested 0s–{duration:.3f}s"
+        )
+    for scene in plan["scenes"]:
+        start, end = float(scene["start"]), float(scene["end"])
+        scene["start"] = round((start - first) * duration / span, 3)
+        scene["end"] = round((end - first) * duration / span, 3)
+    plan["scenes"][0]["start"] = 0.0
+    plan["scenes"][-1]["end"] = float(duration)
+
     previous = 0.0
     for i, scene in enumerate(plan["scenes"]):
         start, end = float(scene["start"]), float(scene["end"])
-        if start < previous - 0.02 or end <= start or end > duration + 0.05:
+        if not math.isfinite(start) or not math.isfinite(end):
+            raise ValueError(f"Non-finite timing in scene {i}")
+        if start < previous - 0.02 or end <= start or end > duration + 0.001:
             raise ValueError(f"Invalid or overlapping timing in scene {i}")
         previous = end
         scene.setdefault("caption", str(scene.get("description", ""))[:92].upper())
@@ -30,6 +60,7 @@ def _validate_plan(plan: dict[str, Any], duration: float, fps: int) -> None:
             "location": scene["environment"], "visual_focus": "primary_action",
             "primary_action": "story_specific_action", "lighting_mood": "story_motivated",
             "continuity_from_previous": "preserve_character_and_prop_continuity"})
+
 
 def design_production(story: str, duration: float, title: str = "Untitled Story",
                       fps: int = 24, llm: FreeLLM | None = None) -> dict[str, Any]:
@@ -64,5 +95,4 @@ def design_production(story: str, duration: float, title: str = "Untitled Story"
             "api_requests": 1}
         return plan
     except (AgentUnavailable, ValueError, TypeError, KeyError) as exc:
-        # Never disguise a failed AI run as successful creative generation.
         raise AgentUnavailable(f"AI scene planning failed; deterministic fallback disabled: {exc}") from exc
