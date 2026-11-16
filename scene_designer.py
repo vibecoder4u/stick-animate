@@ -120,7 +120,8 @@ def design_story(story: str, duration: float | None = None, title: str = "Untitl
         story.lower(),
     ))
     count = len(beats)
-    total_weight = sum(weights)\n    durations = [natural_duration * weight / total_weight for weight in weights] if duration is None else weights
+    total_weight = sum(weights)
+    durations = [natural_duration * weight / total_weight for weight in weights] if duration is None else weights
     scenes = []
     previous_env = None
     for i, beat in enumerate(beats):
@@ -139,8 +140,8 @@ def design_story(story: str, duration: float | None = None, title: str = "Untitl
             "reveal": (1.025, 1.085, -0.07),
         }
         z0, z1, pan = zooms[shot]
-        start = round(i * base, 3)
-        end = round(duration if i == count - 1 else (i + 1) * base, 3)
+        start = round(sum(durations[:i]), 3)
+        end = round(sum(durations[:i + 1]), 3)
         scene: dict[str, Any] = {
             "start": start, "end": end, "environment": env,
             "description": beat,
