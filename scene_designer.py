@@ -85,6 +85,12 @@ def _cast(story: str) -> list[dict[str, Any]]:
         if key not in covered:
             cast.append({"character_id": key, "name": name, "species": species, "scale": 1.0})
             covered.add(key)
+    # Also accept natural introductions such as "elephant Ella".
+    reverse_named = re.compile(r"\b(elephant|deer|fox|rabbit|monkey|turtle|bear|dog|cat|bird|fish|dinosaur)\s+([A-Z][a-z]+)\b", re.IGNORECASE)
+    for match in reverse_named.finditer(story):
+        species, name = match.group(1).lower(), match.group(2)
+        if not any(a["character_id"] == name.lower() for a in cast):
+            cast.append({"character_id": name.lower(), "name": name, "species": species, "scale": 1.0})
     for species in _species_list(story):
         if not any(a["species"] == species for a in cast):
             cast.append({"character_id": species, "name": species.title(), "species": species, "scale": 1.0})
