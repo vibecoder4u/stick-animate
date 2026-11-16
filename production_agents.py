@@ -15,6 +15,12 @@ def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int
         beats = [part.strip() for part in re.split(r"(?<=[.!?])\s+", story.strip()) if part.strip()]
         words = re.findall(r"[a-z0-9']+", story.lower())
         scene_count = len(plan["scenes"])
+        paragraphs = [part.strip() for part in story.splitlines() if part.strip()]
+        if len(paragraphs) > 1 and scene_count < len(paragraphs):
+            raise ValueError(
+                f"Story coverage incomplete: {len(paragraphs)} script paragraphs require at least "
+                f"{len(paragraphs)} scenes; planner returned {scene_count}."
+            )
         if len(words) >= 40:
             required_scenes = max(8, math.ceil(min(len(beats), 24) * 0.45))
             if scene_count < required_scenes:
