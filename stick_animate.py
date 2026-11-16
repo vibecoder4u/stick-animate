@@ -23,6 +23,7 @@ from motion_engine import evaluate_motion, validate_path_points
 from camera_director import apply_camera
 from transition_director import apply_transition
 from environment_animation import render_environment_background, animate_environment
+from asset_generator import prepare_generated_assets, attach_generated_assets
 
 W, H = 1280, 720
 FPS = 24
@@ -519,9 +520,13 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
     if not isinstance(kind, str):
         kind = "forest"
     kind = kind.strip().lower().replace(" ", "_") or "forest"
-    if kind not in bg_cache:
-        bg_cache[kind] = gradient_background(kind)
-    image = render_environment_background(bg_cache[kind].copy(), kind, scene)
+    generated_background = scene.get("background_image")
+    if generated_background and Path(generated_background).is_file():
+        image = Image.open(generated_background).convert("RGB").resize((W, H), Image.Resampling.LANCZOS)
+    else:
+        if kind not in bg_cache:
+            bg_cache[kind] = gradient_background(kind)
+        image = render_environment_background(bg_cache[kind].copy(), kind, scene)
     opening = float(scene.get("door_open", 0.0))
     paint_environment_details(image, kind, global_t, opening)
     image = animate_environment(image, kind, scene, global_t)
@@ -566,7 +571,14 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         render_actor = dict(actor)
         render_actor.update(pose_data)
         render_actor["scale"] = float(actor.get("scale", 1.0)) * float(pose_data.get("depth_scale", 1.0))
-        if not draw_species_character(actor_layer, render_actor, pose_data, global_t):
+        generated_actor = actor.get("_generated_asset_path")
+        if generated_actor and Path(generated_actor).is_file():
+            sprite = Image.open(generated_actor).convert("RGBA")
+            sprite.thumbnail((max(64, int(260 * render_actor["scale"])), max(64, int(300 * render_actor["scale"]))), Image.Resampling.LANCZOS)
+            sx = int(float(pose_data.get("x", 640)) - sprite.width / 2)
+            sy = int(float(pose_data.get("y", 610)) - sprite.height)
+            actor_layer.alpha_composite(sprite, (sx, sy))
+        elif not draw_species_character(actor_layer, render_actor, pose_data, global_t):
             draw_character(actor_layer, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
                 str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
                 global_t, float(render_actor["scale"]))
@@ -576,6 +588,16 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
             actor_layer = actor_layer.rotate(-angle, resample=Image.Resampling.BICUBIC,
                 center=(float(pose_data.get("x", 640)), float(pose_data.get("y", 610))))
         image = Image.alpha_composite(image.convert("RGBA"), actor_layer).convert("RGB")
+    for prop in scene.get("props", []) or []:
+        generated_prop = prop.get("_generated_asset_path")
+        if generated_prop and Path(generated_prop).is_file():
+            prop_image = Image.open(generated_prop).convert("RGBA")
+            prop_image.thumbnail((240, 220), Image.Resampling.LANCZOS)
+            px = int(float(prop.get("x", 0.5)) * W)
+            py = int(float(prop.get("y", 0.82)) * H)
+            image_rgba = image.convert("RGBA")
+            image_rgba.alpha_composite(prop_image, (px - prop_image.width // 2, py - prop_image.height))
+            image = image_rgba.convert("RGB")
     caption = scene.get("caption", "")
     sub = scene.get("subcaption", "")
     # Fade captions in and out at shot boundaries.
@@ -631,6 +653,8 @@ def render(script_path: Path, output: Path) -> Path:
     fps = int(script.get("fps", FPS))
     duration = float(script["duration"])
     output.parent.mkdir(parents=True, exist_ok=True)
+    generated_assets = prepare_generated_assets(script, output.parent)
+    attach_generated_assets(script, generated_assets)
     poster_path = output.with_name(output.stem + "-poster.png")
     with tempfile.TemporaryDirectory(prefix="stick-animate-") as temp_dir:
         audio_path = Path(temp_dir) / "scene-audio.wav"

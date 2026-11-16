@@ -169,6 +169,7 @@ def design_production(story: str, duration: float | None = None, title: str = "U
         "gaps or overlaps. Set duration to the final scene end. "
         + (f"The requested {duration}s is only a soft reference; ignore it if natural pacing needs more or less time. " if duration else "")
         + "Use story-appropriate locations such as forest, house, road and storm. " +
+        "Also return an assets array for every story-specific visual asset the current library cannot provide: unknown species/creatures, distinctive props, vehicles and original locations. Each asset object must include asset_id, name, kind (character, prop, or background), and a detailed image-generation prompt. Reuse that exact asset_id on its actor or prop manifest so the renderer can attach the generated artwork. For a scene-specific original background, include background_prompt and background_asset on that scene. Do not request assets for ordinary supported characters or props. " +
         "CAPABILITY REGISTRY (authoritative; never claim unsupported features): " + capability_context + " " +
         "For each scene choose a renderer-supported species where possible. If the story requires an unsupported species, " +
         "preserve its identity in character description but mark renderer_approximation=true and explain the approximation " +
