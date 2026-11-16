@@ -32,7 +32,8 @@ def evaluate_motion(pose: dict[str, Any], actor: dict[str, Any], global_t: float
     out["depth_scale"] = max(0.62, min(1.42, 1.0 + depth*0.30))
     out["body_angle"] = float(out.get("body_angle", 0.0))
     out["head_angle"] = float(out.get("head_angle", 0.0))
-    out["gait_phase"] = float(out.get("gait_phase", global_t*7.0))
+    if "gait_phase" in out:
+        out["gait_phase"] = float(out["gait_phase"])
     out["action_progress"] = max(0.0, min(1.0, float(out.get("action_progress", 0.0))))
     return out
 
