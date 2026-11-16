@@ -165,7 +165,13 @@ def design_production(story: str, duration: float | None = None, title: str = "U
         "runtime. Include real pauses where drama needs them. Scenes must form one continuous timeline from 0 with no "
         "gaps or overlaps. Set duration to the final scene end. "
         + (f"The requested {duration}s is only a soft reference; ignore it if natural pacing needs more or less time. " if duration else "")
-        + "Use story-appropriate locations such as forest, house, road and storm. " +\n        "CAPABILITY REGISTRY (authoritative; never claim unsupported features): " + capability_context + " " +\n        "For each scene choose a renderer-supported species where possible. If the story requires an unsupported species, " +\n        "preserve its identity in character description but mark renderer_approximation=true and explain the approximation " +\n        "in design_metadata.capability_warnings. Prefer supported animated environments only when they fit the story; " +\n        "for other settings, provide a precise environment description and acknowledge base-plate-only rendering. " +\n        "Do not label an environment as animated unless the registry lists it under animated_backgrounds."
+        + "Use story-appropriate locations such as forest, house, road and storm. " +
+        "CAPABILITY REGISTRY (authoritative; never claim unsupported features): " + capability_context + " " +
+        "For each scene choose a renderer-supported species where possible. If the story requires an unsupported species, " +
+        "preserve its identity in character description but mark renderer_approximation=true and explain the approximation " +
+        "in design_metadata.capability_warnings. Prefer supported animated environments only when they fit the story; " +
+        "for other settings, provide a precise environment description and acknowledge base-plate-only rendering. " +
+        "Do not label an environment as animated unless the registry lists it under animated_backgrounds."
     )
     user = f"TITLE: {title}\nDURATION_POLICY: {duration_mode}\nSOFT_TARGET_SECONDS: {duration or 'none'}\nFPS: {fps}\nSCRIPT:\n{story}"
     try:
@@ -174,7 +180,8 @@ def design_production(story: str, duration: float | None = None, title: str = "U
         plan["design_metadata"].update({"designer": "groq-master-planner-v2",
             "pipeline": "single-groq-plan->local-specialists->renderer", "provider": "groq",
             "model": llm.model, "creative_mode": "ai", "scene_count": len(plan["scenes"]),
-            "api_requests": 1, "capability_registry_version": capabilities["schema_version"],\n            "capability_profile": capabilities, "capability_warnings": []})
+            "api_requests": 1, "capability_registry_version": capabilities["schema_version"],
+            "capability_profile": capabilities, "capability_warnings": []})
         return plan
     except (AgentUnavailable, ValueError, TypeError, KeyError) as exc:
         # Recover specifically from an under-storyboarded AI outline by expanding the
