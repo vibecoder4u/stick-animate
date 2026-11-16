@@ -95,6 +95,8 @@ def gradient_background(kind: str) -> Image.Image:
         "stairwell": ((24, 34, 48), (6, 10, 18)),
         "rainroom": ((20, 34, 48), (5, 10, 18)),
         "street": ((26, 34, 47), (5, 8, 14)),
+        "forest": ((91, 157, 181), (24, 65, 48)),
+        "road": ((113, 160, 178), (43, 75, 59)),
     }
     palettes.update({
         "platform": ((25, 39, 55), (4, 9, 16)),
@@ -110,6 +112,21 @@ def gradient_background(kind: str) -> Image.Image:
         p = y / (H - 1)
         color = tuple(int(top[i] * (1 - p) + bottom[i] * p) for i in range(3))
         draw.line((0, y, W, y), fill=color)
+    if kind in ("forest", "road"):
+        # Layered forest silhouette with a readable path, trunks, canopy and foreground.
+        draw.polygon([(0, 390), (180, 275), (360, 380), (560, 245), (760, 370),
+                      (980, 250), (1280, 390), (1280, 560), (0, 560)], fill=(42, 105, 78))
+        draw.polygon([(0, 465), (220, 365), (430, 470), (700, 340), (960, 455),
+                      (1120, 355), (1280, 440), (1280, 610), (0, 610)], fill=(28, 82, 58))
+        # Open walking path recedes into the forest.
+        draw.polygon([(520, 430), (760, 430), (1030, 720), (240, 720)], fill=(126, 105, 76))
+        for tx, top, width in ((85,150,52),(245,190,44),(1010,155,58),(1190,205,42)):
+            draw.rectangle((tx-width//4, top+125, tx+width//4, 590), fill=(83, 57, 39))
+            draw.ellipse((tx-width, top, tx+width, top+150), fill=(36, 105, 66))
+            draw.ellipse((tx-width+25, top+35, tx+width+25, top+170), fill=(47, 124, 75))
+        for gx in range(0, W, 38):
+            draw.line((gx, 640, gx-12, 610), fill=(66, 126, 67), width=3)
+        return image
     if kind == "trackside":
         # Low track-level chase shot: rails, sleepers, train flank and signal.
         draw.rectangle((0, 100, W, 460), fill=(9, 18, 29))
