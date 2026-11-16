@@ -457,7 +457,17 @@ def draw_character_design(image: Image.Image, actor: dict[str, Any], pose_data: 
 
 
 def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, global_t: float, bg_cache: dict[str, Image.Image]) -> Image.Image:
-    kind = scene.get("environment", "corridor")
+    raw_environment = scene.get("environment", "corridor")
+    # AI planners may return a structured environment manifest rather than a
+    # renderer key. Resolve it to a supported key without discarding the plan.
+    if isinstance(raw_environment, dict):
+        kind = (raw_environment.get("type") or raw_environment.get("name") or
+                raw_environment.get("id") or raw_environment.get("location") or "forest")
+    else:
+        kind = raw_environment
+    if not isinstance(kind, str):
+        kind = "forest"
+    kind = kind.strip().lower().replace(" ", "_") or "forest"
     if kind not in bg_cache:
         bg_cache[kind] = gradient_background(kind)
     image = bg_cache[kind].copy()
