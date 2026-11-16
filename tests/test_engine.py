@@ -109,6 +109,17 @@ class AnimationEngineTests(unittest.TestCase):
         self.assertEqual(frame.size, (1280, 720))
         self.assertEqual(frame.mode, "RGB")
 
+    def test_monkey_turtle_and_bear_have_dedicated_rigs(self):
+        from character_rigs import draw_species_character, available_species
+        self.assertTrue({"monkey", "turtle", "bear"}.issubset(set(available_species())))
+        for species in ("monkey", "turtle", "bear"):
+            image = Image.new("RGB", (1280, 720), (24, 34, 48))
+            actor = {"species": species, "scale": 1.0, "body_rgb": [150, 110, 80],
+                     "marking_rgb": [65, 50, 40]}
+            pose = {"x": 640, "y": 610, "pose": "walk", "facing": 1}
+            self.assertTrue(draw_species_character(image, actor, pose, 0.5), species)
+            self.assertGreater(len(image.getcolors(1280 * 720) or []), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
