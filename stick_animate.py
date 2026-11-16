@@ -416,11 +416,25 @@ def paint_environment_details(image: Image.Image, kind: str, t: float, opening: 
         d.point((x, y), fill=(c, c, c, 12))
 
 
+def facing_sign(value: Any) -> int:
+    """Accept numeric directions and natural-language AI directions."""
+    if isinstance(value, str):
+        direction = value.strip().lower()
+        if direction in {"left", "west", "-1", "backward", "backwards"}:
+            return -1
+        if direction in {"right", "east", "1", "forward", "forwards"}:
+            return 1
+    try:
+        return -1 if float(value) < 0 else 1
+    except (TypeError, ValueError):
+        return 1
+
+
 def draw_character_design(image: Image.Image, actor: dict[str, Any], pose_data: dict[str, Any]) -> None:
     """Add readable wardrobe, hair and facial expression to the base skeleton."""
     x, y = float(pose_data.get("x", 640)), float(pose_data.get("y", 610))
     scale = float(actor.get("scale", 1.0))
-    facing = 1 if int(pose_data.get("facing", 1)) >= 0 else -1
+    facing = facing_sign(pose_data.get("facing", 1))
     wardrobe = actor.get("wardrobe", "hoodie")
     accent = tuple(actor.get("accent_rgb", [87, 151, 177]))
     d = ImageDraw.Draw(image)
@@ -506,6 +520,7 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         cast = [primary] + [a for a in cast if a is not primary]
     for actor in cast:
         pose_data = sample_keyframes(actor.get("keyframes", []), local_t)
+        pose_data["facing"] = facing_sign(pose_data.get("facing", 1))
         species = str(actor.get("species", "human")).lower()
         if not draw_species_character(image, actor, pose_data, global_t):
             draw_character(
