@@ -1,0 +1,650 @@
+{
+  "title": "The Riverbank Rescue — Animation Test",
+  "size": [
+    1280,
+    720
+  ],
+  "fps": 24,
+  "duration": 18,
+  "design_metadata": {
+    "designer": "hand-authored-animation-prototype",
+    "source": "new_original_test_script",
+    "purpose": "species gait, jump, reach, coordinated push and visible prop test"
+  },
+  "scenes": [
+    {
+      "start": 0,
+      "end": 3,
+      "environment": "forest",
+      "caption": "A STORM BLOCKS THE RIVER PATH",
+      "description": "A fallen branch blocks the path beside the stream.",
+      "camera": {
+        "zoom_start": 1,
+        "zoom_end": 1.025,
+        "pan": 0
+      },
+      "actors": [
+        {
+          "species": "fallen_tree",
+          "x": 650,
+          "y": 574,
+          "length": 600,
+          "scale": 1
+        },
+        {
+          "species": "human",
+          "character_id": "alex",
+          "scale": 0.92,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            83,
+            173,
+            204
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 230,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 320,
+              "y": 620,
+              "pose": "listen",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "monkey",
+          "character_id": "milo",
+          "scale": 0.9,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 460,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 500,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "turtle",
+          "character_id": "tia",
+          "scale": 1,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 800,
+              "y": 628,
+              "pose": "walk",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 760,
+              "y": 628,
+              "pose": "idle",
+              "facing": -1
+            }
+          ]
+        },
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 1.08,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 1030,
+              "y": 625,
+              "pose": "walk",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 980,
+              "y": 625,
+              "pose": "idle",
+              "facing": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 3,
+      "end": 6,
+      "environment": "forest",
+      "caption": "MILO SPOTS A WAY OVER",
+      "description": "Milo crouches, springs over a rock and reaches toward the branch.",
+      "camera": {
+        "zoom_start": 1.02,
+        "zoom_end": 1.06,
+        "pan": 0.03
+      },
+      "actors": [
+        {
+          "species": "fallen_tree",
+          "x": 650,
+          "y": 574,
+          "length": 600
+        },
+        {
+          "species": "monkey",
+          "character_id": "milo",
+          "scale": 0.9,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 490,
+              "y": 620,
+              "pose": "crouch",
+              "facing": 1
+            },
+            {
+              "t": 0.45,
+              "x": 580,
+              "y": 585,
+              "pose": "jump",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 650,
+              "y": 620,
+              "pose": "reach",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "alex",
+          "scale": 0.92,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            83,
+            173,
+            204
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 250,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 300,
+              "y": 620,
+              "pose": "reach",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "turtle",
+          "character_id": "tia",
+          "scale": 1,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 850,
+              "y": 628,
+              "pose": "walk",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 820,
+              "y": 628,
+              "pose": "walk",
+              "facing": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 6,
+      "end": 9,
+      "environment": "forest",
+      "caption": "TIA FINDS THE LOW GAP",
+      "description": "Tia slowly approaches and stretches her head beneath the branch.",
+      "camera": {
+        "zoom_start": 1.03,
+        "zoom_end": 1.07,
+        "pan": -0.02
+      },
+      "actors": [
+        {
+          "species": "fallen_tree",
+          "x": 650,
+          "y": 574,
+          "length": 600
+        },
+        {
+          "species": "turtle",
+          "character_id": "tia",
+          "scale": 1,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 820,
+              "y": 628,
+              "pose": "walk",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 700,
+              "y": 628,
+              "pose": "reach",
+              "facing": -1
+            }
+          ]
+        },
+        {
+          "species": "monkey",
+          "character_id": "milo",
+          "scale": 0.9,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 590,
+              "y": 620,
+              "pose": "idle",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 570,
+              "y": 620,
+              "pose": "listen",
+              "facing": -1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "alex",
+          "scale": 0.92,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            83,
+            173,
+            204
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 300,
+              "y": 620,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 360,
+              "y": 620,
+              "pose": "reach",
+              "facing": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 9,
+      "end": 12,
+      "environment": "forest",
+      "caption": "BRUNO BRACES HIS SHOULDERS",
+      "description": "Bruno plants his paws and leans his heavy weight into the fallen branch.",
+      "camera": {
+        "zoom_start": 1.02,
+        "zoom_end": 1.08,
+        "pan": 0.02
+      },
+      "actors": [
+        {
+          "species": "fallen_tree",
+          "x": 650,
+          "y": 574,
+          "length": 600
+        },
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 1.08,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 930,
+              "y": 625,
+              "pose": "walk",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 850,
+              "y": 625,
+              "pose": "push",
+              "facing": -1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "alex",
+          "scale": 0.92,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            83,
+            173,
+            204
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 400,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 470,
+              "y": 620,
+              "pose": "push",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "monkey",
+          "character_id": "milo",
+          "scale": 0.9,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 550,
+              "y": 620,
+              "pose": "reach",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 590,
+              "y": 620,
+              "pose": "push",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "turtle",
+          "character_id": "tia",
+          "scale": 1,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 740,
+              "y": 628,
+              "pose": "walk",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 720,
+              "y": 628,
+              "pose": "push",
+              "facing": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 12,
+      "end": 15,
+      "environment": "forest",
+      "caption": "THE BRANCH ROLLS CLEAR",
+      "description": "Together they push; the branch shifts and the path opens.",
+      "camera": {
+        "zoom_start": 1.04,
+        "zoom_end": 1.09,
+        "pan": -0.04
+      },
+      "actors": [
+        {
+          "species": "fallen_tree",
+          "x": 650,
+          "y": 574,
+          "length": 600,
+          "angle": -9
+        },
+        {
+          "species": "human",
+          "character_id": "alex",
+          "scale": 0.92,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            83,
+            173,
+            204
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 450,
+              "y": 620,
+              "pose": "push",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 510,
+              "y": 620,
+              "pose": "push",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "monkey",
+          "character_id": "milo",
+          "scale": 0.9,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 570,
+              "y": 620,
+              "pose": "push",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 640,
+              "y": 620,
+              "pose": "jump",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "turtle",
+          "character_id": "tia",
+          "scale": 1,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 720,
+              "y": 628,
+              "pose": "push",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 700,
+              "y": 628,
+              "pose": "walk",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 1.08,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 850,
+              "y": 625,
+              "pose": "push",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 780,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 15,
+      "end": 18,
+      "environment": "forest",
+      "caption": "THE FRIENDS CROSS TOGETHER",
+      "description": "The four friends cross the open river path and celebrate.",
+      "camera": {
+        "zoom_start": 1,
+        "zoom_end": 1.04,
+        "pan": 0
+      },
+      "actors": [
+        {
+          "species": "apple_cluster",
+          "x": 980,
+          "y": 600,
+          "count": 5,
+          "scale": 1
+        },
+        {
+          "species": "human",
+          "character_id": "alex",
+          "scale": 0.92,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            83,
+            173,
+            204
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 330,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 470,
+              "y": 620,
+              "pose": "walk",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "monkey",
+          "character_id": "milo",
+          "scale": 0.9,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 500,
+              "y": 620,
+              "pose": "run",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 700,
+              "y": 620,
+              "pose": "jump",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "turtle",
+          "character_id": "tia",
+          "scale": 1,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 650,
+              "y": 628,
+              "pose": "walk",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 710,
+              "y": 628,
+              "pose": "walk",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 1.08,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 830,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 930,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
