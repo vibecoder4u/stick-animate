@@ -14,6 +14,18 @@ class ProductionAgentTests(unittest.TestCase):
         self.assertEqual(plan["design_metadata"]["pipeline"], "local-fallback-no-api")
         self.assertTrue(all(scene.get("description") for scene in plan["scenes"]))
 
+    def test_structured_canvas_size_is_normalized(self):
+        plan = {"size": {"width": 1280, "height": 720},
+                "scenes": [{"start": 0, "end": 2}]}
+        _validate_plan(plan)
+        self.assertEqual(plan["size"], [1280, 720])
+
+    def test_invalid_canvas_size_is_rejected(self):
+        plan = {"size": {"width": "width", "height": "height"},
+                "scenes": [{"start": 0, "end": 2}]}
+        with self.assertRaisesRegex(ValueError, "numeric"):
+            _validate_plan(plan)
+
     def test_auto_mode_preserves_natural_ai_timeline_without_stretching(self):
         plan = {"scenes": [{"start": 0, "end": 3.2}, {"start": 3.2, "end": 11.8}, {"start": 11.8, "end": 16.4}]}
         self.assertEqual(_validate_plan(plan, 30, 24, "auto"), 16.4)
