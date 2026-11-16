@@ -91,7 +91,12 @@ class ProductionAgentTests(unittest.TestCase):
             "Alex walks home with Milo Tia and Bruno as friends",
         ]
         for i, description in enumerate(descriptions):
-            scene = {"start": i * 4, "end": (i + 1) * 4, "description": description}\n            for species in ("monkey", "turtle", "bear"):\n                if species in description.lower():\n                    scene["actors"] = [{"species": species, "character_id": species}]\n                    break\n            scenes.append(scene)
+                        scene = {"start": i * 4, "end": (i + 1) * 4, "description": description}
+            for species in ("monkey", "turtle", "bear"):
+                if species in description.lower():
+                    scene["actors"] = [{"species": species, "character_id": species}]
+                    break
+            scenes.append(scene)
         plan = {"scenes": scenes}
         self.assertEqual(_validate_plan(plan, story=story), 40.0)
         for scene in plan["scenes"]:
