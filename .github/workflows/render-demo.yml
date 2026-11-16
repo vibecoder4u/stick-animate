@@ -14,11 +14,6 @@ on:
         required: false
         type: string
         default: "My Animated Story"
-      duration:
-        description: "Video duration in seconds"
-        required: false
-        type: number
-        default: 30
 
 permissions:
   contents: read
@@ -80,14 +75,12 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GROQ_MODEL: openai/gpt-oss-120b
           VIDEO_TITLE: ${{ inputs.title || 'THE EMPTY PLATFORM' }}
-          VIDEO_DURATION: ${{ inputs.duration || 30 }}
         run: python stick_animate.py --story-file input-story.txt --duration-mode auto --title "$VIDEO_TITLE" --output output/animated-story.mp4 --validate-only
 
       - name: Render MP4 on GitHub runner
         if: github.event_name == 'workflow_dispatch'
         env:
           VIDEO_TITLE: ${{ inputs.title || 'THE EMPTY PLATFORM' }}
-          VIDEO_DURATION: ${{ inputs.duration || 30 }}
         # Reuse the scene plan created by the validation step. This prevents
         # a second Groq request for the same story during rendering.
         run: python stick_animate.py --script output/animated-story-scene-plan.json --output output/animated-story.mp4
