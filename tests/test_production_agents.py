@@ -1,9 +1,7 @@
 import unittest
 from unittest.mock import patch
-
 from production_agents import _validate_plan, design_production
 from agent_runtime import FreeLLM
-
 
 class ProductionAgentTests(unittest.TestCase):
     def test_free_mode_generates_script_specific_multiple_scenes(self):
@@ -16,30 +14,33 @@ class ProductionAgentTests(unittest.TestCase):
         self.assertEqual(plan["design_metadata"]["pipeline"], "local-fallback-no-api")
         self.assertTrue(all(scene.get("description") for scene in plan["scenes"]))
 
-    def test_ai_timeline_endpoint_drift_is_normalized(self):
-        plan = {"scenes": [
-            {"start": 0, "end": 9.93, "description": "Beat one"},
-            {"start": 9.93, "end": 19.87, "description": "Beat two"},
-            {"start": 19.87, "end": 29.8, "description": "Beat three"},
-        ]}
-        _validate_plan(plan, 30, 24)
-        self.assertEqual(plan["scenes"][0]["start"], 0.0)
-        self.assertEqual(plan["scenes"][-1]["end"], 30.0)
-        self.assertAlmostEqual(plan["scenes"][1]["start"], 10.0, places=1)
+    def test_auto_mode_preserves_natural_ai_timeline_without_stretching(self):
+        plan = {"scenes": [{"start": 0, "end": 3.2}, {"start": 3.2, "end": 11.8}, {"start": 11.8, "end": 16.4}]}
+        self.assertEqual(_validate_plan(plan, 30, 24, "auto"), 16.4)
+        self.assertEqual(plan["scenes"][1]["start"], 3.2)
+        self.assertEqual(plan["scenes"][-1]["end"], 16.4)
 
-    def test_ai_timeline_rejects_large_duration_mismatch(self):
-        plan = {"scenes": [
-            {"start": 0, "end": 4, "description": "Beat one"},
-            {"start": 4, "end": 8, "description": "Beat two"},
-        ]}
-        with self.assertRaisesRegex(ValueError, "differs too much"):
-            _validate_plan(plan, 30, 24)
+    def test_auto_mode_rejects_real_gaps_and_overlaps(self):
+        with self.assertRaisesRegex(ValueError, "gap"):
+            _validate_plan({"scenes": [{"start": 0, "end": 4}, {"start": 5, "end": 8}]}, None, 24, "auto")
+        with self.assertRaisesRegex(ValueError, "Overlapping"):
+            _validate_plan({"scenes": [{"start": 0, "end": 5}, {"start": 4, "end": 8}]}, None, 24, "auto")
+
+    def test_strict_mode_enforces_requested_runtime(self):
+        plan = {"scenes": [{"start": 0, "end": 29.9}]}
+        self.assertEqual(_validate_plan(plan, 30, 24, "strict"), 30.0)
+        with self.assertRaisesRegex(ValueError, "Strict duration"):
+            _validate_plan({"scenes": [{"start": 0, "end": 12}]}, 30, 24, "strict")
+
+    def test_fallback_auto_timing_is_not_forced_to_target(self):
+        story = "A boy waits alone. " + "He speaks with a friend and laughs. " * 4
+        plan = design_production(story, 30, "Pacing test")
+        self.assertNotEqual(plan["duration"], 30)
+        self.assertEqual(plan["design_metadata"]["duration_policy"], "auto")
 
     def test_fallback_does_not_reuse_railway_story(self):
-        plan = design_production(
-            "A fisherman rows across a lake. A storm breaks over the water. "
-            "A strange light rises beneath his boat.", 24, "The Lake"
-        )
+        plan = design_production("A fisherman rows across a lake. A storm breaks over the water. "
+                                 "A strange light rises beneath his boat.", 24, "The Lake")
         descriptions = " ".join(s["description"].lower() for s in plan["scenes"])
         self.assertIn("fisherman", descriptions)
         self.assertNotIn("railway station", descriptions)
@@ -47,7 +48,6 @@ class ProductionAgentTests(unittest.TestCase):
     def test_free_llm_is_optional(self):
         with patch.dict("os.environ", {"GROQ_API_KEY": ""}):
             self.assertFalse(FreeLLM().available)
-
 
 if __name__ == "__main__":
     unittest.main()
