@@ -557,7 +557,11 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         pose_data = sample_keyframes(actor.get("keyframes", []), local_t)
         pose_data["facing"] = facing_sign(pose_data.get("facing", 1))
         species = str(actor.get("species", "human")).lower()
-        if not draw_species_character(image, actor, pose_data, global_t):
+        # Merge sampled numeric controls into the actor manifest so props can
+        # animate their angle/length/shape as well as their screen position.
+        render_actor = dict(actor)
+        render_actor.update(pose_data)
+        if not draw_species_character(image, render_actor, pose_data, global_t):
             draw_character(
                 image, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
                 str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
