@@ -11,6 +11,7 @@ from stick_animate import sample_keyframes, validate_script
 class RiverbankPrototypeTests(unittest.TestCase):
     def test_new_script_has_all_four_characters_and_multiple_scenes(self):
         plan = json.loads(Path("demo/riverbank-rescue.json").read_text(encoding="utf-8"))
+        validate_script(plan)
         self.assertEqual(plan["title"], "The Riverbank Rescue — Animation Test")
         self.assertGreaterEqual(len(plan["scenes"]), 5)
         species = {
