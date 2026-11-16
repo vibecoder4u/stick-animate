@@ -63,7 +63,7 @@ jobs:
             echo ""
             echo "This run was triggered by a code push. It checks the engine only; it does not send a story to Groq or render an MP4."
             echo ""
-            echo "To create a video: open **Actions → Render Stick Animate demo → Run workflow**, paste your story, set the title and duration, then start the manual run."
+            echo "To create a video: open **Actions → Render Stick Animate demo → Run workflow**, paste your story and set the title. Automatic story-led timing is the default."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Prepare story input
@@ -81,7 +81,7 @@ jobs:
           GROQ_MODEL: openai/gpt-oss-120b
           VIDEO_TITLE: ${{ inputs.title || 'THE EMPTY PLATFORM' }}
           VIDEO_DURATION: ${{ inputs.duration || 30 }}
-        run: python stick_animate.py --story-file input-story.txt --duration "$VIDEO_DURATION" --title "$VIDEO_TITLE" --output output/animated-story.mp4 --validate-only
+        run: python stick_animate.py --story-file input-story.txt --duration-mode auto --title "$VIDEO_TITLE" --output output/animated-story.mp4 --validate-only
 
       - name: Render MP4 on GitHub runner
         if: github.event_name == 'workflow_dispatch'
