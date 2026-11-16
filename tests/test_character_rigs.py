@@ -6,9 +6,9 @@ from character_rigs import available_species, draw_species_character
 
 class SpeciesRigTests(unittest.TestCase):
     def test_species_have_distinct_anatomy_renderers(self):
-        self.assertEqual(set(available_species()), {"human", "monkey", "turtle", "bear", "dog", "cat", "bird", "fish", "dinosaur"})
+        self.assertEqual(set(available_species()), {"human", "monkey", "turtle", "bear", "dog", "cat", "bird", "fish", "dinosaur", "elephant", "deer", "fox", "rabbit"})
         outputs = {}
-        for species in ("monkey", "turtle", "bear", "dog", "cat", "bird", "fish", "dinosaur"):
+        for species in ("monkey", "turtle", "bear", "dog", "cat", "bird", "fish", "dinosaur", "elephant", "deer", "fox", "rabbit"):
             image = Image.new("RGB", (640, 360), (30, 35, 45))
             drawn = draw_species_character(
                 image, {"species": species, "scale": 1.0},
