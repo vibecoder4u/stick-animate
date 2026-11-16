@@ -138,6 +138,11 @@
             }
           ]
         }
+      ],
+      "soundscape": [
+        "forest_ambience",
+        "flowing_water",
+        "birds"
       ]
     },
     {
@@ -251,6 +256,18 @@
             }
           ]
         }
+      ],
+      "soundscape": [
+        "forest_ambience",
+        "flowing_water",
+        "birds"
+      ],
+      "visual_events": [
+        {
+          "type": "wood_creak",
+          "at": 1.15,
+          "evidence": "Milo lands and grabs the fallen branch"
+        }
       ]
     },
     {
@@ -357,6 +374,11 @@
             }
           ]
         }
+      ],
+      "soundscape": [
+        "forest_ambience",
+        "flowing_water",
+        "birds"
       ]
     },
     {
@@ -483,6 +505,18 @@
               "facing": -1
             }
           ]
+        }
+      ],
+      "soundscape": [
+        "forest_ambience",
+        "flowing_water",
+        "birds"
+      ],
+      "visual_events": [
+        {
+          "type": "wood_creak",
+          "at": 1,
+          "evidence": "Bruno braces and starts pushing the branch"
         }
       ]
     },
@@ -612,6 +646,18 @@
             }
           ]
         }
+      ],
+      "soundscape": [
+        "forest_ambience",
+        "flowing_water",
+        "birds"
+      ],
+      "visual_events": [
+        {
+          "type": "wood_impact",
+          "at": 1.35,
+          "evidence": "The fallen branch rolls away from the path"
+        }
       ]
     },
     {
@@ -740,6 +786,11 @@
             }
           ]
         }
+      ],
+      "soundscape": [
+        "forest_ambience",
+        "flowing_water",
+        "birds"
       ]
     }
   ]
