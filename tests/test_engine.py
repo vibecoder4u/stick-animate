@@ -120,6 +120,12 @@ class AnimationEngineTests(unittest.TestCase):
             self.assertTrue(draw_species_character(image, actor, pose, 0.5), species)
             self.assertGreater(len(image.getcolors(1280 * 720) or []), 1)
 
+    def test_forest_environment_has_dedicated_illustrated_background(self):
+        forest = stick_animate.gradient_background("forest")
+        corridor = stick_animate.gradient_background("corridor")
+        self.assertEqual(forest.size, (1280, 720))
+        self.assertNotEqual(forest.getpixel((640, 650)), corridor.getpixel((640, 650)))
+
 
 if __name__ == "__main__":
     unittest.main()
