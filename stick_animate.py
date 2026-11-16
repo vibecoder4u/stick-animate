@@ -614,7 +614,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Design and render a multi-scene 2D animated video.")
     parser.add_argument("--script", type=Path, default=Path("demo/mystery_hallway.json"))
     parser.add_argument("--story-file", type=Path, help="Plain-text story; Scene Designer will create a multi-shot plan.")
-    parser.add_argument("--duration", type=float, default=30.0, help="Target duration when using --story-file.")
+    parser.add_argument("--duration", type=float, default=None, help="Optional reference duration; ignored in auto mode.")\n    parser.add_argument("--duration-mode", choices=("auto", "strict"), default="auto", help="Auto follows story pacing; strict enforces --duration.")
     parser.add_argument("--title", default="Untitled Story", help="Video title when using --story-file.")
     parser.add_argument("--output", type=Path, default=Path("output/mystery-hallway.mp4"))
     parser.add_argument("--validate-only", action="store_true")
@@ -623,7 +623,7 @@ def main() -> None:
     if args.story_file:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         script_path = args.output.parent / (args.output.stem + "-scene-plan.json")
-        plan = design_production(args.story_file.read_text(encoding="utf-8"), args.duration, args.title)
+        plan = design_production(args.story_file.read_text(encoding="utf-8"), args.duration, args.title, duration_mode=args.duration_mode)
         script_path.write_text(json.dumps(plan, indent=2), encoding="utf-8")
         print(f"Scene Designer created {len(plan['scenes'])} shots: {script_path}")
     data = json.loads(script_path.read_text(encoding="utf-8"))
