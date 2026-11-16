@@ -27,12 +27,12 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
                            pose: dict[str, Any], t: float) -> bool:
     """Draw a non-human character using a species-specific body plan.
 
-    Supported: dog, cat, bird, fish, dinosaur. Returns False for human/unknown.
+    Supported: monkey, turtle, bear, dog, cat, bird, fish and dinosaur; human uses the fallback rig.
     """
     species = str(actor.get("species", "human")).lower()
     if species in ("human", "boy", "girl", "man", "woman", "old-man", "old_man"):
         return False
-    if species not in ("dog", "cat", "bird", "fish", "dinosaur", "trex", "t-rex"):
+    if species not in ("monkey", "turtle", "bear", "dog", "cat", "bird", "fish", "dinosaur", "trex", "t-rex"):
         return False
 
     d = ImageDraw.Draw(image)
@@ -53,7 +53,65 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
         # Mirroring x reverses endpoints; Pillow accepts normalized boxes.
         d.ellipse((min(a,c), min(b,e), max(a,c), max(b,e)), fill=fill, outline=outline, width=width)
 
-    if species in ("dog", "cat"):
+    if species == "monkey":
+        # Upright primate with long limbs, expressive face and curling tail.
+        bob = math.sin(phase * 2) * (4 if pose.get("pose") in ("run", "walk", "jump") else 1.5)
+        ellipse(0, -65+bob, 34, 48, coat, dark, 3)
+        ellipse(0, -132+bob, 34, 34, coat, dark, 3)
+        ellipse(-31, -137+bob, 11, 14, coat, dark, 2)
+        ellipse(31, -137+bob, 11, 14, coat, dark, 2)
+        ellipse(13, -124+bob, 20, 13, (205, 157, 116), dark, 2)
+        ellipse(21, -128+bob, 3, 4, eye)
+        ellipse(-11, -143+bob, 4, 5, eye)
+        ellipse(11, -143+bob, 4, 5, eye)
+        stride = math.sin(phase)
+        arm_swing = 24 if pose.get("pose") in ("run", "walk", "reach") else 7
+        for side in (-1, 1):
+            shoulder = p(side*23, -96+bob)
+            elbow = p(side*31 + side*stride*arm_swing, -63+bob)
+            hand = p(side*38 + side*stride*arm_swing, -42+bob)
+            _line(d, [shoulder, elbow, hand], coat, max(6, int(11*scale)))
+            hip = p(side*17, -35+bob)
+            knee = p(side*22 - stride*side*19, -16)
+            foot = p(side*25 - stride*side*27, -1)
+            _line(d, [hip, knee, foot], coat, max(7, int(13*scale)))
+        tail_wave = math.sin(t*4.5)*18
+        _line(d, [p(-25,-78+bob), p(-55,-66+tail_wave), p(-70,-91+tail_wave), p(-55,-111+tail_wave)], dark, max(5,int(8*scale)))
+    elif species == "turtle":
+        # Low quadruped with a domed shell, small head and four articulated feet.
+        bob = math.sin(phase*2)*2 if pose.get("pose") in ("walk", "run") else 0
+        ellipse(-3, -47+bob, 58, 35, dark, (38, 83, 58), 4)
+        ellipse(-3, -50+bob, 48, 28, (83, 132, 83), dark, 3)
+        for dx in (-25, 0, 20):
+            d.line((int(x+facing*(dx-9)*scale), int(y-66*scale+bob),
+                    int(x+facing*(dx+9)*scale), int(y-34*scale+bob)),
+                   fill=(48, 91, 62), width=max(2,int(3*scale)))
+        ellipse(48, -59+bob, 27, 22, coat, dark, 3)
+        ellipse(63, -65+bob, 3, 4, eye)
+        stride = math.sin(phase)
+        for side in (-1, 1):
+            for front in (-1, 1):
+                dx = (35 if front > 0 else -39) + side*9
+                swing = math.sin(phase + (0 if front == side else math.pi))*7 if pose.get("pose") in ("walk", "run") else 0
+                _line(d, [p(dx,-31+bob), p(dx+swing,-12), p(dx+swing+4,-2)], coat, max(7,int(12*scale)))
+                ellipse(dx+swing+4,-2,9,5,dark)
+    elif species == "bear":
+        # Heavy quadrupedal bear with broad shoulders, muzzle, rounded ears and paws.
+        bob = math.sin(phase*2)*2.5 if pose.get("pose") in ("walk", "run") else 0
+        ellipse(-2, -63+bob, 67, 48, coat, dark, 4)
+        ellipse(42, -111+bob, 39, 36, coat, dark, 3)
+        ellipse(18, -143+bob, 12, 13, coat, dark, 2)
+        ellipse(62, -142+bob, 12, 13, coat, dark, 2)
+        ellipse(72, -98+bob, 21, 15, (191, 151, 119), dark, 2)
+        ellipse(84, -102+bob, 5, 4, dark)
+        ellipse(49, -122+bob, 4, 5, eye)
+        stride = math.sin(phase)
+        for side, offset in ((-1,0.0),(1,math.pi)):
+            swing = math.sin(phase+offset)*13 if pose.get("pose") in ("walk", "run", "push") else 0
+            dx = 38 if side == 1 else -42
+            _line(d, [p(dx,-45+bob), p(dx+swing,-20), p(dx+swing,-2)], coat, max(9,int(17*scale)))
+            ellipse(dx+swing,-1,13,7,dark)
+    elif species in ("dog", "cat"):
         # Four-legged spine, shoulder/hip joints, articulated limbs, muzzle and tail.
         bob = math.sin(phase*2) * (3 if pose.get("pose") in ("run", "walk") else 1.5)
         body_y = -47 + bob
@@ -134,4 +192,4 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
 
 
 def available_species() -> tuple[str, ...]:
-    return ("human", "dog", "cat", "bird", "fish", "dinosaur")
+    return ("human", "monkey", "turtle", "bear", "dog", "cat", "bird", "fish", "dinosaur")
