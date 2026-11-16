@@ -121,9 +121,9 @@ def design_story(story: str, duration: float | None = None, title: str = "Untitl
         elif active and any(term in beat.lower() for term in ("helped","rescued","caught","pulled","pushed","together","with")):
             # Include named partners implicated by group/action language.
             active=list(dict.fromkeys(active + previous_active))
-        if not active and cast and (i == 0 or any(a["species"] == "human" for a in cast)): active=list(cast)
-        if not active and cast and any(term in beat.lower() for term in ("rain","storm","river","flood","sun","safe","safety")):
-            active=list(cast)
+        if not active and cast and any(a["species"] == "human" for a in cast): active=list(cast)
+        if not active and previous_active and any(term in beat.lower() for term in ("rain","storm","river","flood","sun","safe","safety","wave","wind")):
+            active=list(previous_active)
         if active: previous_active=active
         shot=SHOT_TYPES[i%len(SHOT_TYPES)]
         zooms={"establishing_wide":(1.0,1.025,-.025),"medium_action":(1.005,1.045,.045),
