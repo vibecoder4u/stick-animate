@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from production_agents import design_production
+from production_agents import _validate_plan, design_production
 from agent_runtime import FreeLLM
 
 
@@ -13,10 +13,27 @@ class ProductionAgentTests(unittest.TestCase):
         plan = design_production(story, 30, "The Fossil")
         self.assertGreaterEqual(len(plan["scenes"]), 3)
         self.assertEqual(plan["design_metadata"]["creative_mode"], "deterministic")
-        # With no API key this is deliberately the local planner, not a fake
-        # multi-agent/LLM run. Keep metadata honest and test the actual contract.
         self.assertEqual(plan["design_metadata"]["pipeline"], "local-fallback-no-api")
         self.assertTrue(all(scene.get("description") for scene in plan["scenes"]))
+
+    def test_ai_timeline_endpoint_drift_is_normalized(self):
+        plan = {"scenes": [
+            {"start": 0, "end": 9.93, "description": "Beat one"},
+            {"start": 9.93, "end": 19.87, "description": "Beat two"},
+            {"start": 19.87, "end": 29.8, "description": "Beat three"},
+        ]}
+        _validate_plan(plan, 30, 24)
+        self.assertEqual(plan["scenes"][0]["start"], 0.0)
+        self.assertEqual(plan["scenes"][-1]["end"], 30.0)
+        self.assertAlmostEqual(plan["scenes"][1]["start"], 10.0, places=1)
+
+    def test_ai_timeline_rejects_large_duration_mismatch(self):
+        plan = {"scenes": [
+            {"start": 0, "end": 4, "description": "Beat one"},
+            {"start": 4, "end": 8, "description": "Beat two"},
+        ]}
+        with self.assertRaisesRegex(ValueError, "differs too much"):
+            _validate_plan(plan, 30, 24)
 
     def test_fallback_does_not_reuse_railway_story(self):
         plan = design_production(
