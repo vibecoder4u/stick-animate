@@ -66,6 +66,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL: openai/gpt-oss-120b
           VIDEO_TITLE: ${{ inputs.title || 'THE EMPTY PLATFORM' }}
           VIDEO_DURATION: ${{ inputs.duration || 30 }}
         run: python stick_animate.py --story-file input-story.txt --duration "$VIDEO_DURATION" --title "$VIDEO_TITLE" --output output/animated-story.mp4 --validate-only
@@ -74,6 +75,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL: openai/gpt-oss-120b
           VIDEO_TITLE: ${{ inputs.title || 'THE EMPTY PLATFORM' }}
           VIDEO_DURATION: ${{ inputs.duration || 30 }}
         run: python stick_animate.py --story-file input-story.txt --duration "$VIDEO_DURATION" --title "$VIDEO_TITLE" --output output/animated-story.mp4
