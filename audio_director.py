@@ -152,6 +152,25 @@ def _event_sample(event: str, t: float, rng: random.Random) -> float:
     if event == "metal_clang":
         envelope = math.exp(-t*4.8)
         return envelope * (0.24*math.sin(2*math.pi*310*t) + 0.13*math.sin(2*math.pi*527*t) + (rng.random()*2-1)*0.05)
+    if event in ("forest_ambience", "birds"):
+        return (rng.random()*2-1) * (0.012 if event == "forest_ambience" else 0.008)
+    if event == "flowing_water":
+        return (rng.random()*2-1) * 0.022
+    if event == "wood_creak":
+        env = max(0.0, 1.0-t/1.6)
+        return env * (0.10*math.sin(2*math.pi*(72+18*math.sin(t*3))*t) + (rng.random()*2-1)*0.025)
+    if event == "wood_impact":
+        return math.exp(-t*8) * (0.22*math.sin(2*math.pi*68*t) + (rng.random()*2-1)*0.09)
+    if event == "water_splash":
+        return math.exp(-t*4) * (rng.random()*2-1) * 0.14
+    if event == "jump_whoosh":
+        envelope = math.sin(min(1.0, t/0.7)*math.pi) if t < 0.7 else 0.0
+        return envelope * (rng.random()*2-1) * 0.08
+    if event == "turtle_shuffle":
+        phase = t % 0.62
+        return (rng.random()*2-1) * 0.035 * math.exp(-phase*5)
+    if event == "bear_effort":
+        return 0.08 * math.sin(2*math.pi*72*t) * math.exp(-t*1.8)
     return 0.0
 
 
