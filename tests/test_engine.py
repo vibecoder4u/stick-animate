@@ -39,6 +39,17 @@ class AnimationEngineTests(unittest.TestCase):
         self.assertEqual(frame.mode, "RGB")
         self.assertEqual(frame.size, (1280, 720))
 
+    def test_structured_environment_manifest_renders(self):
+        scene = {
+            "start": 0, "end": 2,
+            "environment": {"type": "forest", "time_of_day": "evening"},
+            "actors": [],
+        }
+        script = {"title": "Structured Environment", "duration": 2, "fps": 24, "scenes": [scene]}
+        frame = stick_animate.make_frame(script, scene, 0.5, 1.0, {})
+        self.assertEqual(frame.size, (1280, 720))
+        self.assertEqual(frame.mode, "RGB")
+
     def test_invalid_overlapping_scenes_are_rejected(self):
         invalid = dict(self.script)
         invalid["scenes"] = [dict(self.script["scenes"][0]), dict(self.script["scenes"][1])]
