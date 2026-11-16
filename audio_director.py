@@ -15,7 +15,12 @@ from typing import Any
 from scene_understanding_agent import analyse_script
 
 SAMPLE_RATE = 22050
-ALLOWED_EVENTS = {"door_open", "footsteps", "rain", "wind", "bird_wings", "bird_call", "heartbeat", "metal_clang"}
+ALLOWED_EVENTS = {
+    "door_open", "footsteps", "rain", "wind", "bird_wings", "bird_call",
+    "heartbeat", "metal_clang", "forest_ambience", "flowing_water", "birds",
+    "jump_whoosh", "wood_creak", "wood_impact", "water_splash",
+    "turtle_shuffle", "bear_effort",
+}
 
 
 def plan_scene_audio(script: dict[str, Any]) -> list[dict[str, Any]]:
@@ -36,13 +41,42 @@ def plan_scene_audio(script: dict[str, Any]) -> list[dict[str, Any]]:
         previous_door = door
 
         actor = scene.get("actor", {})
-        keys = actor.get("keyframes", [])
         actor_moves = any(a["moves"] and a["visible"] for a in scene_report["actors"])
         if actor_moves:
             cues.append({"event": "footsteps", "start": start,
-                         "duration": max(0.5, end-start),
+                         "duration": max(0.5, end-start), "gain": 0.22,
                          "evidence": "visible actor has walk/run pose and positional movement",
                          "source": "animation_keyframes"})
+
+        for sound in scene.get("soundscape", []):
+            if sound in {"forest_ambience", "flowing_water", "birds", "rain", "wind"}:
+                cues.append({"event": sound, "start": start, "duration": end-start,
+                             "gain": 0.18 if sound in {"forest_ambience", "birds"} else 0.24,
+                             "evidence": f"explicit scene soundscape: {sound}",
+                             "source": "scene_soundscape"})
+
+        poses = {pose for a in scene_report["actors"] if a["visible"] for pose in a["poses"]}
+        species = {a["species"] for a in scene_report["actors"] if a["visible"]}
+        if "jump" in poses:
+            cues.append({"event": "jump_whoosh", "start": start + min(0.35, (end-start)*0.2),
+                         "duration": min(0.7, end-start), "gain": 0.28,
+                         "evidence": "visible actor keyframe contains jump pose",
+                         "source": "animation_keyframes"})
+        if "push" in poses and "fallen_tree" in species:
+            cues.append({"event": "wood_creak", "start": start + min(0.25, (end-start)*0.15),
+                         "duration": min(1.6, end-start), "gain": 0.32,
+                         "evidence": "visible push pose is staged with fallen_tree prop",
+                         "source": "actor_prop_interaction"})
+        if "bear" in species and "push" in poses:
+            cues.append({"event": "bear_effort", "start": start + min(0.4, (end-start)*0.2),
+                         "duration": min(0.9, end-start), "gain": 0.20,
+                         "evidence": "visible bear actor holds push pose",
+                         "source": "character_action"})
+        if "turtle" in species and any(p in poses for p in ("walk", "reach")):
+            cues.append({"event": "turtle_shuffle", "start": start,
+                         "duration": min(1.8, end-start), "gain": 0.14,
+                         "evidence": "visible turtle actor has walk/reach keyframes",
+                         "source": "character_action"})
 
         # Rain is emitted only when the script explicitly selects a rain environment.
         if environment == "rainroom" or scene.get("weather") == "rain":
@@ -62,10 +96,14 @@ def plan_scene_audio(script: dict[str, Any]) -> list[dict[str, Any]]:
         if frightened:
             cues.append({"event": "heartbeat", "start": start + 0.25, "duration": min(2.5, end-start-0.25),
                          "evidence": "visible actor expression=fear", "source": "character_expression"})
+        visual_event_map = {"metal_clang": "metal_clang", "wood_impact": "wood_impact", "water_splash": "water_splash"}
         for event in scene.get("visual_events", []):
-            if event.get("type") == "metal_clang":
-                cues.append({"event": "metal_clang", "start": start + float(event.get("at", 0)),
-                             "duration": 0.9, "evidence": str(event.get("evidence", "visible metal impact")),
+            event_type = visual_event_map.get(event.get("type"))
+            if event_type:
+                at = float(event.get("at", 0))
+                cues.append({"event": event_type, "start": start + at,
+                             "duration": min(0.9, end-start-at), "gain": 0.38,
+                             "evidence": str(event.get("evidence", f"visible {event_type} event")),
                              "source": "visual_event_manifest"})
     return cues
 
