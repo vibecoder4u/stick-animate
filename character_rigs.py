@@ -29,7 +29,7 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
     """Draw an animal rig or a simple story prop. Humans use the fallback rig."""
     species = str(actor.get("species", "human")).lower().replace("-", "_")
     supported = {"monkey", "turtle", "bear", "dog", "cat", "bird", "fish",
-                 "dinosaur", "trex", "fallen_tree", "apple_cluster", "apple"}
+                 "dinosaur", "trex", "t_rex", "fallen_tree", "apple_cluster", "apple"}
     if species in {"human", "boy", "girl", "man", "woman", "old_man"} or species not in supported:
         return False
 
