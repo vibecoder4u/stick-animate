@@ -19,6 +19,7 @@ from scene_understanding_agent import analyse_script
 from scene_designer import design_story
 from production_agents import design_production
 from character_rigs import draw_species_character
+from motion_engine import evaluate_motion, validate_path_points
 from camera_director import apply_camera
 from environment_animation import render_environment_background, animate_environment
 
@@ -67,6 +68,7 @@ def validate_script(data: dict[str, Any]) -> None:
         if scene.get("actor"):
             cast.insert(0, scene["actor"])
         for actor_index, actor in enumerate(cast):
+            validate_path_points(actor.get("path_points"))
             keys = actor.get("keyframes", [])
             if keys:
                 times = [float(k["t"]) for k in keys]
@@ -555,19 +557,24 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         cast = [primary] + [a for a in cast if a is not primary]
     for actor in cast:
         pose_data = sample_keyframes(actor.get("keyframes", []), local_t)
+        pose_data["_scene_progress"] = local_t
+        pose_data = evaluate_motion(pose_data, actor, global_t)
         pose_data["facing"] = facing_sign(pose_data.get("facing", 1))
-        species = str(actor.get("species", "human")).lower()
-        # Merge sampled numeric controls into the actor manifest so props can
-        # animate their angle/length/shape as well as their screen position.
+        # Isolated performer layer enables per-character depth scaling and turns.
+        actor_layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         render_actor = dict(actor)
         render_actor.update(pose_data)
-        if not draw_species_character(image, render_actor, pose_data, global_t):
-            draw_character(
-                image, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
+        render_actor["scale"] = float(actor.get("scale", 1.0)) * float(pose_data.get("depth_scale", 1.0))
+        if not draw_species_character(actor_layer, render_actor, pose_data, global_t):
+            draw_character(actor_layer, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
                 str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
-                global_t, float(actor.get("scale", 1.0)),
-            )
-            draw_character_design(image, actor, pose_data)
+                float(pose_data.get("gait_phase", global_t * 7.0)), float(render_actor["scale"]))
+            draw_character_design(actor_layer, render_actor, pose_data)
+        angle = float(pose_data.get("body_angle", 0.0))
+        if abs(angle) > 0.01:
+            actor_layer = actor_layer.rotate(-angle, resample=Image.Resampling.BICUBIC,
+                center=(float(pose_data.get("x", 640)), float(pose_data.get("y", 610))))
+        image = Image.alpha_composite(image.convert("RGBA"), actor_layer).convert("RGB")
     caption = scene.get("caption", "")
     sub = scene.get("subcaption", "")
     # Fade captions in and out at shot boundaries.
