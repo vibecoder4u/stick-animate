@@ -40,7 +40,11 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
     scale = max(0.25, min(3.0, float(actor.get("scale", 1.0))))
     facing = 1 if int(pose.get("facing", 1)) >= 0 else -1
     phase = t * (10.0 if pose.get("pose") in ("run", "walk", "swim", "fly") else 2.0)
-    coat = _rgb(actor.get("body_rgb"), (174, 133, 94) if species in ("dog", "cat") else (190, 203, 211))
+    default_coats = {
+        "monkey": (151, 96, 59), "turtle": (104, 151, 91), "bear": (132, 91, 63),
+        "dog": (174, 133, 94), "cat": (174, 133, 94),
+    }
+    coat = _rgb(actor.get("body_rgb"), default_coats.get(species, (190, 203, 211)))
     dark = _rgb(actor.get("marking_rgb"), (58, 49, 43))
     eye = (18, 24, 30)
 
