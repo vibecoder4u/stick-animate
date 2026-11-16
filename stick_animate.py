@@ -568,7 +568,7 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         if not draw_species_character(actor_layer, render_actor, pose_data, global_t):
             draw_character(actor_layer, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
                 str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
-                float(pose_data.get("gait_phase", global_t * 7.0)), float(render_actor["scale"]))
+                global_t, float(render_actor["scale"]))
             draw_character_design(actor_layer, render_actor, pose_data)
         angle = float(pose_data.get("body_angle", 0.0))
         if abs(angle) > 0.01:
