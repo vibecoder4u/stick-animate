@@ -85,8 +85,10 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
              "cat": 9.5, "bird": 7.0, "fish": 8.0, "dinosaur": 6.0,
              "trex": 6.0, "elephant": 3.2, "deer": 8.0, "fox": 8.8, "rabbit": 10.0}
     gait_active = action in {"walk", "run", "jump", "fly", "swim"}
-    phase = t * rates.get(species, 7.0) * (1.35 if action == "run" else 1.0)
+    phase = float(pose.get("gait_phase", t * rates.get(species, 7.0))) * (1.35 if action == "run" else 1.0)
     stride = math.sin(phase)
+    lean += float(pose.get("body_lean", 0.0))
+    bob_control = float(pose.get("body_bob", 0.0))
     heavy_bob = math.sin(phase*2) * (1.8 if species == "bear" else 1.0)
     if action == "push":
         lean = 12 * action_wave
@@ -95,7 +97,7 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
     else:
         lean = 0
     jump_lift = 32 * max(0.0, math.sin(math.pi * duration)) if action == "jump" else 0.0
-    y -= jump_lift
+    y -= jump_lift + bob_control
 
     if species == "monkey":
         bob = math.sin(phase*2) * (5 if gait_active else 1.5)
