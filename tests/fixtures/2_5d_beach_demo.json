@@ -1,0 +1,121 @@
+{
+  "title": "2.5D Camera and Beach Proof",
+  "size": [
+    1280,
+    720
+  ],
+  "fps": 24,
+  "duration": 9,
+  "scenes": [
+    {
+      "start": 0,
+      "end": 3,
+      "environment": "beach",
+      "description": "A bear stands at the shoreline as the camera establishes the beach.",
+      "caption": "A QUIET BEACH",
+      "camera": {
+        "shot_type": "establishing_wide",
+        "zoom_start": 1,
+        "zoom_end": 1.035,
+        "track_subject": false
+      },
+      "actors": [
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 1.15,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 420,
+              "y": 535,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 450,
+              "y": 535,
+              "pose": "walk",
+              "facing": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 3,
+      "end": 6.5,
+      "environment": "beach",
+      "description": "The bear swims through the moving water while the camera follows him.",
+      "caption": "INTO THE WATER",
+      "camera": {
+        "shot_type": "medium_action",
+        "zoom_start": 1.04,
+        "zoom_end": 1.12,
+        "focus_actor": "bruno",
+        "track_subject": true
+      },
+      "actors": [
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 1.1,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 470,
+              "y": 530,
+              "pose": "swim",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 820,
+              "y": 510,
+              "pose": "swim",
+              "facing": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 6.5,
+      "end": 9,
+      "environment": "underwater",
+      "description": "The bear swims beneath the surface as bubbles rise around him.",
+      "caption": "BENEATH THE SURFACE",
+      "camera": {
+        "shot_type": "close_up",
+        "zoom_start": 1.08,
+        "zoom_end": 1.16,
+        "focus_actor": "bruno",
+        "track_subject": true
+      },
+      "actors": [
+        {
+          "species": "bear",
+          "character_id": "bruno",
+          "scale": 1,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 680,
+              "y": 485,
+              "pose": "swim",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 760,
+              "y": 465,
+              "pose": "swim",
+              "facing": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
