@@ -12,7 +12,17 @@ def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int
     if fps <= 0 or duration_mode not in ("auto", "strict"):
         raise ValueError("Invalid fps or duration mode")
     plan.setdefault("title", "Untitled Story")
-    plan.setdefault("size", [1280, 720])
+    raw_size = plan.get("size", [1280, 720])
+    if isinstance(raw_size, dict):
+        raw_size = [raw_size.get("width", 1280), raw_size.get("height", 720)]
+    if not isinstance(raw_size, (list, tuple)) or len(raw_size) != 2:
+        raise ValueError("AI canvas size must be [width, height] or {width, height}")
+    try:
+        plan["size"] = [int(raw_size[0]), int(raw_size[1])]
+    except (TypeError, ValueError) as exc:
+        raise ValueError("AI canvas width and height must be numeric") from exc
+    if min(plan["size"]) <= 0:
+        raise ValueError("AI canvas width and height must be positive")
     plan["fps"] = int(plan.get("fps") or fps)
     try:
         plan["scenes"].sort(key=lambda item: float(item["start"]))
