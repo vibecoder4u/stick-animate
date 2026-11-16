@@ -30,7 +30,7 @@ def apply_camera(image: Image.Image, scene: dict[str, Any], progress: float) -> 
         actors.insert(0, scene["actor"])
     target = next((a for a in actors if target_id and
                    str(a.get("character_id", a.get("id", ""))) == str(target_id)), None)
-    if target is None and camera.get("track_subject", False) and actors:
+    if target is None and camera.get("track_subject", camera.get("shot_type") in ("close_up", "medium_action", "low_angle")) and actors:
         target = actors[0]
     if target is not None:
         keys = target.get("keyframes") or []
