@@ -2,6 +2,15 @@ name: Render Riverbank Rescue prototype
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "stick_animate.py"
+      - "audio_director.py"
+      - "sound_effect_finder.py"
+      - "demo/riverbank-rescue.json"
+      - "tests/**"
+      - ".github/workflows/render-riverbank-prototype.yml"
 
 permissions:
   contents: read
@@ -53,6 +62,6 @@ jobs:
           {
             echo "## Riverbank Rescue prototype rendered"
             echo ""
-            echo "This is a fresh 18-second test script. It exercises human, monkey, turtle and bear rigs, locomotion, jump/reach/push poses, and procedural branch/apple props."
-            echo "Download the MP4 and poster from this run's artifact."
+            echo "This is a fresh 18-second test script with human, monkey, turtle and bear rigs plus automatically searched, commercially usable, attributed sound effects for forest ambience, flowing water, footsteps, jumps and branch movement."
+            echo "The artifact also includes the audio cue plan and sound-effect attribution manifest."
           } >> "$GITHUB_STEP_SUMMARY"
