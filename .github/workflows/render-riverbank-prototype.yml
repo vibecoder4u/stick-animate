@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "stick_animate.py"
+      - "scene_designer.py"
       - "audio_director.py"
       - "sound_effect_finder.py"
       - "demo/riverbank-rescue.json"
