@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import random
 import subprocess
 import tempfile
@@ -13,6 +14,7 @@ from typing import Any
 from PIL import Image, ImageDraw, ImageFont
 
 from audio_director import render_audio
+from sound_effect_finder import find_and_mix_effects
 from scene_understanding_agent import analyse_script
 from scene_designer import design_story
 from production_agents import design_production
@@ -630,6 +632,13 @@ def render(script_path: Path, output: Path) -> Path:
     with tempfile.TemporaryDirectory(prefix="stick-animate-") as temp_dir:
         audio_path = Path(temp_dir) / "scene-audio.wav"
         audio_cues = render_audio(script, audio_path)
+        if os.environ.get("STICK_ANIMATE_OFFLINE_AUDIO") != "1":
+            attribution_path = output.parent / "sound-effect-attribution.json"
+            found = find_and_mix_effects(
+                audio_path, audio_cues, duration,
+                output.parent / "sound-effects", attribution_path,
+            )
+            print(f"Found and mixed {len(found)} licensed sound-effect clips.")
         (output.parent / "audio-cues.json").write_text(json.dumps(audio_cues, indent=2), encoding="utf-8")
         understanding = analyse_script(script)
         (output.parent / "scene-understanding.json").write_text(json.dumps(understanding, indent=2), encoding="utf-8")
