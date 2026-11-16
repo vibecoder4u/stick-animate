@@ -582,8 +582,16 @@ def write_ambience(path: Path, duration: float, sample_rate: int = 22050) -> Non
 def render(script_path: Path, output: Path) -> Path:
     script = json.loads(script_path.read_text(encoding="utf-8"))
     validate_script(script)
-    width, height = script.get("size", [W, H])
-    if [int(width), int(height)] != [W, H]:
+    raw_size = script.get("size", [W, H])
+    if isinstance(raw_size, dict):
+        raw_size = [raw_size.get("width", W), raw_size.get("height", H)]
+    if not isinstance(raw_size, (list, tuple)) or len(raw_size) != 2:
+        raise ValueError("Script size must be [width, height] or {width, height}")
+    try:
+        width, height = int(raw_size[0]), int(raw_size[1])
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Script canvas width and height must be numeric") from exc
+    if [width, height] != [W, H]:
         raise ValueError(f"This build currently renders at {W}x{H}; script size must match.")
     fps = int(script.get("fps", FPS))
     duration = float(script["duration"])
