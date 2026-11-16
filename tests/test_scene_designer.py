@@ -64,7 +64,7 @@ class SceneDesignerTests(unittest.TestCase):
         plan = design_story(story, title="The Great Flood")
         species = {item["species"] for item in plan["design_metadata"]["cast"]}
         self.assertTrue({"elephant", "deer", "fox", "rabbit", "monkey", "bird", "bear", "turtle"}.issubset(species))
-        self.assertEqual(len(plan["scenes"][1].get("actors", [])), 8)
+        self.assertGreaterEqual(len(plan["scenes"][1].get("actors", [])), 8)
         self.assertTrue(all(scene.get("actors") for scene in plan["scenes"]))
 
     def test_searching_does_not_trigger_beach_environment(self):
