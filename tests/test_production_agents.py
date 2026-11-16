@@ -69,7 +69,7 @@ class ProductionAgentTests(unittest.TestCase):
         self.assertEqual(_validate_plan(plan, story=story), 40.0)
         for scene in plan["scenes"]:
             scene["description"] = scene["description"].replace("apples", "fruit").replace("apple", "fruit")
-            scene["caption"] = scene["caption"].replace("apples", "fruit").replace("apple", "fruit")
+            scene["caption"] = scene["caption"].lower().replace("apples", "fruit").replace("apple", "fruit")
         with self.assertRaisesRegex(ValueError, "apple"):
             _validate_plan(plan, story=story)
 
