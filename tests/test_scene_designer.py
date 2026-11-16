@@ -55,5 +55,22 @@ class SceneDesignerTests(unittest.TestCase):
         self.assertIn("dinosaur", species)
 
 
+    def test_flood_story_builds_persistent_multi_species_cast(self):
+        story = ("The peaceful jungle surrounds a wide river. Elephant Ella, a young deer, "
+                 "a fox, a rabbit, a monkey, a colourful bird, a bear and a turtle gather. "
+                 "Heavy rain falls and the river rises. The monkey climbs a tree while the bird scouts. "
+                 "The bear and elephant pull a fallen tree into place. The fox guides the rabbit and deer. "
+                 "The elephant catches the deer when it slips. All the animals reach safety.")
+        plan = design_story(story, title="The Great Flood")
+        species = {item["species"] for item in plan["design_metadata"]["cast"]}
+        self.assertTrue({"elephant", "deer", "fox", "rabbit", "monkey", "bird", "bear", "turtle"}.issubset(species))
+        self.assertEqual(len(plan["scenes"][1].get("actors", [])), 8)
+        self.assertTrue(all(scene.get("actors") for scene in plan["scenes"]))
+
+    def test_searching_does_not_trigger_beach_environment(self):
+        from scene_designer import _environment
+        self.assertEqual(_environment("The fox is searching beside the riverbank.", None), "river")
+
+
 if __name__ == "__main__":
     unittest.main()
