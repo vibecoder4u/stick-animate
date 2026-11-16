@@ -26,6 +26,15 @@ class ProductionAgentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "numeric"):
             _validate_plan(plan)
 
+    def test_ai_plan_must_cover_each_script_paragraph(self):
+        story = "Alex meets Milo.\\n\\nThey rescue Tia.\\n\\nBruno helps move the tree."
+        short_plan = {"scenes": [{"start": 0, "end": 2}, {"start": 2, "end": 4}]}
+        with self.assertRaisesRegex(ValueError, "Story coverage incomplete"):
+            _validate_plan(short_plan, story=story)
+        complete_plan = {"scenes": [{"start": 0, "end": 2}, {"start": 2, "end": 4},
+                                    {"start": 4, "end": 6}]}
+        self.assertEqual(_validate_plan(complete_plan, story=story), 6.0)
+
     def test_auto_mode_preserves_natural_ai_timeline_without_stretching(self):
         plan = {"scenes": [{"start": 0, "end": 3.2}, {"start": 3.2, "end": 11.8}, {"start": 11.8, "end": 16.4}]}
         self.assertEqual(_validate_plan(plan, 30, 24, "auto"), 16.4)
