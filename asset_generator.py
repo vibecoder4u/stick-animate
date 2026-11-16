@@ -210,3 +210,20 @@ def prepare_generated_assets(script: dict[str, Any], output_dir: Path,
         manifest_path.parent.mkdir(parents=True, exist_ok=True)
         manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return generated
+
+def attach_generated_assets(script: dict[str, Any], generated: dict[str, str]) -> None:
+    """Attach generated image paths to matching scene backgrounds, actors and props."""
+    for scene in script.get("scenes", []):
+        background_id = scene.get("background_asset")
+        if background_id and _slug(str(background_id)) in generated:
+            scene["background_image"] = generated[_slug(str(background_id))]
+        for actor in list(scene.get("actors") or []) + ([scene["actor"]] if scene.get("actor") else []):
+            name = str(actor.get("name") or actor.get("character_id") or actor.get("species") or "character")
+            asset_id = _slug(str(actor.get("asset_id") or f"character-{name}"))
+            if asset_id in generated:
+                actor["_generated_asset_path"] = generated[asset_id]
+        for prop in scene.get("props", []) or []:
+            name = str(prop.get("type") or prop.get("name") or "prop")
+            asset_id = _slug(str(prop.get("asset_id") or f"prop-{name}"))
+            if asset_id in generated:
+                prop["_generated_asset_path"] = generated[asset_id]
