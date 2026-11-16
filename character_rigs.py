@@ -87,15 +87,13 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
     gait_active = action in {"walk", "run", "jump", "fly", "swim"}
     phase = float(pose.get("gait_phase", t * rates.get(species, 7.0))) * (1.35 if action == "run" else 1.0)
     stride = math.sin(phase)
-    lean += float(pose.get("body_lean", 0.0))
+    lean = float(pose.get("body_lean", 0.0))
     bob_control = float(pose.get("body_bob", 0.0))
     heavy_bob = math.sin(phase*2) * (1.8 if species == "bear" else 1.0)
     if action == "push":
-        lean = 12 * action_wave
+        lean += 12 * action_wave
     elif action in {"reach", "pick_up"}:
-        lean = 7 * action_wave
-    else:
-        lean = 0
+        lean += 7 * action_wave
     jump_lift = 32 * max(0.0, math.sin(math.pi * duration)) if action == "jump" else 0.0
     y -= jump_lift + bob_control
 
