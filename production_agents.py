@@ -154,4 +154,22 @@ def design_production(story: str, duration: float | None = None, title: str = "U
             "api_requests": 1})
         return plan
     except (AgentUnavailable, ValueError, TypeError, KeyError) as exc:
+        # Recover specifically from an under-storyboarded AI outline by expanding the
+        # original script locally, beat by beat. Do not silently use this path for
+        # malformed renderer schemas or unrelated programming errors.
+        if isinstance(exc, ValueError) and "Story coverage incomplete" in str(exc):
+            recovery = design_story(story, None if duration_mode == "auto" else duration,
+                                    title, fps)
+            _validate_plan(recovery, duration, fps, duration_mode, story)
+            recovery["design_metadata"].update({
+                "designer": "groq-outline-local-storyboard-recovery",
+                "provider": "groq+local",
+                "model": llm.model,
+                "creative_mode": "hybrid_storyboard_recovery",
+                "pipeline": "single-groq-outline->local-beat-expansion->renderer",
+                "recovery_reason": str(exc),
+                "api_requests": 1,
+                "scene_count": len(recovery["scenes"]),
+            })
+            return recovery
         raise AgentUnavailable(f"AI scene planning failed; deterministic fallback disabled: {exc}") from exc
