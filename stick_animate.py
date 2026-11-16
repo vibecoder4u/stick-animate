@@ -507,7 +507,7 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
     # A soft moving pool of light and a subtle practical flicker.
     d = ImageDraw.Draw(image)
     flicker = 0.92 + 0.08 * math.sin(global_t * 13.0)
-    if kind not in ("platform", "service_gate", "tunnel", "exit", "trackside"):
+    if kind not in ("platform", "service_gate", "tunnel", "exit", "trackside", "forest", "road"):
         d.polygon([(640, 130), (930, 130), (1120, 530), (430, 530)], fill=(40, 55, 72))
         d.line((640, 130, 430, 530), fill=(49, 65, 82), width=2)
         d.line((930, 130, 1120, 530), fill=(49, 65, 82), width=2)
@@ -520,7 +520,7 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         px = (i * 97 + int(global_t * (8 + i % 5))) % W
         py = (i * 53 + int(global_t * (3 + i % 4))) % 570
         d.ellipse((px, py, px+2, py+2), fill=(79, 102, 126))
-    if kind in ("platform", "street", "rainroom"):
+    if kind in ("platform", "street", "rainroom") or (kind in ("forest", "road") and scene.get("weather") == "rain"):
         for i in range(75 if kind == "rainroom" else 42):
             px = (i * 41 + int(global_t * 95)) % W
             py = (i * 67 + int(global_t * 220)) % H
