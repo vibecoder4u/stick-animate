@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from asset_generator import ImageGenerator, ImageGenerationUnavailable, collect_asset_requests, prepare_generated_assets
+from asset_generator import ImageGenerator, ImageGenerationUnavailable, collect_asset_requests, prepare_generated_assets, attach_generated_assets
 
 
 class AssetDiscoveryTests(unittest.TestCase):
@@ -31,6 +31,19 @@ class AssetDiscoveryTests(unittest.TestCase):
         request = collect_asset_requests(script)[0]
         self.assertEqual(request["kind"], "background")
         self.assertIn("blue crystal", request["prompt"])
+
+
+    def test_generated_paths_attach_to_actor_prop_and_background(self):
+        script = {"scenes": [{"start": 0, "end": 2, "background_asset": "scene-bg",
+            "actors": [{"name": "Ember", "asset_id": "character-ember"}],
+            "props": [{"type": "crystal_compass", "asset_id": "prop-crystal-compass"}]}]}
+        generated = {"scene-bg": "/tmp/bg.png", "character-ember": "/tmp/ember.png",
+                     "prop-crystal-compass": "/tmp/compass.png"}
+        attach_generated_assets(script, generated)
+        scene = script["scenes"][0]
+        self.assertEqual(scene["background_image"], "/tmp/bg.png")
+        self.assertEqual(scene["actors"][0]["_generated_asset_path"], "/tmp/ember.png")
+        self.assertEqual(scene["props"][0]["_generated_asset_path"], "/tmp/compass.png")
 
     def test_no_provider_is_explicitly_unavailable(self):
         with patch.dict(os.environ, {}, clear=True):
