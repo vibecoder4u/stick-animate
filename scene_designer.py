@@ -59,6 +59,9 @@ def _focus(text: str) -> str:
 def _species(text: str) -> str | None:
     lowered = text.lower()
     rules = [
+        ("monkey", ("monkey", "ape", "chimpanzee", "gorilla")),
+        ("turtle", ("turtle", "tortoise")),
+        ("bear", ("bear", "grizzly", "black bear")),
         ("dinosaur", ("dinosaur", "t-rex", "trex", "velociraptor")),
         ("dog", ("dog", "puppy", "hound", "wolf")),
         ("cat", ("cat", "kitten", "feline")),
