@@ -35,6 +35,39 @@ class ProductionAgentTests(unittest.TestCase):
                                     {"start": 4, "end": 6}]}
         self.assertEqual(_validate_plan(complete_plan, story=story), 6.0)
 
+    def test_one_paragraph_story_requires_real_storyboard_coverage(self):
+        story = ("Alex tripped and apples rolled away. Milo the Monkey helped him. "
+                 "They found Tia the Turtle stuck on her back. A storm arrived and a tree blocked the road. "
+                 "Bruno the Bear helped them push the tree aside. They walked home together as friends.")
+        short = {"scenes": [{"start": 0, "end": 3}, {"start": 3, "end": 7}]}
+        with self.assertRaisesRegex(ValueError, "require at least"):
+            _validate_plan(short, story=story)
+
+    def test_story_coverage_requires_distinctive_events(self):
+        story = ("Alex tripped and apples rolled away. Milo the Monkey helped him. "
+                 "They found Tia the Turtle stuck on her back. A storm arrived and a tree blocked the road. "
+                 "Bruno the Bear helped them push the tree aside. They walked home together as friends.")
+        scenes = []
+        descriptions = [
+            "Alex trips and apples roll across the forest floor",
+            "Milo the Monkey picks up an apple and helps Alex",
+            "Alex laughs with Milo the Monkey",
+            "Tia the Turtle is stuck upside down",
+            "Milo and Alex push Tia the Turtle upright",
+            "A storm breaks over the forest road",
+            "A fallen tree blocks the road",
+            "Bruno the Bear arrives to help",
+            "The friends push and move the fallen tree together",
+            "Alex walks home with Milo Tia and Bruno as friends",
+        ]
+        for i, description in enumerate(descriptions):
+            scenes.append({"start": i * 4, "end": (i + 1) * 4, "description": description})
+        plan = {"scenes": scenes}
+        self.assertEqual(_validate_plan(plan, story=story), 40.0)
+        plan["scenes"][0]["description"] = "A quiet forest establishing shot"
+        with self.assertRaisesRegex(ValueError, "apple"):
+            _validate_plan(plan, story=story)
+
     def test_auto_mode_preserves_natural_ai_timeline_without_stretching(self):
         plan = {"scenes": [{"start": 0, "end": 3.2}, {"start": 3.2, "end": 11.8}, {"start": 11.8, "end": 16.4}]}
         self.assertEqual(_validate_plan(plan, 30, 24, "auto"), 16.4)
