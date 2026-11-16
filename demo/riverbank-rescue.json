@@ -29,7 +29,23 @@
           "x": 650,
           "y": 574,
           "length": 600,
-          "scale": 1
+          "scale": 1,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 650,
+              "y": 574,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 650,
+              "y": 574,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
         },
         {
           "species": "human",
@@ -140,7 +156,23 @@
           "species": "fallen_tree",
           "x": 650,
           "y": 574,
-          "length": 600
+          "length": 600,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 650,
+              "y": 574,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 650,
+              "y": 574,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
         },
         {
           "species": "monkey",
@@ -237,7 +269,23 @@
           "species": "fallen_tree",
           "x": 650,
           "y": 574,
-          "length": 600
+          "length": 600,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 650,
+              "y": 574,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 650,
+              "y": 574,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
         },
         {
           "species": "turtle",
@@ -327,7 +375,23 @@
           "species": "fallen_tree",
           "x": 650,
           "y": 574,
-          "length": 600
+          "length": 600,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 650,
+              "y": 574,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 650,
+              "y": 574,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
         },
         {
           "species": "bear",
@@ -439,7 +503,23 @@
           "x": 650,
           "y": 574,
           "length": 600,
-          "angle": -9
+          "angle": -9,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 650,
+              "y": 574,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 650,
+              "y": 574,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
         },
         {
           "species": "human",
@@ -551,7 +631,23 @@
           "x": 980,
           "y": 600,
           "count": 5,
-          "scale": 1
+          "scale": 1,
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 980,
+              "y": 600,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 980,
+              "y": 600,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
         },
         {
           "species": "human",
