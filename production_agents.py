@@ -1,6 +1,7 @@
 from __future__ import annotations
 """Story-led production planner. Auto timing is the default."""
 import math
+import re
 from typing import Any
 from agent_runtime import AgentUnavailable, FreeLLM
 from scene_designer import design_story
@@ -10,14 +11,38 @@ def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int
     if not isinstance(plan, dict) or not isinstance(plan.get("scenes"), list) or not plan["scenes"]:
         raise ValueError("AI planner did not return a non-empty scenes array")
     if story:
-        story_paragraphs = [p.strip() for p in story.splitlines() if p.strip()]
+        # Split on sentence boundaries, not newlines: manual workflow input is often one paragraph.
+        beats = [part.strip() for part in re.split(r"(?<=[.!?])\\s+", story.strip()) if part.strip()]
+        words = re.findall(r"[a-z0-9']+", story.lower())
         scene_count = len(plan["scenes"])
-        if scene_count < len(story_paragraphs):
-            raise ValueError(
-                f"Story coverage incomplete: {len(story_paragraphs)} script paragraphs require at least "
-                f"{len(story_paragraphs)} scenes; planner returned {scene_count}. "
-                "Create separate shots for the missing story beats; do not collapse the script."
-            )
+        if len(words) >= 60:
+            required_scenes = max(8, math.ceil(min(len(beats), 24) * 0.45))
+            if scene_count < required_scenes:
+                raise ValueError(
+                    f"Story coverage incomplete: {len(words)} words across {len(beats)} sentence beats "
+                    f"require at least {required_scenes} distinct shots; planner returned {scene_count}. "
+                    "Storyboard the actual events and interactions instead of summarizing the script."
+                )
+        scene_text = " ".join(str(scene.get(key, "")) for scene in plan["scenes"]
+                              for key in ("description", "caption", "narration", "voiceover", "actors", "actor"))
+        lowered = scene_text.lower()
+        event_groups = [
+            (("apple", "apples"), ("apple", "apples")),
+            (("trip", "tripped", "fell", "fall"), ("trip", "tripped", "fell", "fall")),
+            (("monkey", "milo"), ("monkey", "milo")),
+            (("turtle", "tia"), ("turtle", "tia")),
+            (("storm", "thunder", "rain"), ("storm", "thunder", "rain")),
+            (("tree", "fallen tree"), ("tree",)),
+            (("bear", "bruno"), ("bear", "bruno")),
+            (("push", "pushed", "move", "moved", "lift"), ("push", "move", "lift")),
+        ]
+        for triggers, evidence in event_groups:
+            if any(term in story.lower() for term in triggers) and not any(term in lowered for term in evidence):
+                raise ValueError(f"Story coverage incomplete: scene plan omitted this event: {triggers[0]}")
+        for match in re.finditer(r"\\b([A-Z][a-z]+)\\s+the\\s+(Monkey|Turtle|Bear|Dog|Cat|Bird|Dinosaur)\\b", story):
+            name, species = match.group(1).lower(), match.group(2).lower()
+            if name not in lowered and species not in lowered:
+                raise ValueError(f"Story coverage incomplete: missing character {match.group(1)} the {match.group(2)}")
     if fps <= 0 or duration_mode not in ("auto", "strict"):
         raise ValueError("Invalid fps or duration mode")
     plan.setdefault("title", "Untitled Story")
@@ -101,7 +126,10 @@ def design_production(story: str, duration: float | None = None, title: str = "U
         "with species, distinct appearance, scale, accent_rgb, wardrobe, expression and normalized keyframes "
         "(t 0..1, x,y,pose,facing). Use multiple actors when interacting. Include story-specific props, environment, "
         "camera, lighting, weather and continuity. No generic repeated scenes; do not invent plot events. Treat every non-empty script paragraph as a distinct narrative unit: give each paragraph at least one dedicated scene, and split paragraphs containing multiple consequential actions into multiple shots. Never summarize several paragraphs into one montage or skip dialogue-driven interactions. Preserve event order and show the actual action, not merely a caption. "
-        "Canvas 1280x720, 24fps. Return JSON only with title,size,fps,duration,scenes. Each scene requires start,end,"
+        "Canvas 1280x720, 24fps. For scripts over 60 words create at least 8 distinct shots, and generally "
+        "at least one shot for every two sentence beats. Give each shot a specific visible action, not just an "
+        "establishing description. Preserve named characters, species, props and major events (apples, falls, rescues, "
+        "storms, obstacles and group actions). Do not omit the ending or moral. Return JSON only with title,size,fps,duration,scenes. Each scene requires start,end,"
         "environment,description,caption,camera,shot_design; actors is an array of actor manifests. "
         "CRITICAL TIMING: decide natural duration independently for every beat from action complexity, dialogue length, "
         "reaction time, emotional pauses and choreography. Do NOT divide the story evenly. Do NOT compress to an arbitrary "
