@@ -26,6 +26,33 @@ class ProductionAgentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "numeric"):
             _validate_plan(plan)
 
+    def test_short_ai_outline_recovers_to_full_local_storyboard(self):
+        story = ("Alex lived near a big forest, but he had no friends. Every day, he walked alone. "
+                 "One day, he tripped and his apples rolled everywhere. \"Oh no, I have to do everything "
+                 "alone again,\" he said. Then a small hand picked up an apple. \"You dropped this! "
+                 "Are you okay?\" asked Milo the Monkey. Milo helped him, and Alex laughed. "
+                 "They found Tia the Turtle stuck on her back. Friends don't leave friends behind, "
+                 "so they pushed together until Tia was free. Then a storm came. A big tree blocked "
+                 "the road. \"Need a paw?\" said Bruno the Bear. Together, they moved the tree. "
+                 "That evening, Alex walked home with friends. A true friend stays when the storm comes.")
+        class ShortOutline:
+            available = True
+            model = "test-model"
+            def json_completion(self, system, user, temperature):
+                return {"title": "Alex and the Forest of Friends", "size": [1280, 720], "fps": 24,
+                        "scenes": [
+                            {"start": 0, "end": 3, "description": "Alex alone"},
+                            {"start": 3, "end": 6, "description": "Milo arrives"},
+                            {"start": 6, "end": 9, "description": "Friends go home"},
+                        ]}
+        plan = design_production(story, title="Alex and the Forest of Friends", llm=ShortOutline())
+        self.assertGreaterEqual(len(plan["scenes"]), 9)
+        self.assertEqual(plan["design_metadata"]["creative_mode"], "hybrid_storyboard_recovery")
+        self.assertIn("monkey", " ".join(str(s.get("actor", {})) for s in plan["scenes"]))
+        self.assertIn("turtle", " ".join(str(s.get("actor", {})) for s in plan["scenes"]))
+        self.assertIn("bear", " ".join(str(s.get("actor", {})) for s in plan["scenes"]))
+        self.assertTrue(any(s.get("props") for s in plan["scenes"]))
+
     def test_ai_plan_must_cover_each_script_paragraph(self):
         story = "Alex meets Milo.\n\nThey rescue Tia.\n\nBruno helps move the tree."
         short_plan = {"scenes": [{"start": 0, "end": 2}, {"start": 2, "end": 4}]}
