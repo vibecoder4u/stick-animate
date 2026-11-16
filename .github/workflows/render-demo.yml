@@ -90,9 +90,8 @@ jobs:
         run: |
           test -s output/animated-story.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/animated-story.mp4
-          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json output/animated-story.mp4
-          test -s output/audio-cues.json
-          python -c 'import json; c=json.load(open("output/audio-cues.json")); assert c and all(x.get("evidence") for x in c); print("Verified scene-grounded audio cues:", [x["event"] for x in c])'
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json output/animated-story.mp4 > output/audio-stream.json
+          python -c 'import json; a=json.load(open("output/audio-stream.json")); assert a.get("streams"), "MP4 has no audio stream"; c=json.load(open("output/audio-cues.json")); assert isinstance(c, list) and all(x.get("evidence") for x in c); print("Verified audio stream; evidence-backed SFX cues:", [x["event"] for x in c] if c else "none (silent SFX bed is allowed)")'
 
       - name: Upload rendered video and poster
         if: github.event_name == 'workflow_dispatch'
