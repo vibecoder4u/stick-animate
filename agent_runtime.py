@@ -19,7 +19,7 @@ class AgentUnavailable(RuntimeError):
 class FreeLLM:
     def __init__(self) -> None:
         self.api_key = os.getenv("GROQ_API_KEY", "").strip()
-        self.model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+        self.model = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
         self.endpoint = os.getenv(
             "LLM_BASE_URL",
             "https://api.groq.com/openai/v1/chat/completions",
@@ -59,5 +59,16 @@ class FreeLLM:
             if not isinstance(parsed, dict):
                 raise ValueError("Model response must be a JSON object")
             return parsed
+        except urllib.error.HTTPError as exc:
+            # Include the API's error body: it distinguishes an invalid model,
+            # endpoint, request format, and authentication/permission failures.
+            try:
+                detail = exc.read(2000).decode("utf-8", errors="replace").strip()
+            except Exception:
+                detail = ""
+            message = f"HTTP {exc.code} {exc.reason}"
+            if detail:
+                message += f": {detail[:1500]}"
+            raise AgentUnavailable(f"LLM request failed: {message}") from exc
         except (urllib.error.URLError, TimeoutError, KeyError, IndexError, json.JSONDecodeError) as exc:
             raise AgentUnavailable(f"LLM request failed: {exc}") from exc
