@@ -12,10 +12,10 @@ def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int
         raise ValueError("AI planner did not return a non-empty scenes array")
     if story:
         # Split on sentence boundaries, not newlines: manual workflow input is often one paragraph.
-        beats = [part.strip() for part in re.split(r"(?<=[.!?])\\s+", story.strip()) if part.strip()]
+        beats = [part.strip() for part in re.split(r"(?<=[.!?])\s+", story.strip()) if part.strip()]
         words = re.findall(r"[a-z0-9']+", story.lower())
         scene_count = len(plan["scenes"])
-        if len(words) >= 60:
+        if len(words) >= 40:
             required_scenes = max(8, math.ceil(min(len(beats), 24) * 0.45))
             if scene_count < required_scenes:
                 raise ValueError(
@@ -39,7 +39,7 @@ def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int
         for triggers, evidence in event_groups:
             if any(term in story.lower() for term in triggers) and not any(term in lowered for term in evidence):
                 raise ValueError(f"Story coverage incomplete: scene plan omitted this event: {triggers[0]}")
-        for match in re.finditer(r"\\b([A-Z][a-z]+)\\s+the\\s+(Monkey|Turtle|Bear|Dog|Cat|Bird|Dinosaur)\\b", story):
+        for match in re.finditer(r"\b([A-Z][a-z]+)\s+the\s+(Monkey|Turtle|Bear|Dog|Cat|Bird|Dinosaur)\b", story):
             name, species = match.group(1).lower(), match.group(2).lower()
             if name not in lowered and species not in lowered:
                 raise ValueError(f"Story coverage incomplete: missing character {match.group(1)} the {match.group(2)}")
