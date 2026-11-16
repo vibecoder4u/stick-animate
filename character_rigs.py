@@ -95,7 +95,7 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
     else:
         lean = 0
     jump_lift = 32 * max(0.0, math.sin(math.pi * duration)) if action == "jump" else 0.0
-    y += jump_lift
+    y -= jump_lift
 
     if species == "monkey":
         bob = math.sin(phase*2) * (5 if gait_active else 1.5)
