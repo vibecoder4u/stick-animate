@@ -1,0 +1,325 @@
+{
+  "title": "Why Your Brain Replays Awkward Moments",
+  "size": [
+    1280,
+    720
+  ],
+  "fps": 24,
+  "duration": 30,
+  "design_metadata": {
+    "designer": "human-psychology-documentary-test",
+    "purpose": "test human character staging, emotional body language, narrated educational storytelling, captions, flashback structure and cinematic scene changes",
+    "topic": "rumination and the brain's response to social uncertainty"
+  },
+  "scenes": [
+    {
+      "start": 0,
+      "end": 5,
+      "environment": "street",
+      "caption": "WHY DO WE REPLAY AWKWARD MOMENTS?",
+      "subcaption": "A tiny moment. Hours of replay.",
+      "description": "Maya leaves a conversation and suddenly remembers an awkward pause.",
+      "narration": "Have you ever left a conversation, then replayed one tiny awkward moment for hours? Your brain may be trying to protect you.",
+      "camera": {
+        "shot_type": "close_up",
+        "zoom_start": 1.02,
+        "zoom_end": 1.1,
+        "pan": 0.02,
+        "track_subject": true
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "maya",
+          "scale": 1.05,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            92,
+            174,
+            205
+          ],
+          "expression": "neutral",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 430,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 0.55,
+              "x": 590,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 0.6
+            },
+            {
+              "t": 1,
+              "x": 620,
+              "y": 625,
+              "pose": "look_back",
+              "facing": -1,
+              "action_progress": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 5,
+      "end": 10,
+      "environment": "rainroom",
+      "caption": "THE MIND REWINDS THE SCENE",
+      "subcaption": "“Did I sound strange?”",
+      "description": "At home, Maya sits alone and mentally replays the conversation.",
+      "narration": "The mind rewinds the scene, searching for clues: Did I sound strange? Did they notice? What should I have said instead?",
+      "camera": {
+        "shot_type": "medium_action",
+        "zoom_start": 1,
+        "zoom_end": 1.07,
+        "pan": -0.02
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "maya",
+          "scale": 1.12,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            92,
+            174,
+            205
+          ],
+          "expression": "fear",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 610,
+              "y": 635,
+              "pose": "idle",
+              "facing": -1,
+              "action_progress": 0
+            },
+            {
+              "t": 0.45,
+              "x": 610,
+              "y": 635,
+              "pose": "listen",
+              "facing": -1,
+              "action_progress": 0.5
+            },
+            {
+              "t": 1,
+              "x": 610,
+              "y": 635,
+              "pose": "fear",
+              "facing": -1,
+              "action_progress": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 10,
+      "end": 15,
+      "environment": "street",
+      "caption": "UNCERTAINTY FEELS LIKE A PROBLEM",
+      "subcaption": "The brain tries to fill in missing information.",
+      "description": "A flashback shows the other person simply pausing before smiling.",
+      "narration": "Social moments matter to us. When a reaction is unclear, the brain can treat that uncertainty like a problem it needs to solve.",
+      "camera": {
+        "shot_type": "over_shoulder",
+        "zoom_start": 1.02,
+        "zoom_end": 1.08,
+        "pan": 0.04
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "maya_memory",
+          "scale": 0.96,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            92,
+            174,
+            205
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 430,
+              "y": 625,
+              "pose": "listen",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 1,
+              "x": 430,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "friend",
+          "scale": 0.96,
+          "wardrobe": "shirt",
+          "hair": "short",
+          "accent_rgb": [
+            210,
+            151,
+            92
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 790,
+              "y": 625,
+              "pose": "idle",
+              "facing": -1,
+              "action_progress": 0
+            },
+            {
+              "t": 0.55,
+              "x": 790,
+              "y": 625,
+              "pose": "listen",
+              "facing": -1,
+              "action_progress": 0.5
+            },
+            {
+              "t": 1,
+              "x": 790,
+              "y": 625,
+              "pose": "idle",
+              "facing": -1,
+              "action_progress": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 15,
+      "end": 22,
+      "environment": "rainroom",
+      "caption": "A REPLAY IS NOT PROOF",
+      "subcaption": "A thought is not the same as a fact.",
+      "description": "Maya notices the difference between what happened and what she is imagining.",
+      "narration": "But replaying a moment does not reveal what another person thought. A worried interpretation is not evidence, even when it feels convincing.",
+      "camera": {
+        "shot_type": "close_up",
+        "zoom_start": 1.03,
+        "zoom_end": 1.12,
+        "pan": 0,
+        "track_subject": true
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "maya",
+          "scale": 1.12,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            92,
+            174,
+            205
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 610,
+              "y": 635,
+              "pose": "fear",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 0.5,
+              "x": 610,
+              "y": 635,
+              "pose": "listen",
+              "facing": 1,
+              "action_progress": 0.55
+            },
+            {
+              "t": 1,
+              "x": 610,
+              "y": 635,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "start": 22,
+      "end": 30,
+      "environment": "street",
+      "caption": "RETURN TO WHAT YOU KNOW",
+      "subcaption": "Notice the thought. Check the facts. Move on.",
+      "description": "Maya takes a breath, puts the moment in perspective and walks forward.",
+      "narration": "Try this: name the thought, separate facts from guesses, and gently return to the present. You do not have to solve every uncomfortable memory.",
+      "camera": {
+        "shot_type": "reveal",
+        "zoom_start": 1.02,
+        "zoom_end": 1.06,
+        "pan": -0.03
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "maya",
+          "scale": 1.05,
+          "wardrobe": "coat",
+          "hair": "short",
+          "accent_rgb": [
+            92,
+            174,
+            205
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 470,
+              "y": 625,
+              "pose": "fear",
+              "facing": 1,
+              "action_progress": 0
+            },
+            {
+              "t": 0.35,
+              "x": 470,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1,
+              "action_progress": 0.35
+            },
+            {
+              "t": 1,
+              "x": 760,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1,
+              "action_progress": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
