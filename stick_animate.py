@@ -19,6 +19,8 @@ from scene_understanding_agent import analyse_script
 from scene_designer import design_story
 from production_agents import design_production
 from character_rigs import draw_species_character
+from camera_director import apply_camera
+from environment_animation import render_environment_background, animate_environment
 
 W, H = 1280, 720
 FPS = 24
@@ -516,9 +518,10 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
     kind = kind.strip().lower().replace(" ", "_") or "forest"
     if kind not in bg_cache:
         bg_cache[kind] = gradient_background(kind)
-    image = bg_cache[kind].copy()
+    image = render_environment_background(bg_cache[kind].copy(), kind, scene)
     opening = float(scene.get("door_open", 0.0))
     paint_environment_details(image, kind, global_t, opening)
+    image = animate_environment(image, kind, scene, global_t)
     # A soft moving pool of light and a subtle practical flicker.
     d = ImageDraw.Draw(image)
     flicker = 0.92 + 0.08 * math.sin(global_t * 13.0)
@@ -567,20 +570,8 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
     fade = min(1.0, local_t * 5.0, (1.0 - local_t) * 5.0)
     if caption and fade > 0:
         draw_caption(image, caption, sub)
-    # Letterbox and slight push-in camera movement.
-    d = ImageDraw.Draw(image)
-    d.rectangle((0, 0, W, 22), fill=(0, 0, 0))
-    d.rectangle((0, H-22, W, H), fill=(0, 0, 0))
-    camera = scene.get("camera", {})
-    zoom0, zoom1 = float(camera.get("zoom_start", 1.0)), float(camera.get("zoom_end", 1.035))
-    zoom = zoom0 + (zoom1 - zoom0) * local_t
-    pan = float(camera.get("pan", 0.0))
-    if zoom > 1.0001 or abs(pan) > 0.01:
-        nw, nh = int(W * zoom), int(H * zoom)
-        enlarged = image.resize((nw, nh), Image.Resampling.LANCZOS)
-        cx = (nw - W) // 2 + int(pan * (nw - W) / 2)
-        cy = (nh - H) // 2
-        image = enlarged.crop((max(0, cx), max(0, cy), max(0, cx)+W, max(0, cy)+H))
+    # Story-aware camera: focus, smooth push-in and subject tracking.
+    image = apply_camera(image, scene, local_t)
     return image.convert("RGB")
 
 
