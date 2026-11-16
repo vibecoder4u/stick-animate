@@ -8,7 +8,10 @@ on:
       - "stick_animate.py"
       - "character_rigs.py"
       - "motion_engine.py"
+      - "camera_director.py"
+      - "transition_director.py"
       - "demo/motion-engine-showcase.json"
+      - "demo/cinematic-camera-transitions.json"
       - "scene_designer.py"
       - "audio_director.py"
       - "sound_effect_finder.py"
@@ -72,6 +75,12 @@ jobs:
           STICK_ANIMATE_OFFLINE_AUDIO=1 python stick_animate.py --script demo/motion-engine-showcase.json --output output/motion-engine-showcase.mp4
           test -s output/motion-engine-showcase.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/motion-engine-showcase.mp4
+
+      - name: Render cinematic camera and transitions showcase
+        run: |
+          STICK_ANIMATE_OFFLINE_AUDIO=1 python stick_animate.py --script demo/cinematic-camera-transitions.json --output output/cinematic-camera-transitions.mp4
+          test -s output/cinematic-camera-transitions.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/cinematic-camera-transitions.mp4
 
       - name: Upload prototype video and review assets
         uses: actions/upload-artifact@v4
