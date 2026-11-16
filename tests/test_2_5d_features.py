@@ -1,5 +1,5 @@
 import unittest
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageDraw
 
 from camera_director import apply_camera
 from environment_animation import render_environment_background, animate_environment
@@ -22,6 +22,9 @@ class CameraEnvironmentTests(unittest.TestCase):
 
     def test_camera_tracks_subject_and_changes_framing(self):
         image = Image.new("RGB", (1280, 720), "navy")
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((250, 250, 450, 650), fill="orange")
+        draw.rectangle((850, 250, 1050, 650), fill="cyan")
         scene = {
             "camera": {"shot_type": "close_up", "zoom_start": 1.0, "zoom_end": 1.2, "track_subject": True},
             "actor": {"character_id": "bear", "keyframes": [
