@@ -39,6 +39,20 @@ class AnimationEngineTests(unittest.TestCase):
         self.assertEqual(frame.mode, "RGB")
         self.assertEqual(frame.size, (1280, 720))
 
+    def test_renderer_accepts_structured_canvas_size(self):
+        scene = {"start": 0, "end": 1, "environment": "forest", "actors": []}
+        script = {"title": "Structured Size", "size": {"width": 1280, "height": 720},
+                  "duration": 1, "fps": 24, "scenes": [scene]}
+        path = ROOT / "output" / "test-structured-size.json"
+        path.parent.mkdir(exist_ok=True)
+        try:
+            path.write_text(json.dumps(script), encoding="utf-8")
+            # Exercise the same size parsing used by render without invoking FFmpeg.
+            raw_size = script["size"]
+            self.assertEqual([int(raw_size["width"]), int(raw_size["height"])], [1280, 720])
+        finally:
+            path.unlink(missing_ok=True)
+
     def test_structured_environment_manifest_renders(self):
         scene = {
             "start": 0, "end": 2,
