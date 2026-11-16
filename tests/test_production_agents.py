@@ -91,7 +91,7 @@ class ProductionAgentTests(unittest.TestCase):
             "Alex walks home with Milo Tia and Bruno as friends",
         ]
         for i, description in enumerate(descriptions):
-                        scene = {"start": i * 4, "end": (i + 1) * 4, "description": description}
+            scene = {"start": i * 4, "end": (i + 1) * 4, "description": description}
             for species in ("monkey", "turtle", "bear"):
                 if species in description.lower():
                     scene["actors"] = [{"species": species, "character_id": species}]
