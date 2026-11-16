@@ -67,7 +67,7 @@ def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int
             if any(re.search(r"(?<!\\w)" + re.escape(alias) + r"(?!\\w)", story.lower()) for alias in aliases):
                 if species not in rendered_species:
                     raise ValueError(f"Story coverage incomplete: no actor manifest for species {species}")
-        for match in re.finditer(r"\b([A-Z][a-z]+)\s+the\s+(Monkey|Turtle|Bear|Dog|Cat|Bird|Dinosaur)\b", story):
+        for match in re.finditer(r"\b([A-Z][a-z]+)\s+(?:the\s+)?(Elephant|Deer|Fox|Rabbit|Monkey|Turtle|Bear|Dog|Cat|Bird|Fish|Dinosaur)\b", story):
             name, species = match.group(1).lower(), match.group(2).lower()
             if name not in lowered and species not in lowered:
                 raise ValueError(f"Story coverage incomplete: missing character {match.group(1)} the {match.group(2)}")
