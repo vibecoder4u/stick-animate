@@ -54,6 +54,18 @@ jobs:
       - name: Run engine tests
         run: python -m unittest discover -s tests -v
 
+      - name: Explain push-only run
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          {
+            echo "## Tests passed — no animation was requested"
+            echo ""
+            echo "This run was triggered by a code push. It checks the engine only; it does not send a story to Groq or render an MP4."
+            echo ""
+            echo "To create a video: open **Actions → Render Stick Animate demo → Run workflow**, paste your story, set the title and duration, then start the manual run."
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Prepare story input
         if: github.event_name == 'workflow_dispatch'
         env:
@@ -97,3 +109,14 @@ jobs:
           path: output/*
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish render result
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          {
+            echo "## Animation rendered and uploaded"
+            echo ""
+            echo "Artifact: `stick-animate-scene-designer-${{ github.run_number }}`"
+            echo "The scene plan was generated during validation and reused for rendering, so rendering did not make a second Groq planning request."
+          } >> "$GITHUB_STEP_SUMMARY"
