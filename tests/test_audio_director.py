@@ -29,6 +29,19 @@ class SceneAudioTests(unittest.TestCase):
             "narration":"A loud metal clang and footsteps echoed in the rain."}]}
         self.assertEqual(plan_scene_audio(script), [])
 
+    def test_riverbank_soundscape_and_branch_interaction_create_cinematic_cues(self):
+        script={"duration":3,"scenes":[{"start":0,"end":3,"environment":"forest",
+            "soundscape":["forest_ambience","flowing_water","birds"],
+            "actors":[{"species":"fallen_tree"},
+                      {"species":"bear","keyframes":[{"t":0,"x":100,"pose":"push"},{"t":1,"x":150,"pose":"push"}]}],
+            "visual_events":[{"type":"wood_impact","at":1.2,"evidence":"branch rolls clear"}]}]}
+        events=[cue["event"] for cue in plan_scene_audio(script)]
+        self.assertIn("forest_ambience",events)
+        self.assertIn("flowing_water",events)
+        self.assertIn("wood_creak",events)
+        self.assertIn("bear_effort",events)
+        self.assertIn("wood_impact",events)
+
     def test_audio_is_stereo_pcm(self):
         script={'duration':1,'scenes':[{'start':0,'end':1,'environment':'rainroom'}]}
         with tempfile.TemporaryDirectory() as tmp:
