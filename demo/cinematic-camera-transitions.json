@@ -1,0 +1,85 @@
+{
+  "title": "Cinematic Camera and Transition Showcase",
+  "duration": 7.2,
+  "fps": 24,
+  "size": [1280, 720],
+  "scenes": [
+    {
+      "start": 0,
+      "end": 2.4,
+      "environment": "forest",
+      "caption": "A quiet discovery",
+      "subcaption": "Slow push-in • subject focus",
+      "transition_in": {"type": "fade", "duration": 0.55},
+      "camera": {
+        "focus_actor": "bear",
+        "keyframes": [
+          {"t": 0, "zoom": 1.0, "ease": "ease_out_cubic"},
+          {"t": 1, "zoom": 1.16, "ease": "ease_out_cubic"}
+        ]
+      },
+      "actors": [{
+        "id": "bear",
+        "species": "bear",
+        "scale": 1.1,
+        "keyframes": [
+          {"t": 0, "x": 460, "y": 620, "pose": "idle", "facing": "right"},
+          {"t": 0.5, "x": 520, "y": 620, "pose": "walk", "facing": "right"},
+          {"t": 1, "x": 560, "y": 620, "pose": "look", "facing": "right"}
+        ]
+      }]
+    },
+    {
+      "start": 2.4,
+      "end": 4.8,
+      "environment": "road",
+      "caption": "Something is moving",
+      "subcaption": "Tracking move • gentle camera pan",
+      "transition_in": {"type": "cross_dissolve", "duration": 0.7},
+      "camera": {
+        "focus_actor": "bear",
+        "keyframes": [
+          {"t": 0, "focus_x": 600, "focus_y": 390, "zoom": 1.05},
+          {"t": 1, "focus_x": 820, "focus_y": 360, "zoom": 1.18, "ease": "ease_in_out_cubic"}
+        ]
+      },
+      "actors": [{
+        "id": "bear",
+        "species": "bear",
+        "scale": 1.1,
+        "path_points": [
+          {"t": 0, "x": 520, "y": 620, "depth": 0},
+          {"t": 1, "x": 880, "y": 590, "depth": 0.3}
+        ],
+        "keyframes": [
+          {"t": 0, "pose": "walk", "facing": "right"},
+          {"t": 1, "pose": "run", "facing": "right"}
+        ]
+      }]
+    },
+    {
+      "start": 4.8,
+      "end": 7.2,
+      "environment": "trackside",
+      "caption": "The journey continues",
+      "subcaption": "Directional wipe • settle on the subject",
+      "transition_in": {"type": "wipe_left", "duration": 0.65},
+      "camera": {
+        "focus_actor": "bear",
+        "keyframes": [
+          {"t": 0, "zoom": 1.18, "focus_x": 820, "focus_y": 370},
+          {"t": 1, "zoom": 1.08, "focus_x": 700, "focus_y": 390, "ease": "ease_out_cubic"}
+        ]
+      },
+      "actors": [{
+        "id": "bear",
+        "species": "bear",
+        "scale": 1.15,
+        "keyframes": [
+          {"t": 0, "x": 880, "y": 590, "pose": "look", "facing": "left"},
+          {"t": 1, "x": 760, "y": 590, "pose": "idle", "facing": "left"}
+        ]
+      }]
+    }
+  ]
+}
