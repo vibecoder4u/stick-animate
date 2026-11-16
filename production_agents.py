@@ -11,10 +11,11 @@ def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int
         raise ValueError("AI planner did not return a non-empty scenes array")
     if story:
         story_paragraphs = [p.strip() for p in story.splitlines() if p.strip()]
-        if len(plan["scenes"]) < len(story_paragraphs):
+        scene_count = len(plan["scenes"])
+        if scene_count < len(story_paragraphs):
             raise ValueError(
                 f"Story coverage incomplete: {len(story_paragraphs)} script paragraphs require at least "
-                f"{len(story_paragraphs)} scenes; planner returned {len(plan[\"scenes\"])}. "
+                f"{len(story_paragraphs)} scenes; planner returned {scene_count}. "
                 "Create separate shots for the missing story beats; do not collapse the script."
             )
     if fps <= 0 or duration_mode not in ("auto", "strict"):
