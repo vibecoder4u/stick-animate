@@ -13,7 +13,10 @@ class ProductionAgentTests(unittest.TestCase):
         plan = design_production(story, 30, "The Fossil")
         self.assertGreaterEqual(len(plan["scenes"]), 3)
         self.assertEqual(plan["design_metadata"]["creative_mode"], "deterministic")
-        self.assertIn("multi-agent", plan["design_metadata"]["pipeline"])
+        # With no API key this is deliberately the local planner, not a fake
+        # multi-agent/LLM run. Keep metadata honest and test the actual contract.
+        self.assertEqual(plan["design_metadata"]["pipeline"], "local-fallback-no-api")
+        self.assertTrue(all(scene.get("description") for scene in plan["scenes"]))
 
     def test_fallback_does_not_reuse_railway_story(self):
         plan = design_production(
@@ -25,9 +28,8 @@ class ProductionAgentTests(unittest.TestCase):
         self.assertNotIn("railway station", descriptions)
 
     def test_free_llm_is_optional(self):
-        llm = FreeLLM()
         with patch.dict("os.environ", {"GROQ_API_KEY": ""}):
-            self.assertFalse(llm.available)
+            self.assertFalse(FreeLLM().available)
 
 
 if __name__ == "__main__":
