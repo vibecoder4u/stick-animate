@@ -18,6 +18,7 @@ on:
       - "demo/riverbank-rescue.json"
       - "demo/forest-friends-ensemble.json"
       - "demo/last-train-storm-rescue.json"
+      - "demo/human-psychology-overthinking.json"
       - "tests/**"
       - ".github/workflows/render-riverbank-prototype.yml"
 
@@ -81,6 +82,13 @@ jobs:
           STICK_ANIMATE_OFFLINE_AUDIO=1 python stick_animate.py --script demo/cinematic-camera-transitions.json --output output/cinematic-camera-transitions.mp4
           test -s output/cinematic-camera-transitions.mp4
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/cinematic-camera-transitions.mp4
+
+      - name: Render human psychology documentary test
+        run: |
+          STICK_ANIMATE_OFFLINE_AUDIO=1 python stick_animate.py --script demo/human-psychology-overthinking.json --output output/human-psychology-overthinking.mp4
+          test -s output/human-psychology-overthinking.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/human-psychology-overthinking.mp4
+          ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of json output/human-psychology-overthinking.mp4
 
       - name: Upload prototype video and review assets
         uses: actions/upload-artifact@v4
