@@ -92,26 +92,27 @@ def _pose(text: str) -> str:
         return "walk"
     return "idle"
 
-def design_story(story: str, duration: float, title: str = "Untitled Story", fps: int = 24) -> dict[str, Any]:
+def design_story(story: str, duration: float | None = None, title: str = "Untitled Story", fps: int = 24) -> dict[str, Any]:
     """Create multiple timed scenes from plain story text, with varied shot plans."""
     if not story.strip():
         raise ValueError("Story text cannot be empty")
-    if duration <= 0 or fps <= 0:
+    if (duration is not None and duration <= 0) or fps <= 0:
         raise ValueError("Duration and fps must be positive")
     beats = split_beats(story)
     if not beats:
         raise ValueError("No story beats found")
-    # Avoid unrenderably tiny shots while retaining every beat.
-    if len(beats) > max(1, int(duration // 1.5)):
-        merged: list[str] = []
-        for i, beat in enumerate(beats):
-            if i % 2 == 0 and i + 1 < len(beats):
-                merged.append(beat + " " + beats[i + 1])
-            elif i % 2 == 1:
-                continue
-            else:
-                merged.append(beat)
-        beats = merged
+    # Auto timing retains every beat and weights time by dialogue/action complexity.
+    weights = []
+    for beat in beats:
+        words = len(beat.split())
+        lower = beat.lower()
+        action = sum(term in lower for term in ("together", "pushed", "rescued", "fell", "storm", "blocked", "rolled", "stuck"))
+        dialogue = 1.35 if chr(34) in beat or any(term in lower for term in ("said", "asked", "shouted")) else 1.0
+        emotion = 1.4 if any(term in lower for term in ("alone", "laughed", "scared", "thank you", "friends", "kind")) else 1.0
+        weights.append(max(2.0, 1.8 + words / 3.8 + action * 1.1) * dialogue * emotion)
+    natural_duration = float(duration) if duration is not None else sum(weights)
+    if duration is not None:
+        weights = [natural_duration / len(beats)] * len(beats)
     # Keep a human protagonist visible across environment-only story beats.
     # Explicit animal species in an individual beat always takes precedence.
     has_human_protagonist = bool(re.search(
@@ -119,7 +120,7 @@ def design_story(story: str, duration: float, title: str = "Untitled Story", fps
         story.lower(),
     ))
     count = len(beats)
-    base = duration / count
+    total_weight = sum(weights)\n    durations = [natural_duration * weight / total_weight for weight in weights] if duration is None else weights
     scenes = []
     previous_env = None
     for i, beat in enumerate(beats):
@@ -171,7 +172,7 @@ def design_story(story: str, duration: float, title: str = "Untitled Story", fps
             }
         scenes.append(scene)
     return {
-        "title": title, "size": [1280, 720], "fps": fps, "duration": duration,
+        "title": title, "size": [1280, 720], "fps": fps, "duration": natural_duration,
         "design_metadata": {
             "designer": "scene-designer-v1",
             "source": "plain_story_text",
