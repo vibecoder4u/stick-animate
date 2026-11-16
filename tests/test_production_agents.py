@@ -31,8 +31,11 @@ class ProductionAgentTests(unittest.TestCase):
         short_plan = {"scenes": [{"start": 0, "end": 2}, {"start": 2, "end": 4}]}
         with self.assertRaisesRegex(ValueError, "Story coverage incomplete"):
             _validate_plan(short_plan, story=story)
-        complete_plan = {"scenes": [{"start": 0, "end": 2}, {"start": 2, "end": 4},
-                                    {"start": 4, "end": 6}]}
+        complete_plan = {"scenes": [
+            {"start": 0, "end": 2, "description": "Alex meets Milo"},
+            {"start": 2, "end": 4, "description": "They rescue Tia"},
+            {"start": 4, "end": 6, "description": "Bruno helps move the tree"},
+        ]}
         self.assertEqual(_validate_plan(complete_plan, story=story), 6.0)
 
     def test_one_paragraph_story_requires_real_storyboard_coverage(self):
