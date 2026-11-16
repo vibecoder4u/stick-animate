@@ -28,6 +28,23 @@ class EnsembleCastTests(unittest.TestCase):
         for a, b in (("fox","elephant"),("rabbit","turtle"),("deer","bear"),("bird","monkey")):
             self.assertIsNotNone(ImageChops.difference(rendered[a], rendered[b]).getbbox())
 
+    def test_keyframed_prop_angle_changes_during_teamwork(self):
+        from stick_animate import sample_keyframes
+        from character_rigs import draw_species_character
+        keys = [
+            {"t": 0, "x": 300, "y": 250, "angle": -3, "pose": "idle"},
+            {"t": 1, "x": 360, "y": 250, "angle": -18, "pose": "idle"},
+        ]
+        early = sample_keyframes(keys, 0.1)
+        late = sample_keyframes(keys, 0.9)
+        self.assertNotEqual(early["angle"], late["angle"])
+        frames = []
+        for pose in (early, late):
+            image = Image.new("RGB", (640, 360), (30, 35, 45))
+            draw_species_character(image, {"species": "fallen_tree", "length": 420, **pose}, pose, 0.5)
+            frames.append(image)
+        self.assertIsNotNone(ImageChops.difference(*frames).getbbox())
+
     def test_ensemble_teamwork_scene_has_pushers_and_helpers(self):
         plan = json.loads(Path("demo/forest-friends-ensemble.json").read_text(encoding="utf-8"))
         scene = plan["scenes"][2]
