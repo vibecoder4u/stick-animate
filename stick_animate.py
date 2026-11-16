@@ -56,13 +56,20 @@ def validate_script(data: dict[str, Any]) -> None:
             raise ValueError(f"Invalid scene timing at scene {index}")
         if start < previous_end - 0.001:
             raise ValueError("Scenes must be ordered and cannot overlap")
+        if start > previous_end + 0.001:
+            raise ValueError(f"Timeline gap before scene {index}: {previous_end:.3f}s to {start:.3f}s")
         previous_end = end
-        actor = scene.get("actor", {})
-        keys = actor.get("keyframes", [])
-        if keys:
-            times = [float(k["t"]) for k in keys]
-            if times != sorted(times) or times[0] < 0 or times[-1] > 1:
-                raise ValueError(f"Invalid actor keyframes in scene {index}")
+        cast = list(scene.get("actors") or [])
+        if scene.get("actor"):
+            cast.insert(0, scene["actor"])
+        for actor_index, actor in enumerate(cast):
+            keys = actor.get("keyframes", [])
+            if keys:
+                times = [float(k["t"]) for k in keys]
+                if times != sorted(times) or times[0] < 0 or times[-1] > 1:
+                    raise ValueError(f"Invalid keyframes for actor {actor_index} in scene {index}")
+    if previous_end < float(data["duration"]) - 0.001:
+        raise ValueError(f"Timeline ends at {previous_end:.3f}s before declared duration {float(data['duration']):.3f}s")
 
 
 def sample_keyframes(keyframes: list[dict[str, Any]], progress: float) -> dict[str, Any]:
@@ -80,8 +87,14 @@ def sample_keyframes(keyframes: list[dict[str, Any]], progress: float) -> dict[s
             u = (p - a) / span
             u = u * u * (3.0 - 2.0 * u)  # smoothstep
             result = dict(left)
-            result["x"] = float(left.get("x", 640)) + (float(right.get("x", 640)) - float(left.get("x", 640))) * u
-            result["y"] = float(left.get("y", 610)) + (float(right.get("y", 610)) - float(left.get("y", 610))) * u
+            # Interpolate every authored numeric control (position, rotation,
+            # action progress, body lean, etc.); keep categorical controls discrete.
+            for key in set(left) & set(right):
+                if key == "t" or key in {"pose", "facing"}:
+                    continue
+                lv, rv = left[key], right[key]
+                if isinstance(lv, (int, float)) and not isinstance(lv, bool) and isinstance(rv, (int, float)) and not isinstance(rv, bool):
+                    result[key] = float(lv) + (float(rv) - float(lv)) * u
             if u >= 0.5:
                 result["pose"] = right.get("pose", result.get("pose", "idle"))
                 result["facing"] = right.get("facing", result.get("facing", 1))
@@ -635,7 +648,7 @@ def render(script_path: Path, output: Path) -> Path:
             assert process.stdin is not None
             for frame_no in range(total_frames):
                 t = frame_no / fps
-                scene = next((s for s in script["scenes"] if float(s["start"]) <= t < float(s["end"])), script["scenes"][-1])
+                scene = next(s for s in script["scenes"] if float(s["start"]) <= t < float(s["end"]))
                 span = float(scene["end"]) - float(scene["start"])
                 local_t = min(1.0, max(0.0, (t - float(scene["start"])) / span))
                 frame = make_frame(script, scene, local_t, t, bg_cache)
