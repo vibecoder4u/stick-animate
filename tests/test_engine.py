@@ -50,6 +50,20 @@ class AnimationEngineTests(unittest.TestCase):
         self.assertEqual(frame.size, (1280, 720))
         self.assertEqual(frame.mode, "RGB")
 
+    def test_natural_language_facing_direction_renders(self):
+        scene = {
+            "start": 0, "end": 2, "environment": "forest",
+            "actors": [{"species": "human", "keyframes": [
+                {"t": 0, "x": 500, "y": 610, "pose": "walk", "facing": "right"},
+                {"t": 1, "x": 700, "y": 610, "pose": "walk", "facing": "left"},
+            ]}],
+        }
+        script = {"title": "Natural Facing", "duration": 2, "fps": 24, "scenes": [scene]}
+        frame = stick_animate.make_frame(script, scene, 0.25, 0.5, {})
+        self.assertEqual(frame.size, (1280, 720))
+        self.assertEqual(stick_animate.facing_sign("right"), 1)
+        self.assertEqual(stick_animate.facing_sign("left"), -1)
+
     def test_invalid_overlapping_scenes_are_rejected(self):
         invalid = dict(self.script)
         invalid["scenes"] = [dict(self.script["scenes"][0]), dict(self.script["scenes"][1])]
