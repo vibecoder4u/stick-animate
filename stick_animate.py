@@ -588,6 +588,16 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
             actor_layer = actor_layer.rotate(-angle, resample=Image.Resampling.BICUBIC,
                 center=(float(pose_data.get("x", 640)), float(pose_data.get("y", 610))))
         image = Image.alpha_composite(image.convert("RGBA"), actor_layer).convert("RGB")
+    for prop in scene.get("props", []) or []:
+        generated_prop = prop.get("_generated_asset_path")
+        if generated_prop and Path(generated_prop).is_file():
+            prop_image = Image.open(generated_prop).convert("RGBA")
+            prop_image.thumbnail((240, 220), Image.Resampling.LANCZOS)
+            px = int(float(prop.get("x", 0.5)) * W)
+            py = int(float(prop.get("y", 0.82)) * H)
+            image_rgba = image.convert("RGBA")
+            image_rgba.alpha_composite(prop_image, (px - prop_image.width // 2, py - prop_image.height))
+            image = image_rgba.convert("RGB")
     caption = scene.get("caption", "")
     sub = scene.get("subcaption", "")
     # Fade captions in and out at shot boundaries.
