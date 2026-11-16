@@ -89,6 +89,10 @@ def _pose(text: str) -> str:
         return "listen"
     if any(w in lowered for w in ("fell", "stumbled", "tripped")):
         return "stumble"
+    if any(w in lowered for w in ("pushed", "push", "moved the tree", "lifted", "together")):
+        return "push"
+    if any(w in lowered for w in ("picked up", "reached", "handed", "helped", "rescued")):
+        return "reach"
     if any(w in lowered for w in ("afraid", "terrified", "fear", "horror", "shaking")):
         return "fear"
     if any(w in lowered for w in ("walked", "walking", "approached", "entered")):
@@ -163,6 +167,11 @@ def design_story(story: str, duration: float | None = None, title: str = "Untitl
         species = _species(beat)
         if species is None and has_human_protagonist:
             species = "human"
+        lower_beat = beat.lower()
+        if any(word in lower_beat for word in ("apple", "apples", "fruit")):
+            scene["props"] = [{"type": "apples", "count": 5, "x": 0.52, "y": 0.83}]
+        if any(word in lower_beat for word in ("fallen tree", "tree blocked", "tree blocks", "blocked the road", "moved the tree")):
+            scene.setdefault("props", []).append({"type": "fallen_tree", "x": 0.52, "y": 0.79, "length": 570})
         if pose != "idle" or species:
             scene["actor"] = {
                 "species": species or "human",
