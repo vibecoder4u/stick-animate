@@ -30,3 +30,8 @@ To download the result, open the completed manual workflow run and download its 
 The GitHub runner installs FFmpeg and the Python dependencies. Add `GROQ_API_KEY` as a repository Actions secret to enable Groq planning. The configured model is `openai/gpt-oss-120b`.
 
 The engine is still under active development; a successful render verifies the pipeline and output files, not professional animation quality.
+
+
+## Scene-plan timing
+
+AI scene timestamps are normalized to the requested duration when the model's start/end drift is small (up to 10% or one second). Large timeline mismatches and overlapping scenes remain validation errors.
