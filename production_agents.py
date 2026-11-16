@@ -6,9 +6,17 @@ from agent_runtime import AgentUnavailable, FreeLLM
 from scene_designer import design_story
 
 def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int = 24,
-                   duration_mode: str = "auto") -> float:
+                   duration_mode: str = "auto", story: str | None = None) -> float:
     if not isinstance(plan, dict) or not isinstance(plan.get("scenes"), list) or not plan["scenes"]:
         raise ValueError("AI planner did not return a non-empty scenes array")
+    if story:
+        story_paragraphs = [p.strip() for p in story.splitlines() if p.strip()]
+        if len(plan["scenes"]) < len(story_paragraphs):
+            raise ValueError(
+                f"Story coverage incomplete: {len(story_paragraphs)} script paragraphs require at least "
+                f"{len(story_paragraphs)} scenes; planner returned {len(plan[\"scenes\"])}. "
+                "Create separate shots for the missing story beats; do not collapse the script."
+            )
     if fps <= 0 or duration_mode not in ("auto", "strict"):
         raise ValueError("Invalid fps or duration mode")
     plan.setdefault("title", "Untitled Story")
@@ -104,7 +112,7 @@ def design_production(story: str, duration: float | None = None, title: str = "U
     user = f"TITLE: {title}\nDURATION_POLICY: {duration_mode}\nSOFT_TARGET_SECONDS: {duration or 'none'}\nFPS: {fps}\nSCRIPT:\n{story}"
     try:
         plan = llm.json_completion(system, user, 0.35)
-        _validate_plan(plan, duration, fps, duration_mode)
+        _validate_plan(plan, duration, fps, duration_mode, story)
         plan["design_metadata"].update({"designer": "groq-master-planner-v2",
             "pipeline": "single-groq-plan->local-specialists->renderer", "provider": "groq",
             "model": llm.model, "creative_mode": "ai", "scene_count": len(plan["scenes"]),
