@@ -46,7 +46,7 @@ def collect_asset_requests(script: dict[str, Any]) -> list[dict[str, Any]]:
             entry["scene_index"] = scene.get("_index")
         requests.setdefault(asset_id, entry)
 
-    for item in script.get("asset_requests", []) or []:
+    for item in (script.get("asset_requests") or script.get("assets") or []):
         add(item)
     for index, scene in enumerate(script.get("scenes", [])):
         scene["_index"] = index
