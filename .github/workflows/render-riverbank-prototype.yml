@@ -1,0 +1,58 @@
+name: Render Riverbank Rescue prototype
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: riverbank-rescue-prototype
+  cancel-in-progress: true
+
+jobs:
+  render-prototype:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install render dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg espeak-ng
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run all engine tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Render new Riverbank Rescue test (no AI API required)
+        run: |
+          python stick_animate.py --script demo/riverbank-rescue.json --output output/riverbank-rescue.mp4
+          test -s output/riverbank-rescue.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/riverbank-rescue.mp4
+
+      - name: Upload prototype video and review assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: riverbank-rescue-prototype-${{ github.run_number }}
+          path: output/*
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish result
+        run: |
+          {
+            echo "## Riverbank Rescue prototype rendered"
+            echo ""
+            echo "This is a fresh 18-second test script. It exercises human, monkey, turtle and bear rigs, locomotion, jump/reach/push poses, and procedural branch/apple props."
+            echo "Download the MP4 and poster from this run's artifact."
+          } >> "$GITHUB_STEP_SUMMARY"
