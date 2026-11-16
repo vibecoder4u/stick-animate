@@ -21,6 +21,7 @@ from production_agents import design_production
 from character_rigs import draw_species_character
 from motion_engine import evaluate_motion, validate_path_points
 from camera_director import apply_camera
+from transition_director import apply_transition
 from environment_animation import render_environment_background, animate_environment
 
 W, H = 1280, 720
@@ -655,14 +656,22 @@ def render(script_path: Path, output: Path) -> Path:
         process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
         bg_cache: dict[str, Image.Image] = {}
         total_frames = int(round(duration * fps))
+        last_frame: Image.Image | None = None
+        active_scene: dict[str, Any] | None = None
+        transition_source: Image.Image | None = None
         try:
             assert process.stdin is not None
             for frame_no in range(total_frames):
                 t = frame_no / fps
                 scene = next(s for s in script["scenes"] if float(s["start"]) <= t < float(s["end"]))
+                if scene is not active_scene:
+                    transition_source = last_frame.copy() if last_frame is not None else None
+                    active_scene = scene
                 span = float(scene["end"]) - float(scene["start"])
                 local_t = min(1.0, max(0.0, (t - float(scene["start"])) / span))
                 frame = make_frame(script, scene, local_t, t, bg_cache)
+                frame = apply_transition(frame, transition_source, scene, local_t, first_scene=(frame_no == 0))
+                last_frame = frame.copy()
                 if frame_no == total_frames // 2:
                     frame.save(poster_path, quality=95)
                 process.stdin.write(frame.tobytes())
