@@ -147,12 +147,22 @@ def prepare_scene_overlays(script: dict[str, Any]) -> int:
                 continue
             asset = ALIASES.get(str(overlay.get("asset", "")).lower(),
                                 str(overlay.get("asset", "")).lower())
+            generated = None
             if asset not in DEFAULT_ASSETS:
-                continue
+                blueprint = overlay.get("visual_design") or overlay.get("drawing_blueprint")
+                if not isinstance(blueprint, dict):
+                    continue
+                from concept_drawer import create_concept_asset
+                generated = create_concept_asset(blueprint, Path(__file__).parent / "output")
+                asset = generated["asset"]
             start = max(0.0, min(0.99, float(overlay.get("start", 0.2))))
             end = max(start + 0.01, min(1.0, float(overlay.get("end", 0.88))))
             item = dict(overlay)
             item.update({"asset": asset, "start": start, "end": end})
+            if generated:
+                item["_generated_preview_path"] = generated["preview_path"]
+                item["_generated_svg_path"] = generated["svg_path"]
+                item["_generated_sha256"] = generated["sha256"]
             item.setdefault("visual_type", "sticker")
             item.setdefault("enter", "slide_up")
             item.setdefault("exit", "slide_left")
@@ -351,7 +361,8 @@ def render_visual_overlays(image: Image.Image, scene: dict[str, Any], progress: 
         if not isinstance(spec, dict):
             continue
         asset = str(spec.get("asset", "question"))
-        if library_paths is not None and asset not in library_paths:
+        custom_preview = spec.get("_generated_preview_path")
+        if library_paths is not None and asset not in library_paths and not (custom_preview and Path(custom_preview).is_file()):
             continue
         start, end = float(spec.get("start", 0.2)), float(spec.get("end", 0.88))
         if progress < start or progress > end:
@@ -365,6 +376,15 @@ def render_visual_overlays(image: Image.Image, scene: dict[str, Any], progress: 
         if alpha <= 0.005:
             continue
         card = _overlay_card(spec)
+        if custom_preview and Path(custom_preview).is_file():
+            custom_art = Image.open(custom_preview).convert("RGBA").resize((112, 112), Image.Resampling.LANCZOS)
+            if str(spec.get("visual_type", "sticker")).lower() == "thought_bubble":
+                art_position = (65, 51)
+            elif str(spec.get("visual_type", "sticker")).lower() == "banner":
+                art_position = (53, 25)
+            else:
+                art_position = ((card.width - 112) // 2, 27)
+            card.alpha_composite(custom_art, art_position)
         enter_kind = str(spec.get("enter", "slide_up"))
         exit_kind = str(spec.get("exit", "slide_left"))
         ex, ey = _move_for(enter_kind, enter_amount, 105, 85)
