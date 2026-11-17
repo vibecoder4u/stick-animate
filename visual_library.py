@@ -383,15 +383,6 @@ def render_visual_overlays(image: Image.Image, scene: dict[str, Any], progress: 
         if alpha <= 0.005:
             continue
         card = _overlay_card(spec)
-        if custom_preview and Path(custom_preview).is_file():
-            custom_art = Image.open(custom_preview).convert("RGBA").resize((112, 112), Image.Resampling.LANCZOS)
-            if str(spec.get("visual_type", "sticker")).lower() == "thought_bubble":
-                art_position = (65, 51)
-            elif str(spec.get("visual_type", "sticker")).lower() == "banner":
-                art_position = (53, 25)
-            else:
-                art_position = ((card.width - 112) // 2, 27)
-            card.alpha_composite(custom_art, art_position)
         enter_kind = str(spec.get("enter", "slide_up"))
         exit_kind = str(spec.get("exit", "slide_left"))
         ex, ey = _move_for(enter_kind, enter_amount, 105, 85)
