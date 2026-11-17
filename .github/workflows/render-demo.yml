@@ -82,6 +82,31 @@ jobs:
           test -s output/native-assets/manifest.json
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/native-artwork-demo.mp4
 
+      - name: Render smart psychology visual overlay proof
+        if: github.event_name == 'pull_request'
+        env:
+          STICK_ANIMATE_OFFLINE_AUDIO: "1"
+        run: |
+          python stick_animate.py --script tests/fixtures/visual_overlay_demo.json --output output/visual-overlay-demo.mp4
+          test -s output/visual-overlay-demo.mp4
+          test -s output/visual-library-manifest.json
+          test -s output/visual-overlay-plan.json
+          test "$(find output/visual-library -name '*.svg' | wc -l)" -ge 20
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/visual-overlay-demo.mp4
+
+      - name: Upload smart visual overlay proof
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: stick-animate-smart-visual-overlay-proof
+          path: |
+            output/visual-overlay-demo*
+            output/visual-library-manifest.json
+            output/visual-overlay-plan.json
+            output/visual-library/*.svg
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Upload native artwork proof
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
