@@ -2,6 +2,7 @@ from __future__ import annotations
 """Machine-readable inventory of features the current renderer can actually execute."""
 from typing import Any
 from character_rigs import available_species
+from visual_library import DEFAULT_ASSETS
 
 # These are the only environment families with dedicated animated background plates.
 ANIMATED_ENVIRONMENTS = ("beach", "ocean", "sea", "underwater")
@@ -29,6 +30,10 @@ def capability_profile() -> dict[str, Any]:
         "native_artwork": {"enabled": True, "formats": ["layered_png", "svg", "metadata_json"],
                            "asset_kinds": ["character", "prop", "background"],
                            "external_image_services_required": False},
+        "visual_library": {"enabled": True, "asset_ids": list(DEFAULT_ASSETS),
+                           "overlay_types": ["thought_bubble", "sticker", "banner"],
+                           "storage": "content_addressed_svg_sha256",
+                           "entrance_exit_transitions": ["slide_up", "slide_down", "slide_left", "slide_right", "reveal"]},
         "environments": {
             "animated_backgrounds": list(ANIMATED_ENVIRONMENTS),
             "base_plate_only": list(BASE_PLATE_ENVIRONMENTS),
@@ -44,6 +49,7 @@ def capability_profile() -> dict[str, Any]:
             "Character rigs are procedural 2D drawings, not full skeletal or 3D rigs.",
             "Unknown species use the native anatomy-aware rig compiler; species-specific bespoke rig refinement remains iterative.",
             "Native artwork is generated as layered vector/raster components; complex painterly image synthesis is not claimed.",
+            "The psychology SVG library is a finite starter catalog; unknown concepts require a new native vector symbol to be added or generated."
             "The drawing compiler is local and self-contained; no external image-generation service is required.",
         ],
     }

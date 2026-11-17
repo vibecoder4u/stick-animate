@@ -24,6 +24,7 @@ from camera_director import apply_camera
 from transition_director import apply_transition
 from environment_animation import render_environment_background, animate_environment
 from asset_generator import prepare_generated_assets, attach_generated_assets
+from visual_library import materialize_visual_library, prepare_scene_overlays, render_visual_overlays
 
 W, H = 1280, 720
 FPS = 24
@@ -508,7 +509,7 @@ def draw_character_design(image: Image.Image, actor: dict[str, Any], pose_data: 
         d.line((eye_x-5*scale, eye_y-5*scale, eye_x+5*scale, eye_y-2*scale), fill=(23,31,40), width=3)
 
 
-def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, global_t: float, bg_cache: dict[str, Image.Image]) -> Image.Image:
+def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, global_t: float, bg_cache: dict[str, Image.Image], visual_library: dict[str, str] | None = None) -> Image.Image:
     raw_environment = scene.get("environment", "corridor")
     # AI planners may return a structured environment manifest rather than a
     # renderer key. Resolve it to a supported key without discarding the plan.
@@ -609,6 +610,8 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         draw_caption(image, caption, sub)
     # Story-aware camera: focus, smooth push-in and subject tracking.
     image = apply_camera(image, scene, local_t)
+    # Keep educational stickers in screen space after camera movement, with their own narrated transitions.
+    image = render_visual_overlays(image, scene, local_t, visual_library)
     return image.convert("RGB")
 
 
@@ -658,6 +661,13 @@ def render(script_path: Path, output: Path) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True)
     generated_assets = prepare_generated_assets(script, output.parent)
     attach_generated_assets(script, generated_assets)
+    visual_library = materialize_visual_library(output.parent)
+    overlay_count = prepare_scene_overlays(script)
+    (output.parent / "visual-overlay-plan.json").write_text(json.dumps([
+        {"scene": index, "overlays": scene.get("visual_overlays", [])}
+        for index, scene in enumerate(script.get("scenes", []))
+    ], indent=2), encoding="utf-8")
+    print(f"Smart visual library: {len(visual_library)} SVG assets; {overlay_count} timed overlays.")
     poster_path = output.with_name(output.stem + "-poster.png")
     with tempfile.TemporaryDirectory(prefix="stick-animate-") as temp_dir:
         audio_path = Path(temp_dir) / "scene-audio.wav"
@@ -696,7 +706,7 @@ def render(script_path: Path, output: Path) -> Path:
                     active_scene = scene
                 span = float(scene["end"]) - float(scene["start"])
                 local_t = min(1.0, max(0.0, (t - float(scene["start"])) / span))
-                frame = make_frame(script, scene, local_t, t, bg_cache)
+                frame = make_frame(script, scene, local_t, t, bg_cache, visual_library)
                 frame = apply_transition(frame, transition_source, scene, local_t, first_scene=(frame_no == 0))
                 last_frame = frame.copy()
                 if frame_no == total_frames // 2:

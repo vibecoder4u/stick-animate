@@ -49,3 +49,12 @@ Pull requests render `tests/fixtures/native_artwork_demo.json`, which introduces
 ## Scene-plan timing
 
 AI scene timestamps are normalized to the requested duration when the model's start/end drift is small (up to 10% or one second). Large timeline mismatches and overlapping scenes remain validation errors.
+
+
+## Smart visual library and narration overlays
+
+The experimental smart visual library adds an editable SVG starter pack for human-psychology and educational explainers. The source symbols live in `assets/visual_library/psychology_stickers.svg`. On render, each symbol is extracted and stored as a separate SHA-256-addressed SVG under `output/visual-library/`, with a semantic `visual-library-manifest.json`. Repeated renders reuse the same content-addressed files rather than creating duplicates.
+
+Scenes may include a `visual_overlays` list. Each overlay specifies an asset id, type (`thought_bubble`, `sticker`, or `banner`), normalized start/end progress, normalized position, and entrance/exit transitions. When no explicit overlay is supplied, a conservative narration keyword matcher can suggest one for common concepts such as the brain, anxiety, flight limitations, evidence, time, and learning. The AI planner is also instructed to emit these structured cues when they clarify a concept.
+
+The existing renderer remains responsible for characters, scenes, audio and video encoding. Visual overlays are composited after camera movement so that they remain legible in screen space. The PR workflow renders `tests/fixtures/visual_overlay_demo.json` and uploads an MP4 plus the actual hash-addressed SVG files for inspection. This is a local vector-symbol starter library, not an external image-generation model; more detailed custom illustrations can be added to the source SVG pack later.
