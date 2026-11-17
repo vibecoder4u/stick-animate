@@ -291,6 +291,13 @@ def _paint_icon(asset: str, size: int) -> Image.Image:
             ellipse(box, "#A9C5D1", None, 0)
     return icon.resize((size, size), Image.Resampling.LANCZOS)
 
+def _overlay_icon(spec: dict[str, Any], asset: str, size: int) -> Image.Image:
+    custom = spec.get("_generated_preview_path")
+    if custom and Path(custom).is_file():
+        return Image.open(custom).convert("RGBA").resize((size, size), Image.Resampling.LANCZOS)
+    return _paint_icon(asset, size)
+
+
 def _overlay_card(spec: dict[str, Any]) -> Image.Image:
     kind = str(spec.get("visual_type", "sticker")).lower()
     asset = str(spec.get("asset", "question"))
@@ -317,7 +324,7 @@ def _overlay_card(spec: dict[str, Any]) -> Image.Image:
         d.rounded_rectangle((32,12,width-30,height-55), 48, fill="#FFFDF7", outline="#304A60", width=6)
         d.ellipse((65,height-72,112,height-26), fill="#FFFDF7", outline="#304A60", width=5)
         d.ellipse((33,height-39,62,height-10), fill="#FFFDF7", outline="#304A60", width=4)
-        icon = _paint_icon(asset, 112)
+        icon = _overlay_icon(spec, asset, 112)
         card.alpha_composite(icon, (65,51))
         if text:
             d.text((196,90), text[:19], font=_font(19, True), fill="#344B60")
@@ -326,7 +333,7 @@ def _overlay_card(spec: dict[str, Any]) -> Image.Image:
         d.polygon([(0,35),(65,35),(36,75),(65,119),(0,119)], fill=accent)
         d.polygon([(width-65,35),(width,35),(width,height-35),(width-65,height-35),(width-34,height//2)], fill=accent)
         d.rounded_rectangle((34,16,width-34,height-16), 32, fill="#FFFDF7", outline="#304A60", width=5)
-        icon = _paint_icon(asset, 104)
+        icon = _overlay_icon(spec, asset, 104)
         card.alpha_composite(icon, (53,25))
         if text:
             d.text((178,55), text[:29], font=_font(22, True), fill="#344B60")
