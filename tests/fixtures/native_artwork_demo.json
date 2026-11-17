@@ -1,0 +1,122 @@
+{
+  "title": "Pip and the Skycycle",
+  "duration": 8,
+  "fps": 24,
+  "size": [1280, 720],
+  "scenes": [
+    {
+      "start": 0,
+      "end": 4,
+      "environment": "snowy mountain valley",
+      "background_asset": "snowfield-bg",
+      "background_prompt": "A bright, cinematic snowy mountain valley at sunrise, layered blue distant peaks, soft pink sky, sparkling snow and a winding trail.",
+      "background_design": {
+        "palette": "cool",
+        "body_color": "#dcecf2",
+        "accent_color": "#779eb9",
+        "outline_color": "#36566e"
+      },
+      "description": "Pip discovers a strange skycycle beside the mountain trail.",
+      "caption": "A NEW DISCOVERY",
+      "camera": {"zoom_start": 1.0, "zoom_end": 1.08, "pan": 0.0},
+      "actors": [
+        {
+          "name": "Pip",
+          "character_id": "pip",
+          "asset_id": "character-pip",
+          "species": "penguin",
+          "visual_description": "A small, friendly emperor penguin with a charcoal back, white belly, bright orange beak and a teal scarf.",
+          "visual_design": {
+            "anatomy": "bird",
+            "palette": "cool",
+            "body_color": "#303e52",
+            "accent_color": "#25aeb5",
+            "outline_color": "#172635",
+            "belly_color": "#f3eee2",
+            "silhouette": "round upright penguin with short flippers and webbed feet",
+            "distinctive_features": ["orange beak", "teal scarf", "white belly"]
+          },
+          "scale": 1.05,
+          "keyframes": [
+            {"t": 0, "x": 390, "y": 615, "pose": "idle", "facing": 1},
+            {"t": 1, "x": 520, "y": 615, "pose": "walk", "facing": 1}
+          ]
+        }
+      ],
+      "props": [
+        {
+          "type": "hover_bike",
+          "name": "Skycycle",
+          "asset_id": "prop-skycycle",
+          "visual_description": "A compact futuristic one-seat hover motorcycle with two glowing cyan anti-gravity rings, a rounded red body and a small clear windscreen.",
+          "visual_design": {
+            "palette": "royal",
+            "body_color": "#c64f55",
+            "accent_color": "#39d7e7",
+            "outline_color": "#512d43",
+            "belly_color": "#f4d69b"
+          },
+          "x": 0.72,
+          "y": 0.84
+        }
+      ]
+    },
+    {
+      "start": 4,
+      "end": 8,
+      "environment": "snowy mountain valley",
+      "background_asset": "snowfield-bg",
+      "background_prompt": "A bright, cinematic snowy mountain valley at sunrise, layered blue distant peaks, soft pink sky, sparkling snow and a winding trail.",
+      "background_design": {
+        "palette": "cool",
+        "body_color": "#dcecf2",
+        "accent_color": "#779eb9",
+        "outline_color": "#36566e"
+      },
+      "description": "Pip climbs onto the skycycle and rides along the snowy trail.",
+      "caption": "OFF ON AN ADVENTURE",
+      "camera": {"zoom_start": 1.04, "zoom_end": 1.12, "pan": 0.08},
+      "actors": [
+        {
+          "name": "Pip",
+          "character_id": "pip",
+          "asset_id": "character-pip",
+          "species": "penguin",
+          "visual_description": "A small, friendly emperor penguin with a charcoal back, white belly, bright orange beak and a teal scarf.",
+          "visual_design": {
+            "anatomy": "bird",
+            "palette": "cool",
+            "body_color": "#303e52",
+            "accent_color": "#25aeb5",
+            "outline_color": "#172635",
+            "belly_color": "#f3eee2",
+            "silhouette": "round upright penguin with short flippers and webbed feet",
+            "distinctive_features": ["orange beak", "teal scarf", "white belly"]
+          },
+          "scale": 1.05,
+          "keyframes": [
+            {"t": 0, "x": 520, "y": 615, "pose": "jump", "facing": 1},
+            {"t": 1, "x": 920, "y": 615, "pose": "run", "facing": 1}
+          ]
+        }
+      ],
+      "props": [
+        {
+          "type": "hover_bike",
+          "name": "Skycycle",
+          "asset_id": "prop-skycycle",
+          "visual_description": "A compact futuristic one-seat hover motorcycle with two glowing cyan anti-gravity rings, a rounded red body and a small clear windscreen.",
+          "visual_design": {
+            "palette": "royal",
+            "body_color": "#c64f55",
+            "accent_color": "#39d7e7",
+            "outline_color": "#512d43",
+            "belly_color": "#f4d69b"
+          },
+          "x": 0.72,
+          "y": 0.84
+        }
+      ]
+    }
+  ]
+}
