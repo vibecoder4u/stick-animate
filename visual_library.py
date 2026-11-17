@@ -15,7 +15,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 SVG_PATH = Path(__file__).parent / "assets" / "visual_library" / "psychology_stickers.svg"
 NS = "{http://www.w3.org/2000/svg}"
