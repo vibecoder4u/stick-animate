@@ -662,7 +662,7 @@ def render(script_path: Path, output: Path) -> Path:
     generated_assets = prepare_generated_assets(script, output.parent)
     attach_generated_assets(script, generated_assets)
     visual_library = materialize_visual_library(output.parent)
-    overlay_count = prepare_scene_overlays(script)
+    overlay_count = prepare_scene_overlays(script, output.parent)
     (output.parent / "visual-overlay-plan.json").write_text(json.dumps([
         {"scene": index, "overlays": scene.get("visual_overlays", [])}
         for index, scene in enumerate(script.get("scenes", []))
