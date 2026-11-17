@@ -1,0 +1,199 @@
+{
+  "title": "Ideas We Cannot Do — Smart Visual Overlay Experiment",
+  "size": [
+    1280,
+    720
+  ],
+  "fps": 24,
+  "duration": 15,
+  "design_metadata": {
+    "topic": "human psychology and human capability",
+    "experiment": "narration-driven SVG sticker overlays with animated transitions",
+    "visual_library": "hash-addressed local SVG assets; no external providers"
+  },
+  "scenes": [
+    {
+      "start": 0,
+      "end": 5,
+      "environment": "street",
+      "description": "A person introduces human intelligence.",
+      "caption": "HUMANS ARE INTELLIGENT",
+      "narration": "Humans are intelligent. The brain helps us reason, remember and imagine.",
+      "camera": {
+        "zoom_start": 1,
+        "zoom_end": 1.035,
+        "pan": 0
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "presenter",
+          "name": "Presenter",
+          "scale": 1.12,
+          "wardrobe": "hoodie",
+          "hair": "short",
+          "accent_rgb": [
+            87,
+            164,
+            188
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 390,
+              "y": 635,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 390,
+              "y": 635,
+              "pose": "listen",
+              "facing": 1
+            }
+          ]
+        }
+      ],
+      "visual_overlays": [
+        {
+          "asset": "brain",
+          "visual_type": "thought_bubble",
+          "text": "THE HUMAN MIND",
+          "start": 0.12,
+          "end": 0.91,
+          "position": {
+            "x": 0.72,
+            "y": 0.34
+          },
+          "enter": "slide_up",
+          "exit": "slide_left",
+          "transition_in": 0.16,
+          "transition_out": 0.17
+        }
+      ]
+    },
+    {
+      "start": 5,
+      "end": 10,
+      "environment": "street",
+      "description": "The person considers the physical limits of human flight.",
+      "caption": "BUT HUMANS CANNOT FLY",
+      "narration": "But intelligence has limits. Without technology, humans cannot fly like birds.",
+      "camera": {
+        "zoom_start": 1.02,
+        "zoom_end": 1.055,
+        "pan": 0.02
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "presenter",
+          "name": "Presenter",
+          "scale": 1.12,
+          "wardrobe": "hoodie",
+          "hair": "short",
+          "accent_rgb": [
+            87,
+            164,
+            188
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 390,
+              "y": 635,
+              "pose": "look_back",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 390,
+              "y": 635,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
+        }
+      ],
+      "visual_overlays": [
+        {
+          "asset": "bird_cross",
+          "visual_type": "banner",
+          "text": "NO NATURAL FLIGHT",
+          "start": 0.12,
+          "end": 0.91,
+          "position": {
+            "x": 0.69,
+            "y": 0.31
+          },
+          "enter": "slide_right",
+          "exit": "slide_left",
+          "transition_in": 0.18,
+          "transition_out": 0.18
+        }
+      ]
+    },
+    {
+      "start": 10,
+      "end": 15,
+      "environment": "street",
+      "description": "Human invention creates a way to fly.",
+      "caption": "SO WE INVENTED FLIGHT",
+      "narration": "So humans used imagination and engineering to invent airplanes and take to the sky.",
+      "camera": {
+        "zoom_start": 1.015,
+        "zoom_end": 1.07,
+        "pan": -0.02
+      },
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "presenter",
+          "name": "Presenter",
+          "scale": 1.12,
+          "wardrobe": "hoodie",
+          "hair": "short",
+          "accent_rgb": [
+            87,
+            164,
+            188
+          ],
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 390,
+              "y": 635,
+              "pose": "reach",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 390,
+              "y": 635,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
+        }
+      ],
+      "visual_overlays": [
+        {
+          "asset": "airplane",
+          "visual_type": "sticker",
+          "text": "HUMAN INGENUITY",
+          "start": 0.08,
+          "end": 0.94,
+          "position": {
+            "x": 0.72,
+            "y": 0.34
+          },
+          "enter": "slide_up",
+          "exit": "slide_right",
+          "transition_in": 0.14,
+          "transition_out": 0.18
+        }
+      ]
+    }
+  ]
+}
