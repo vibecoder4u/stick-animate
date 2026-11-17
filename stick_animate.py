@@ -572,17 +572,20 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         render_actor.update(pose_data)
         render_actor["scale"] = float(actor.get("scale", 1.0)) * float(pose_data.get("depth_scale", 1.0))
         generated_actor = actor.get("_generated_asset_path")
-        if generated_actor and Path(generated_actor).is_file():
-            sprite = Image.open(generated_actor).convert("RGBA")
-            sprite.thumbnail((max(64, int(260 * render_actor["scale"])), max(64, int(300 * render_actor["scale"]))), Image.Resampling.LANCZOS)
-            sx = int(float(pose_data.get("x", 640)) - sprite.width / 2)
-            sy = int(float(pose_data.get("y", 610)) - sprite.height)
-            actor_layer.alpha_composite(sprite, (sx, sy))
-        elif not draw_species_character(actor_layer, render_actor, pose_data, global_t):
-            draw_character(actor_layer, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
-                str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
-                global_t, float(render_actor["scale"]))
-            draw_character_design(actor_layer, render_actor, pose_data)
+        # Native rigs take precedence so new species stay animated. A compiled
+        # preview is used for a human design that has no dedicated rig yet.
+        if not draw_species_character(actor_layer, render_actor, pose_data, global_t):
+            if generated_actor and Path(generated_actor).is_file():
+                sprite = Image.open(generated_actor).convert("RGBA")
+                sprite.thumbnail((max(64, int(260 * render_actor["scale"])), max(64, int(300 * render_actor["scale"]))), Image.Resampling.LANCZOS)
+                sx = int(float(pose_data.get("x", 640)) - sprite.width / 2)
+                sy = int(float(pose_data.get("y", 610)) - sprite.height)
+                actor_layer.alpha_composite(sprite, (sx, sy))
+            else:
+                draw_character(actor_layer, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
+                    str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
+                    global_t, float(render_actor["scale"]))
+                draw_character_design(actor_layer, render_actor, pose_data)
         angle = float(pose_data.get("body_angle", 0.0))
         if abs(angle) > 0.01:
             actor_layer = actor_layer.rotate(-angle, resample=Image.Resampling.BICUBIC,
