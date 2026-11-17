@@ -59,6 +59,40 @@ class SmartVisualLibraryTests(unittest.TestCase):
             self.assertIsNotNone(ImageChops.difference(background, hold).getbbox())
             self.assertIsNotNone(ImageChops.difference(background, exit_frame).getbbox())
 
+    def test_unknown_concept_blueprint_is_drawn_as_new_hashed_svg_and_rendered(self):
+        from concept_drawer import create_concept_asset, validate_blueprint
+        blueprint = {
+            "name": "tangled thoughts",
+            "description": "A head surrounded by tangled thought lines",
+            "elements": [
+                {"type": "circle", "x": 64, "y": 68, "r": 34, "fill": "#F2C6A8", "stroke": "#40566A", "stroke_width": 4},
+                {"type": "polyline", "points": [[42,65],[52,54],[60,67],[70,49],[82,64],[91,55]], "fill": "none", "stroke": "#7656A8", "stroke_width": 5},
+                {"type": "circle", "x": 52, "y": 78, "r": 3, "fill": "#24394A", "stroke": "none"},
+                {"type": "circle", "x": 76, "y": 78, "r": 3, "fill": "#24394A", "stroke": "none"}
+            ]
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            made = create_concept_asset(blueprint, Path(tmp))
+            self.assertTrue(Path(made["svg_path"]).is_file())
+            self.assertTrue(Path(made["preview_path"]).is_file())
+            self.assertEqual(len(made["sha256"]), 64)
+            script = {"scenes": [{"narration": "A completely new concept",
+                "visual_overlays": [{"asset": "tangled_thoughts", "visual_design": blueprint,
+                    "visual_type": "thought_bubble", "start": .1, "end": .9}]}]}
+            self.assertEqual(prepare_scene_overlays(script, Path(tmp)), 1)
+            overlay = script["scenes"][0]["visual_overlays"][0]
+            self.assertTrue(Path(overlay["_generated_preview_path"]).is_file())
+            bg = Image.new("RGB", (1280, 720), (28, 42, 58))
+            frame = render_visual_overlays(bg, script["scenes"][0], .5, {})
+            self.assertIsNotNone(ImageChops.difference(bg, frame).getbbox())
+
+    def test_rejects_unsafe_or_unsupported_blueprint_elements(self):
+        from concept_drawer import validate_blueprint
+        with self.assertRaises(ValueError):
+            validate_blueprint({"elements": [{"type": "script", "text": "bad"}]})
+        with self.assertRaises(ValueError):
+            validate_blueprint({"elements": [{"type": "polygon", "points": [[1, 2]]}]})
+
     def test_scene_preparation_preserves_explicit_and_infers_missing(self):
         script = {"scenes": [
             {"narration": "The brain searches for memories."},

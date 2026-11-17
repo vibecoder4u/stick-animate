@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, experiment/ai-concept-drawing]
   workflow_dispatch:
     inputs:
       story:
@@ -51,6 +51,33 @@ jobs:
 
       - name: Run engine tests
         run: python -m unittest discover -s tests -v
+
+      - name: Generate and render a script-only psychology proof (Groq must invent new visuals)
+        if: github.event_name == 'pull_request'
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL: openai/gpt-oss-120b
+        run: |
+          test -n "$GROQ_API_KEY" || (echo "GROQ_API_KEY is required for the script-only autonomy proof" && exit 1)
+          test -s proof-inputs/script-only-psychology.txt
+          python stick_animate.py --story-file proof-inputs/script-only-psychology.txt --duration-mode auto --title "The Attention Trap" --output output/script-only-psychology.mp4 --validate-only
+          python verify_script_only_proof.py
+          STICK_ANIMATE_OFFLINE_AUDIO=1 python stick_animate.py --script output/script-only-psychology-scene-plan.json --output output/script-only-psychology.mp4
+          test -s output/script-only-psychology.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/script-only-psychology.mp4
+
+      - name: Upload script-only autonomy proof
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: stick-animate-script-only-psychology-proof
+          path: |
+            output/script-only-psychology*
+            output/visual-library-manifest.json
+            output/visual-library/*.svg
+            output/visual-overlay-plan.json
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Render 2.5D beach proof on pull requests
         if: github.event_name == 'pull_request'

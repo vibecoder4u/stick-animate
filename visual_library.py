@@ -133,7 +133,7 @@ def infer_scene_overlays(scene: dict[str, Any]) -> list[dict[str, Any]]:
             }]
     return []
 
-def prepare_scene_overlays(script: dict[str, Any]) -> int:
+def prepare_scene_overlays(script: dict[str, Any], output_dir: Path | None = None) -> int:
     total = 0
     for scene in script.get("scenes", []):
         overlays = scene.get("visual_overlays")
@@ -147,12 +147,22 @@ def prepare_scene_overlays(script: dict[str, Any]) -> int:
                 continue
             asset = ALIASES.get(str(overlay.get("asset", "")).lower(),
                                 str(overlay.get("asset", "")).lower())
+            generated = None
             if asset not in DEFAULT_ASSETS:
-                continue
+                blueprint = overlay.get("visual_design") or overlay.get("drawing_blueprint")
+                if not isinstance(blueprint, dict):
+                    continue
+                from concept_drawer import create_concept_asset
+                generated = create_concept_asset(blueprint, output_dir or (Path(__file__).parent / "output"))
+                asset = generated["asset"]
             start = max(0.0, min(0.99, float(overlay.get("start", 0.2))))
             end = max(start + 0.01, min(1.0, float(overlay.get("end", 0.88))))
             item = dict(overlay)
             item.update({"asset": asset, "start": start, "end": end})
+            if generated:
+                item["_generated_preview_path"] = generated["preview_path"]
+                item["_generated_svg_path"] = generated["svg_path"]
+                item["_generated_sha256"] = generated["sha256"]
             item.setdefault("visual_type", "sticker")
             item.setdefault("enter", "slide_up")
             item.setdefault("exit", "slide_left")
@@ -281,6 +291,13 @@ def _paint_icon(asset: str, size: int) -> Image.Image:
             ellipse(box, "#A9C5D1", None, 0)
     return icon.resize((size, size), Image.Resampling.LANCZOS)
 
+def _overlay_icon(spec: dict[str, Any], asset: str, size: int) -> Image.Image:
+    custom = spec.get("_generated_preview_path")
+    if custom and Path(custom).is_file():
+        return Image.open(custom).convert("RGBA").resize((size, size), Image.Resampling.LANCZOS)
+    return _paint_icon(asset, size)
+
+
 def _overlay_card(spec: dict[str, Any]) -> Image.Image:
     kind = str(spec.get("visual_type", "sticker")).lower()
     asset = str(spec.get("asset", "question"))
@@ -307,7 +324,7 @@ def _overlay_card(spec: dict[str, Any]) -> Image.Image:
         d.rounded_rectangle((32,12,width-30,height-55), 48, fill="#FFFDF7", outline="#304A60", width=6)
         d.ellipse((65,height-72,112,height-26), fill="#FFFDF7", outline="#304A60", width=5)
         d.ellipse((33,height-39,62,height-10), fill="#FFFDF7", outline="#304A60", width=4)
-        icon = _paint_icon(asset, 112)
+        icon = _overlay_icon(spec, asset, 112)
         card.alpha_composite(icon, (65,51))
         if text:
             d.text((196,90), text[:19], font=_font(19, True), fill="#344B60")
@@ -316,7 +333,7 @@ def _overlay_card(spec: dict[str, Any]) -> Image.Image:
         d.polygon([(0,35),(65,35),(36,75),(65,119),(0,119)], fill=accent)
         d.polygon([(width-65,35),(width,35),(width,height-35),(width-65,height-35),(width-34,height//2)], fill=accent)
         d.rounded_rectangle((34,16,width-34,height-16), 32, fill="#FFFDF7", outline="#304A60", width=5)
-        icon = _paint_icon(asset, 104)
+        icon = _overlay_icon(spec, asset, 104)
         card.alpha_composite(icon, (53,25))
         if text:
             d.text((178,55), text[:29], font=_font(22, True), fill="#344B60")
@@ -351,7 +368,8 @@ def render_visual_overlays(image: Image.Image, scene: dict[str, Any], progress: 
         if not isinstance(spec, dict):
             continue
         asset = str(spec.get("asset", "question"))
-        if library_paths is not None and asset not in library_paths:
+        custom_preview = spec.get("_generated_preview_path")
+        if library_paths is not None and asset not in library_paths and not (custom_preview and Path(custom_preview).is_file()):
             continue
         start, end = float(spec.get("start", 0.2)), float(spec.get("end", 0.88))
         if progress < start or progress > end:
