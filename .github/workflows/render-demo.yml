@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, experiment/ai-concept-drawing]
   workflow_dispatch:
     inputs:
       story:
@@ -61,7 +61,6 @@ jobs:
           test -n "$GROQ_API_KEY" || (echo "GROQ_API_KEY is required for the script-only autonomy proof" && exit 1)
           test -s proof-inputs/script-only-psychology.txt
           python stick_animate.py --story-file proof-inputs/script-only-psychology.txt --duration-mode auto --title "The Attention Trap" --output output/script-only-psychology.mp4 --validate-only
-          cp output/script-only-psychology-scene-plan.json output/script-only-psychology-scene-plan.json
           python verify_script_only_proof.py
           STICK_ANIMATE_OFFLINE_AUDIO=1 python stick_animate.py --script output/script-only-psychology-scene-plan.json --output output/script-only-psychology.mp4
           test -s output/script-only-psychology.mp4
