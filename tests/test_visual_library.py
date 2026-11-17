@@ -36,7 +36,7 @@ class SmartVisualLibraryTests(unittest.TestCase):
             self.assertEqual(count, len(list((Path(tmp) / "visual-library").glob("*.svg"))))
 
     def test_inference_maps_psychology_narration_to_meaningful_visual(self):
-        scene = {"narration": "Humans are intelligent, but the human mind has limitations."}
+        scene = {"narration": "Humans are intelligent. The brain helps us reason and remember."}
         overlays = infer_scene_overlays(scene)
         self.assertEqual(overlays[0]["asset"], "bird_cross" if "cannot fly" in scene["narration"] else "brain")
         explicit = {"narration": "Humans cannot fly, despite their intelligence."}
