@@ -133,7 +133,7 @@ def infer_scene_overlays(scene: dict[str, Any]) -> list[dict[str, Any]]:
             }]
     return []
 
-def prepare_scene_overlays(script: dict[str, Any]) -> int:
+def prepare_scene_overlays(script: dict[str, Any], output_dir: Path | None = None) -> int:
     total = 0
     for scene in script.get("scenes", []):
         overlays = scene.get("visual_overlays")
@@ -153,7 +153,7 @@ def prepare_scene_overlays(script: dict[str, Any]) -> int:
                 if not isinstance(blueprint, dict):
                     continue
                 from concept_drawer import create_concept_asset
-                generated = create_concept_asset(blueprint, Path(__file__).parent / "output")
+                generated = create_concept_asset(blueprint, output_dir or (Path(__file__).parent / "output"))
                 asset = generated["asset"]
             start = max(0.0, min(0.99, float(overlay.get("start", 0.2))))
             end = max(start + 0.01, min(1.0, float(overlay.get("end", 0.88))))
