@@ -70,6 +70,27 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Render native artwork proof with a new species and prop
+        if: github.event_name == 'pull_request'
+        env:
+          STICK_ANIMATE_OFFLINE_AUDIO: "1"
+        run: |
+          python stick_animate.py --script tests/fixtures/native_artwork_demo.json --output output/native-artwork-demo.mp4
+          test -s output/native-artwork-demo.mp4
+          test -s output/native-assets/character-pip/artwork.svg
+          test -s output/native-assets/prop-skycycle/artwork.svg
+          test -s output/native-assets/manifest.json
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,r_frame_rate -of json output/native-artwork-demo.mp4
+
+      - name: Upload native artwork proof
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: stick-animate-native-artwork-proof
+          path: output/native-artwork-demo*
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Explain push-only run
         if: github.event_name == 'push'
         shell: bash

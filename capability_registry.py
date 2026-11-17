@@ -25,7 +25,10 @@ def capability_profile() -> dict[str, Any]:
     return {
         "schema_version": 1,
         "characters": {"native_species": species, "unknown_species_policy":
-                       "do_not_silently_substitute; use an explicitly described approximation or report unsupported"},
+                       "compile_anatomy_aware_native_rig_from_visual_design; never substitute a human"},
+        "native_artwork": {"enabled": True, "formats": ["layered_png", "svg", "metadata_json"],
+                           "asset_kinds": ["character", "prop", "background"],
+                           "external_image_services_required": False},
         "environments": {
             "animated_backgrounds": list(ANIMATED_ENVIRONMENTS),
             "base_plate_only": list(BASE_PLATE_ENVIRONMENTS),
@@ -39,7 +42,8 @@ def capability_profile() -> dict[str, Any]:
         "limitations": [
             "Most environment names currently receive only the renderer base plate; only beach/ocean/sea/underwater have dedicated animated environmental layers.",
             "Character rigs are procedural 2D drawings, not full skeletal or 3D rigs.",
-            "Unknown species fall back to the generic human renderer unless the plan explicitly marks an approximation.",
-            "The model plans scenes; it does not itself generate raster artwork or new character rigs.",
+            "Unknown species use the native anatomy-aware rig compiler; species-specific bespoke rig refinement remains iterative.",
+            "Native artwork is generated as layered vector/raster components; complex painterly image synthesis is not claimed.",
+            "The drawing compiler is local and self-contained; no external image-generation service is required.",
         ],
     }

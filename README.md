@@ -1,6 +1,6 @@
 # Stick Animate
 
-A script-driven 2D animation engine for story-based faceless videos.
+A script-driven 2D animation engine with a self-contained native artwork and animation pipeline.
 
 ## Run the tests
 
@@ -30,6 +30,20 @@ To download the result, open the completed manual workflow run and download its 
 The GitHub runner installs FFmpeg and the Python dependencies. Add `GROQ_API_KEY` as a repository Actions secret to enable Groq planning. The configured model is `openai/gpt-oss-120b`.
 
 The engine is still under active development; a successful render verifies the pipeline and output files, not professional animation quality.
+
+## Native AI-directed artwork
+
+Stick Animate no longer depends on Hugging Face, ComfyUI, or a hosted image-generation endpoint to create story assets. The production planner can describe unknown characters, props, vehicles and backgrounds with a structured `visual_design` brief. The local native artwork compiler turns those briefs into editable SVG, transparent PNG component layers, preview artwork and reusable JSON metadata. Unknown species are assigned an anatomy-aware procedural rig instead of being silently replaced with a human.
+
+The native pipeline is:
+
+1. **AI visual designer:** identifies missing assets and returns their appearance, palette, silhouette, anatomy and component details in the scene plan.
+2. **Drawing engine:** compiles those details into local SVG and layered PNG artwork, then caches it in `output/native-assets/`.
+3. **Animation engine:** uses native species rigs for motion; unknown species use anatomy archetypes (bird, fish, serpentine, quadruped, biped or multi-limb) while preserving the planned identity.
+
+This is a self-contained vector/procedural illustration system, not a claim of photorealistic or painterly diffusion-model image synthesis. No external image service or stock image is required.
+
+Pull requests render `tests/fixtures/native_artwork_demo.json`, which introduces a penguin and a hover bike, and upload a video proof artifact named `stick-animate-native-artwork-proof`.
 
 
 ## Scene-plan timing
