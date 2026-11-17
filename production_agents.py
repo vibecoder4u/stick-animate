@@ -154,7 +154,7 @@ def design_production(story: str, duration: float | None = None, title: str = "U
         "In ONE response produce a complete renderer-ready JSON scene plan for this exact story. "
         "Think like script analyst, scene designer, character director and motion director, but make no extra API calls. "
         "Preserve every named character and correct species. Give each scene concrete visible actions and all present actors "
-        "with species, distinct appearance, scale, accent_rgb, wardrobe, expression and normalized keyframes "
+        "with species, distinct appearance, visual_description, visual_design, scale, accent_rgb, wardrobe, expression and normalized keyframes "
         "(t 0..1, x,y,pose,facing). Use multiple actors when interacting. Include story-specific props, environment, "
         "camera, lighting, weather and continuity. No generic repeated scenes; do not invent plot events. Treat every non-empty script paragraph as a distinct narrative unit: give each paragraph at least one dedicated scene, and split paragraphs containing multiple consequential actions into multiple shots. Never summarize several paragraphs into one montage or skip dialogue-driven interactions. Preserve event order and show the actual action, not merely a caption. "
         "Canvas 1280x720, 24fps. For scripts over 60 words create at least 8 distinct shots, and generally "
@@ -170,9 +170,9 @@ def design_production(story: str, duration: float | None = None, title: str = "U
         + "Use story-appropriate locations such as forest, house, road and storm. " +
         "Also return an assets array for every story-specific visual asset the current library cannot provide: unknown species/creatures, distinctive props, vehicles and original locations. Each asset object must include asset_id, name, kind (character, prop, or background), a detailed visual_description, and a structured visual_design object. For characters, visual_design should include anatomy (bird, fish, serpentine, quadruped, biped or multi_limb), palette, body_color, accent_color, outline_color, belly_color, silhouette and distinctive_features. For props and backgrounds, specify shape, materials, palette, focal details and layer order. Reuse that exact asset_id on its actor or prop manifest so the native drawing engine can compile layered artwork. For a scene-specific original background, include background_prompt, background_design and background_asset on that scene. Do not request assets for ordinary supported characters or props. The drawing engine is local: do not request a hosted image-generation provider or stock image. " +
         "CAPABILITY REGISTRY (authoritative; never claim unsupported features): " + capability_context + " " +
-        "For each scene choose a renderer-supported species where possible. If the story requires an unsupported species, " +
-        "preserve its identity in character description but mark renderer_approximation=true and explain the approximation " +
-        "in design_metadata.capability_warnings. Prefer supported animated environments only when they fit the story; " +
+        "For each scene preserve the actual species. If the species is not in native_species, include its full visual_design " +
+        "blueprint and let the native anatomy-aware drawing and rig compiler create it; never replace it with a human. " +
+        "Prefer supported animated environments only when they fit the story; " +
         "for other settings, provide a precise environment description and acknowledge base-plate-only rendering. " +
         "Do not label an environment as animated unless the registry lists it under animated_backgrounds."
     )
