@@ -73,36 +73,29 @@ class ProductionAgentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "require at least"):
             _validate_plan(short, story=story)
 
-    def test_story_coverage_requires_distinctive_events(self):
-        story = ("Alex tripped and apples rolled away. Milo the Monkey helped him. "
-                 "They found Tia the Turtle stuck on her back. A storm arrived and a tree blocked the road. "
-                 "Bruno the Bear helped them push the tree aside. They walked home together as friends.")
-        scenes = []
+    def test_story_coverage_is_generic_not_tied_to_demo_characters(self):
+        story = ("At dusk, a young astronaut discovers a glowing crystal compass inside an abandoned observatory. "
+                 "The compass projects a map across the ceiling, revealing a hidden path through an ice canyon. "
+                 "A small repair robot follows the astronaut as they cross the frozen bridge and reach the signal tower before sunrise.")
         descriptions = [
-            "Alex trips and apples roll across the forest floor",
-            "Milo the Monkey picks up an apple and helps Alex",
-            "Alex laughs with Milo the Monkey",
-            "Tia the Turtle is stuck upside down",
-            "Milo and Alex push Tia the Turtle upright",
-            "A storm breaks over the forest road",
-            "A fallen tree blocks the road",
-            "Bruno the Bear arrives to help",
-            "The friends push and move the fallen tree together",
-            "Alex walks home with Milo Tia and Bruno as friends",
+            "An astronaut approaches an abandoned observatory at dusk",
+            "The astronaut discovers a glowing crystal compass",
+            "The compass projects a map across the ceiling",
+            "A hidden path appears on the observatory ceiling",
+            "The astronaut and repair robot enter an ice canyon",
+            "They carefully cross a frozen bridge",
+            "The signal tower appears beyond the canyon",
+            "The astronaut reaches the tower before sunrise",
         ]
-        for i, description in enumerate(descriptions):
-            scene = {"start": i * 4, "end": (i + 1) * 4, "description": description}
-            for species in ("monkey", "turtle", "bear"):
-                if species in description.lower():
-                    scene["actors"] = [{"species": species, "character_id": species}]
-                    break
-            scenes.append(scene)
-        plan = {"scenes": scenes}
-        self.assertEqual(_validate_plan(plan, story=story), 40.0)
+        plan = {"scenes": [
+            {"start": i * 3, "end": (i + 1) * 3, "description": description}
+            for i, description in enumerate(descriptions)
+        ]}
+        self.assertEqual(_validate_plan(plan, story=story), 24.0)
         for scene in plan["scenes"]:
-            scene["description"] = scene["description"].replace("apples", "fruit").replace("apple", "fruit")
-            scene["caption"] = scene["caption"].lower().replace("apples", "fruit").replace("apple", "fruit")
-        with self.assertRaisesRegex(ValueError, "apple"):
+            scene["description"] = "A person moves through the scene"
+            scene["caption"] = "A person moves through the scene"
+        with self.assertRaisesRegex(ValueError, "too generic"):
             _validate_plan(plan, story=story)
 
     def test_auto_mode_preserves_natural_ai_timeline_without_stretching(self):
