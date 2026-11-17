@@ -19,7 +19,7 @@
       <path d="m31 89-8 18m25-14-3 14" stroke="#D58B45" stroke-width="6" stroke-linecap="round"/>
     </symbol>
     <symbol id="bird_cross" viewBox="0 0 128 128">
-      <use href="#bird"/>
+      <path d="M18 75c18-38 54-49 85-22 10 9 14 22 6 34-20 28-75 23-91-12Z" fill="#72B6CF" stroke="#294B62" stroke-width="7"/><path d="M54 69c10-28 34-32 48-20-2 23-19 37-48 20Z" fill="#EAF4F2" stroke="#294B62" stroke-width="5"/><path d="m100 50 25 10-25 12Z" fill="#F0AC54" stroke="#294B62" stroke-width="5"/><circle cx="91" cy="43" r="5" fill="#1F3547"/>
       <circle cx="64" cy="64" r="57" fill="none" stroke="#D94D52" stroke-width="9"/>
       <path d="M24 104 104 24" stroke="#D94D52" stroke-width="12" stroke-linecap="round"/>
     </symbol>
@@ -28,7 +28,7 @@
       <path d="M64 54v54" stroke="#42637C" stroke-width="6" stroke-linecap="round"/>
     </symbol>
     <symbol id="wings_cross" viewBox="0 0 128 128">
-      <use href="#wings"/>
+      <path d="M62 60C47 26 20 15 7 26c7 8 12 15 15 26-8-5-15-5-19 2 13 20 31 35 59 42Zm4 0c15-34 42-45 55-34-7 8-12 15-15 26 8-5 15-5 19 2-13 20-31 35-59 42Z" fill="#D7E8F4" stroke="#42637C" stroke-width="7" stroke-linejoin="round"/><path d="M64 54v54" stroke="#42637C" stroke-width="6" stroke-linecap="round"/>
       <circle cx="64" cy="64" r="57" fill="none" stroke="#D94D52" stroke-width="9"/>
       <path d="M24 104 104 24" stroke="#D94D52" stroke-width="12" stroke-linecap="round"/>
     </symbol>
