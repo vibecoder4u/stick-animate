@@ -9,6 +9,7 @@ not a frame-by-frame hand-drawn animation system.
 import math
 from typing import Any
 from PIL import Image, ImageDraw
+from native_artwork import draw_native_character
 
 
 def _rgb(value: Any, default: tuple[int, int, int]) -> tuple[int, int, int]:
@@ -30,8 +31,11 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
     species = str(actor.get("species", "human")).lower().replace("-", "_")
     supported = {"monkey", "turtle", "bear", "dog", "cat", "bird", "fish",
                  "dinosaur", "trex", "t_rex", "elephant", "deer", "fox", "rabbit", "fallen_tree", "apple_cluster", "apple"}
-    if species in {"human", "boy", "girl", "man", "woman", "old_man"} or species not in supported:
+    if species in {"human", "boy", "girl", "man", "woman", "old_man"}:
         return False
+    if species not in supported:
+        # Unknown species receive an anatomy-aware native rig, never a generic human.
+        return draw_native_character(image, actor, pose, t)
 
     d = ImageDraw.Draw(image)
     x, y = float(pose.get("x", 640)), float(pose.get("y", 610))
