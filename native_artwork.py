@@ -260,6 +260,7 @@ def create_native_asset(request: dict[str, Any], output_dir: Path) -> dict[str, 
     if design["kind"] == "character":
         preview = _draw_character_layers(design, folder / "layers")
     elif design["kind"] == "background":
+        (folder / "layers").mkdir(parents=True, exist_ok=True)
         preview = Image.new("RGBA", (1280, 720), (0, 0, 0, 0))
         d = ImageDraw.Draw(preview)
         d.rectangle((0, 0, 1280, 430), fill=(140, 202, 232))
