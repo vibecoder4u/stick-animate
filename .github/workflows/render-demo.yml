@@ -2,7 +2,7 @@ name: Render Stick Animate demo
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/2-5d-camera-environments]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -39,7 +39,7 @@ jobs:
           cache: pip
 
       - name: Install FFmpeg
-        if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' || github.ref == 'refs/heads/feature/2-5d-camera-environments'
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg espeak-ng
@@ -71,7 +71,7 @@ jobs:
           retention-days: 30
 
       - name: Explain push-only run
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.ref != 'refs/heads/feature/2-5d-camera-environments'
         shell: bash
         run: |
           {
@@ -81,6 +81,26 @@ jobs:
             echo ""
             echo "To create a video: open **Actions → Render Stick Animate demo → Run workflow**, paste your story and set the title. Automatic story-led timing is the default."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Render 60-second human-cast and sticker proof
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feature/2-5d-camera-environments'
+        env:
+          STICK_ANIMATE_OFFLINE_AUDIO: "1"
+        run: |
+          python stick_animate.py --script demo/brain-learning-stickers-60s.json --output output/brain-learning-stickers-60s.mp4
+          test -s output/brain-learning-stickers-60s.mp4
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,r_frame_rate -of json output/brain-learning-stickers-60s.mp4
+
+      - name: Upload 60-second visual proof
+        if: github.event_name == 'push' && github.ref == 'refs/heads/feature/2-5d-camera-environments'
+        uses: actions/upload-artifact@v4
+        with:
+          name: stick-animate-human-cast-sticker-proof-${{ github.run_number }}
+          path: |
+            output/brain-learning-stickers-60s.mp4
+            output/brain-learning-stickers-60s-poster.png
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Prepare story input
         if: github.event_name == 'workflow_dispatch'
