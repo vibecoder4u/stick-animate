@@ -5,7 +5,7 @@ from PIL import Image, ImageChops
 
 from human_cast import HUMAN_CAST, character_profile, apply_age_variant
 from sticker_library import STICKERS, draw_stickers
-from stick_animate import validate_script, draw_character
+from stick_animate import validate_script, draw_character, draw_character_design
 
 class HumanCastAndStickerTests(unittest.TestCase):
     def test_exactly_eight_approved_human_identities(self):
@@ -32,6 +32,8 @@ class HumanCastAndStickerTests(unittest.TestCase):
         old=apply_age_variant(character_profile("man_2"),"elderly")
         self.assertEqual(old["hair"],"white")
         self.assertIn("walking_stick",old["accessories"])
+        image=Image.new("RGB",(640,360),(25,32,43))
+        draw_character_design(image,old,{"x":320,"y":315,"facing":1})
 
     def test_sticker_catalogue_has_svg_sources_and_runtime_rendering(self):
         self.assertGreaterEqual(len(STICKERS),10)
