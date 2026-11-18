@@ -537,8 +537,8 @@ def draw_character_design(image: Image.Image, actor: dict[str, Any], pose_data: 
         d.arc((hx-18*scale,hy+5*scale,hx-3*scale,hy+15*scale),180,350,fill=(125,93,77),width=1)
         d.arc((hx+3*scale,hy+5*scale,hx+18*scale,hy+15*scale),190,360,fill=(125,93,77),width=1)
         if "walking_stick" in actor.get("accessories",[]):
-            d.line((x+34*scale,foot_y-75*scale,x+43*scale,foot_y+2*scale),fill=(116,82,48),width=max(3,int(5*scale)))
-            d.arc((x+29*scale,foot_y-84*scale,x+49*scale,foot_y-64*scale),180,360,fill=(116,82,48),width=max(3,int(4*scale)))
+            d.line((x+34*scale,y-75*scale,x+43*scale,y+2*scale),fill=(116,82,48),width=max(3,int(5*scale)))
+            d.arc((x+29*scale,y-84*scale,x+49*scale,y-64*scale),180,360,fill=(116,82,48),width=max(3,int(4*scale)))
 
 
 def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, global_t: float, bg_cache: dict[str, Image.Image]) -> Image.Image:
