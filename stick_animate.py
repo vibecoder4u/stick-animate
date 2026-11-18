@@ -19,6 +19,8 @@ from scene_understanding_agent import analyse_script
 from scene_designer import design_story
 from production_agents import design_production
 from character_rigs import draw_species_character
+from human_cast import HUMAN_CAST, character_profile, apply_age_variant
+from sticker_library import draw_stickers
 from camera_director import apply_camera
 from environment_animation import render_environment_background, animate_environment
 
@@ -262,7 +264,7 @@ def draw_door(draw: ImageDraw.ImageDraw, opening: float = 0.0, glow: float = 0.0
         draw.rectangle((x1 - 9, y0 + 5, x1 + 1, y1), fill=(180, 211, 225))
 
 
-def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facing: int, t: float, scale: float = 1.0) -> None:
+def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facing: int, t: float, scale: float = 1.0, actor: dict[str, Any] | None = None) -> None:
     d = ImageDraw.Draw(image)
     phase = t * (11.5 if pose == "run" else 7.0)
     stride = math.sin(phase)
@@ -270,7 +272,10 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
     s = scale
     def pt(px: float, py: float) -> tuple[int, int]:
         return (int(x + px * s * f), int(foot_y + py * s))
-    color = (222, 231, 239)
+    actor = actor or {}
+    color = tuple(actor.get("accent_rgb", [87, 151, 177]))
+    skin = tuple(actor.get("skin_rgb", [222, 177, 145]))
+    head_scale = max(0.85, min(1.35, float(actor.get("head_scale", 1.0))))
     shadow = (3, 6, 11)
     d.ellipse((x - 32*s, foot_y - 11*s, x + 32*s, foot_y + 5*s), fill=(2, 5, 9))
     # Local skeleton, with small procedural motion layered over authored poses.
@@ -288,8 +293,8 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
     d.line((pt(0, shoulder_y), pt(0, hip_y)), fill=color, width=max(7, int(12*s)))
     # Head: clean readable silhouette with two tiny facial marks.
     hx, hy = pt(0, head_y)
-    r = 29*s
-    d.ellipse((hx-r, hy-r, hx+r, hy+r), fill=color)
+    r = 29*s*head_scale
+    d.ellipse((hx-r, hy-r, hx+r, hy+r), fill=skin, outline=(73,54,45), width=max(1,int(2*s)))
     eye_x = hx + f * 10*s
     d.ellipse((eye_x-2*s, hy-5*s, eye_x+2*s, hy-1*s), fill=(26, 36, 48))
     # Neck/shoulder joints
@@ -486,14 +491,21 @@ def draw_character_design(image: Image.Image, actor: dict[str, Any], pose_data: 
     # Hair silhouette and eyebrows distinguish the character from a blank circle.
     hx, hy = int(x), int(y-145*scale)
     hair = actor.get("hair", "short")
+    hair_color = tuple(actor.get("hair_rgb", [29,31,37]))
     if hair == "long":
-        d.pieslice((hx-30*scale, hy-32*scale, hx+30*scale, hy+30*scale), 180, 350, fill=(29, 31, 37))
-        d.ellipse((hx-31*scale, hy-5*scale, hx-18*scale, hy+45*scale), fill=(29,31,37))
+        d.pieslice((hx-30*scale, hy-32*scale, hx+30*scale, hy+30*scale), 180, 350, fill=hair_color)
+        d.ellipse((hx-31*scale, hy-5*scale, hx-18*scale, hy+45*scale), fill=hair_color)
+    elif hair == "white":
+        d.pieslice((hx-31*scale, hy-35*scale, hx+31*scale, hy+24*scale), 180, 360, fill=hair_color)
+        d.ellipse((hx-33*scale,hy-10*scale,hx-20*scale,hy+20*scale),fill=hair_color)
+    elif hair == "side_part":
+        d.pieslice((hx-31*scale, hy-34*scale, hx+31*scale, hy+21*scale), 180, 360, fill=hair_color)
+        d.line((hx-3*scale,hy-30*scale,hx+19*scale,hy-27*scale),fill=(220,220,220),width=max(1,int(2*scale)))
     elif hair == "cap":
-        d.pieslice((hx-31*scale, hy-35*scale, hx+31*scale, hy+22*scale), 180, 360, fill=(29, 39, 51))
+        d.pieslice((hx-31*scale, hy-35*scale, hx+31*scale, hy+22*scale), 180, 360, fill=hair_color)
         d.line((hx, hy-28*scale, hx+30*scale*facing, hy-19*scale), fill=accent, width=max(2,int(4*scale)))
     else:
-        d.arc((hx-30*scale, hy-32*scale, hx+30*scale, hy+18*scale), 185, 355, fill=(29,31,37), width=max(5,int(9*scale)))
+        d.arc((hx-30*scale, hy-32*scale, hx+30*scale, hy+18*scale), 185, 355, fill=hair_color, width=max(5,int(9*scale)))
     expression = actor.get("expression", "neutral")
     eye_y = hy-4*scale
     eye_x = hx+facing*10*scale
@@ -502,6 +514,17 @@ def draw_character_design(image: Image.Image, actor: dict[str, Any], pose_data: 
         d.arc((hx-11*scale, hy+5*scale, hx+11*scale, hy+22*scale), 190, 350, fill=(55,25,29), width=2)
     elif expression == "determined":
         d.line((eye_x-5*scale, eye_y-5*scale, eye_x+5*scale, eye_y-2*scale), fill=(23,31,40), width=3)
+    elif expression in {"happy", "joy", "smile"}:
+        d.arc((hx-12*scale, hy+2*scale, hx+12*scale, hy+20*scale), 10, 170, fill=(105,48,48), width=max(2,int(3*scale)))
+    elif expression in {"curious", "think", "thinking"}:
+        d.ellipse((eye_x-4*scale, eye_y-4*scale, eye_x+4*scale, eye_y+4*scale), fill=(18,25,34))
+        d.line((eye_x-5*scale,eye_y-9*scale,eye_x+5*scale,eye_y-11*scale),fill=(50,42,38),width=2)
+    if actor.get("age_variant") == "elderly":
+        d.arc((hx-18*scale,hy+5*scale,hx-3*scale,hy+15*scale),180,350,fill=(125,93,77),width=1)
+        d.arc((hx+3*scale,hy+5*scale,hx+18*scale,hy+15*scale),190,360,fill=(125,93,77),width=1)
+        if "walking_stick" in actor.get("accessories",[]):
+            d.line((x+34*scale,foot_y-75*scale,x+43*scale,foot_y+2*scale),fill=(116,82,48),width=max(3,int(5*scale)))
+            d.arc((x+29*scale,foot_y-84*scale,x+49*scale,foot_y-64*scale),180,360,fill=(116,82,48),width=max(3,int(4*scale)))
 
 
 def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, global_t: float, bg_cache: dict[str, Image.Image]) -> Image.Image:
@@ -554,6 +577,13 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
     if primary:
         cast = [primary] + [a for a in cast if a is not primary]
     for actor in cast:
+        actor = dict(actor)
+        if str(actor.get("species", "human")).lower() in {"human", "boy", "girl", "man", "woman", "old_man"}:
+            cid = str(actor.get("character_id", "man_1"))
+            if cid in HUMAN_CAST:
+                actor = {**character_profile(cid), **actor}
+            if actor.get("age_variant") in {"elderly", "old", "senior"}:
+                actor = apply_age_variant(actor, "elderly")
         pose_data = sample_keyframes(actor.get("keyframes", []), local_t)
         pose_data["facing"] = facing_sign(pose_data.get("facing", 1))
         species = str(actor.get("species", "human")).lower()
@@ -561,9 +591,10 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
             draw_character(
                 image, float(pose_data.get("x", 640)), float(pose_data.get("y", 610)),
                 str(pose_data.get("pose", "idle")), int(pose_data.get("facing", 1)),
-                global_t, float(actor.get("scale", 1.0)),
+                global_t, float(actor.get("scale", 1.0)), actor,
             )
             draw_character_design(image, actor, pose_data)
+    draw_stickers(image, scene, local_t)
     caption = scene.get("caption", "")
     sub = scene.get("subcaption", "")
     # Fade captions in and out at shot boundaries.
