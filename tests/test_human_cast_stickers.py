@@ -5,7 +5,7 @@ from PIL import Image, ImageChops
 
 from human_cast import HUMAN_CAST, character_profile, apply_age_variant
 from sticker_library import STICKERS, draw_stickers
-from stick_animate import validate_script
+from stick_animate import validate_script, draw_character
 
 class HumanCastAndStickerTests(unittest.TestCase):
     def test_exactly_eight_approved_human_identities(self):
@@ -18,6 +18,15 @@ class HumanCastAndStickerTests(unittest.TestCase):
         children=[character_profile(k) for k in ("child_5","child_9","child_13")]
         self.assertEqual(sorted(x["scale"] for x in children), [0.76,0.86,0.94])
         self.assertEqual(sorted(x["head_scale"] for x in children), [1.07,1.14,1.22])
+
+    def test_character_profiles_render_with_distinct_colour_and_scale(self):
+        renders=[]
+        for cid in ("man_1","woman_1","child_5","child_9","child_13"):
+            profile=character_profile(cid)
+            image=Image.new("RGB",(640,360),(25,32,43))
+            draw_character(image,320,315,"idle",1,0.2,profile["scale"],profile)
+            renders.append(image)
+        self.assertTrue(all(ImageChops.difference(renders[0],img).getbbox() for img in renders[1:]))
 
     def test_elderly_variant_adds_white_hair_and_cane(self):
         old=apply_age_variant(character_profile("man_2"),"elderly")
@@ -39,6 +48,7 @@ class HumanCastAndStickerTests(unittest.TestCase):
         self.assertEqual(len(data["scenes"]),10)
         for scene in data["scenes"]:
             self.assertTrue(scene.get("stickers"))
+            self.assertTrue(scene.get("narration"))
             for actor in scene.get("actors",[]):
                 self.assertEqual(actor["species"],"human")
                 self.assertIn(actor["character_id"],HUMAN_CAST)
