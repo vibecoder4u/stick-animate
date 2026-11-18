@@ -109,7 +109,8 @@
           "y": 0.34,
           "size": 76
         }
-      ]
+      ],
+      "narration": "A teacher welcomes two students into a bright learning lab. Today they will discover how the brain learns."
     },
     {
       "start": 6,
@@ -177,7 +178,8 @@
           "y": 0.35,
           "size": 82
         }
-      ]
+      ],
+      "narration": "The teacher points to a glowing brain model. Your brain contains billions of tiny nerve cells called neurons."
     },
     {
       "start": 12,
@@ -255,7 +257,8 @@
           "y": 0.36,
           "size": 78
         }
-      ]
+      ],
+      "narration": "When you see, hear, touch or practise something, neurons communicate using electrical and chemical signals."
     },
     {
       "start": 18,
@@ -323,7 +326,8 @@
           "size": 82,
           "text": "STRONGER"
         }
-      ]
+      ],
+      "narration": "The first time a skill feels difficult. With practice, your brain strengthens the connections used for that skill."
     },
     {
       "start": 24,
@@ -397,7 +401,8 @@
           "size": 76,
           "text": "PROGRESS"
         }
-      ]
+      ],
+      "narration": "That is why learning a new language, riding a bicycle or solving a puzzle becomes easier when you practise."
     },
     {
       "start": 30,
@@ -470,7 +475,8 @@
           "y": 0.26,
           "size": 64
         }
-      ]
+      ],
+      "narration": "Sleep is important too. While you sleep, your brain organises and strengthens some of the memories you formed during the day."
     },
     {
       "start": 36,
@@ -538,7 +544,8 @@
           "size": 82,
           "text": "REFRESH"
         }
-      ]
+      ],
+      "narration": "A short break can help you return with fresh attention. Learning is not about rushing; it is about understanding and practising."
     },
     {
       "start": 42,
@@ -613,7 +620,8 @@
           "size": 78,
           "text": "RECALL"
         }
-      ]
+      ],
+      "narration": "You can help your memory by paying attention, connecting new facts to things you already know, and testing yourself."
     },
     {
       "start": 48,
@@ -682,7 +690,8 @@
           "size": 82,
           "text": "GOT IT!"
         }
-      ]
+      ],
+      "narration": "Aarav tries to remember the three habits. He smiles as the ideas come back to him."
     },
     {
       "start": 54,
@@ -796,7 +805,8 @@
           "y": 0.34,
           "size": 74
         }
-      ]
+      ],
+      "narration": "Your brain changes as you learn. Stay curious, keep practising, and give yourself time to grow."
     }
   ]
 }
