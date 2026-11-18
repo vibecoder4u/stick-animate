@@ -110,7 +110,7 @@
           "size": 76
         }
       ],
-      "narration": "A teacher welcomes two students into a bright learning lab. Today they will discover how the brain learns."
+      "narration": "Today we'll discover how your brain learns and remembers."
     },
     {
       "start": 6,
@@ -179,7 +179,7 @@
           "size": 82
         }
       ],
-      "narration": "The teacher points to a glowing brain model. Your brain contains billions of tiny nerve cells called neurons."
+      "narration": "Your brain contains billions of tiny nerve cells called neurons."
     },
     {
       "start": 12,
@@ -258,7 +258,7 @@
           "size": 78
         }
       ],
-      "narration": "When you see, hear, touch or practise something, neurons communicate using electrical and chemical signals."
+      "narration": "Neurons send signals when you see, hear, touch, or practise."
     },
     {
       "start": 18,
@@ -327,7 +327,7 @@
           "text": "STRONGER"
         }
       ],
-      "narration": "The first time a skill feels difficult. With practice, your brain strengthens the connections used for that skill."
+      "narration": "Practice strengthens the connections your brain uses for each skill."
     },
     {
       "start": 24,
@@ -402,7 +402,7 @@
           "text": "PROGRESS"
         }
       ],
-      "narration": "That is why learning a new language, riding a bicycle or solving a puzzle becomes easier when you practise."
+      "narration": "Languages, bicycles, and puzzles get easier with repeated practice."
     },
     {
       "start": 30,
@@ -435,7 +435,7 @@
         },
         {
           "species": "human",
-          "character_id": "man_2",
+          "character_id": "man_3",
           "name": "Parent",
           "keyframes": [
             {
@@ -452,7 +452,8 @@
               "pose": "idle",
               "facing": -1
             }
-          ]
+          ],
+          "age_variant": "elderly"
         }
       ],
       "stickers": [
@@ -476,7 +477,7 @@
           "size": 64
         }
       ],
-      "narration": "Sleep is important too. While you sleep, your brain organises and strengthens some of the memories you formed during the day."
+      "narration": "During sleep, your brain organises and strengthens some memories."
     },
     {
       "start": 36,
@@ -545,7 +546,7 @@
           "text": "REFRESH"
         }
       ],
-      "narration": "A short break can help you return with fresh attention. Learning is not about rushing; it is about understanding and practising."
+      "narration": "Short breaks help you return with fresh attention."
     },
     {
       "start": 42,
@@ -621,7 +622,7 @@
           "text": "RECALL"
         }
       ],
-      "narration": "You can help your memory by paying attention, connecting new facts to things you already know, and testing yourself."
+      "narration": "Pay attention, connect new facts, and test what you remember."
     },
     {
       "start": 48,
@@ -691,7 +692,7 @@
           "text": "GOT IT!"
         }
       ],
-      "narration": "Aarav tries to remember the three habits. He smiles as the ideas come back to him."
+      "narration": "Can you recall those three helpful memory habits?"
     },
     {
       "start": 54,
@@ -806,7 +807,7 @@
           "size": 74
         }
       ],
-      "narration": "Your brain changes as you learn. Stay curious, keep practising, and give yourself time to grow."
+      "narration": "Stay curious, keep practising, and give your brain time to grow."
     }
   ]
 }
