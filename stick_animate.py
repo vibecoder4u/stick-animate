@@ -115,6 +115,7 @@ def gradient_background(kind: str) -> Image.Image:
         "rainroom": ((20, 34, 48), (5, 10, 18)),
         "street": ((26, 34, 47), (5, 8, 14)),
         "forest": ((91, 157, 181), (24, 65, 48)),
+        "laboratory": ((37, 61, 83), (8, 18, 31)),
         "road": ((113, 160, 178), (43, 75, 59)),
     }
     palettes.update({
@@ -439,6 +440,19 @@ def paint_environment_details(image: Image.Image, kind: str, t: float, opening: 
             d.ellipse((x-12, 233, x+12, 257), fill=(102, 157, 178, 90))
         d.rectangle((80, 430, 1200, 445), fill=(70, 89, 105, 130))
         d.text((100, 455), "DECK 03  /  RESTRICTED", font=font(16, True), fill=(148, 173, 188, 190))
+    elif kind == "laboratory":
+        # A clear science-lab set: workbench, glass panels, monitors and indicator lights.
+        d.rectangle((70, 155, 410, 430), fill=(9, 23, 37, 190), outline=(102, 159, 187, 185), width=4)
+        d.rectangle((95, 180, 385, 355), fill=(18, 48, 67, 220), outline=(80, 151, 181, 190), width=3)
+        d.line((115, 215, 360, 215), fill=(83, 192, 206, 180), width=4)
+        d.line((115, 250, 315, 250), fill=(91, 143, 175, 150), width=3)
+        d.rectangle((830, 160, 1190, 430), fill=(8, 22, 36, 190), outline=(102, 159, 187, 185), width=4)
+        for i in range(5):
+            xx=865+i*62
+            d.ellipse((xx, 190, xx+18, 208), fill=(73, 207, 171, 210) if i%2==0 else (236, 187, 84, 190))
+            d.line((xx+8, 225, xx+8, 380), fill=(69, 130, 158, 100), width=2)
+        d.polygon([(130, 485), (1150, 485), (1210, 565), (70, 565)], fill=(31, 57, 75, 220))
+        d.line((110, 485, 1170, 485), fill=(122, 175, 194, 210), width=5)
     elif kind == "forest":
         for i in range(13):
             x = (i*113 + 25) % W
