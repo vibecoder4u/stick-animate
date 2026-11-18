@@ -1,0 +1,802 @@
+{
+  "title": "How Your Brain Learns",
+  "size": [
+    1280,
+    720
+  ],
+  "fps": 24,
+  "duration": 60,
+  "design_metadata": {
+    "purpose": "one-minute human-cast and explanatory-sticker proof",
+    "cast_policy": "approved_human_cast_only",
+    "sticker_library": "sticker_library.py",
+    "narration_note": "On-screen narration captions are included; voice recording can be added in a later voice-sync pass."
+  },
+  "scenes": [
+    {
+      "start": 0,
+      "end": 6,
+      "environment": "laboratory",
+      "description": "A teacher welcomes two students into a bright learning lab. Today they will discover how the brain learns.",
+      "caption": "HOW DOES YOUR BRAIN LEARN?",
+      "subcaption": "A one-minute journey inside your mind",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "woman_2",
+          "name": "Teacher",
+          "wardrobe": "coat",
+          "hair": "long",
+          "accent_rgb": [
+            111,
+            105,
+            190
+          ],
+          "expression": "happy",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 470,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 490,
+              "y": 625,
+              "pose": "reach",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "child_5",
+          "name": "Aarav",
+          "expression": "curious",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 760,
+              "y": 625,
+              "pose": "idle",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 760,
+              "y": 625,
+              "pose": "listen",
+              "facing": -1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "child_9",
+          "name": "Mira",
+          "expression": "happy",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 920,
+              "y": 625,
+              "pose": "idle",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 900,
+              "y": 625,
+              "pose": "reach",
+              "facing": -1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "brain",
+          "x": 0.79,
+          "y": 0.31,
+          "size": 116,
+          "text": "YOUR BRAIN"
+        },
+        {
+          "id": "idea",
+          "x": 0.28,
+          "y": 0.34,
+          "size": 76
+        }
+      ]
+    },
+    {
+      "start": 6,
+      "end": 12,
+      "environment": "laboratory",
+      "description": "The teacher points to a glowing brain model. Your brain contains billions of tiny nerve cells called neurons.",
+      "caption": "BILLIONS OF NEURONS",
+      "subcaption": "Tiny cells send and receive signals",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "woman_2",
+          "name": "Teacher",
+          "expression": "explaining",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 460,
+              "y": 625,
+              "pose": "reach",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 460,
+              "y": 625,
+              "pose": "reach",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "child_5",
+          "name": "Aarav",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 760,
+              "y": 625,
+              "pose": "listen",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 760,
+              "y": 625,
+              "pose": "listen",
+              "facing": -1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "neuron",
+          "x": 0.72,
+          "y": 0.35,
+          "size": 100,
+          "text": "NEURON"
+        },
+        {
+          "id": "brain",
+          "x": 0.88,
+          "y": 0.35,
+          "size": 82
+        }
+      ]
+    },
+    {
+      "start": 12,
+      "end": 18,
+      "environment": "laboratory",
+      "description": "When you see, hear, touch or practise something, neurons communicate using electrical and chemical signals.",
+      "caption": "SIGNALS TRAVEL THROUGH YOUR BRAIN",
+      "subcaption": "Seeing • hearing • touching • practising",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "child_9",
+          "name": "Mira",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 610,
+              "y": 625,
+              "pose": "look_back",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 650,
+              "y": 625,
+              "pose": "reach",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "man_1",
+          "name": "Demonstrator",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 900,
+              "y": 625,
+              "pose": "idle",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 900,
+              "y": 625,
+              "pose": "reach",
+              "facing": -1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "neuron",
+          "x": 0.28,
+          "y": 0.34,
+          "size": 86
+        },
+        {
+          "id": "arrow_up",
+          "x": 0.47,
+          "y": 0.34,
+          "size": 68
+        },
+        {
+          "id": "sparkles",
+          "x": 0.68,
+          "y": 0.3,
+          "size": 72
+        },
+        {
+          "id": "magnify",
+          "x": 0.86,
+          "y": 0.36,
+          "size": 78
+        }
+      ]
+    },
+    {
+      "start": 18,
+      "end": 24,
+      "environment": "laboratory",
+      "description": "The first time a skill feels difficult. With practice, your brain strengthens the connections used for that skill.",
+      "caption": "PRACTICE BUILDS CONNECTIONS",
+      "subcaption": "Repeating a skill helps its pathway become stronger",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "child_5",
+          "name": "Aarav",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 560,
+              "y": 625,
+              "pose": "stumble",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 600,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "woman_1",
+          "name": "Coach",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 880,
+              "y": 625,
+              "pose": "reach",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 850,
+              "y": 625,
+              "pose": "reach",
+              "facing": -1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "question",
+          "x": 0.32,
+          "y": 0.28,
+          "size": 70,
+          "text": "TRY AGAIN"
+        },
+        {
+          "id": "arrow_up",
+          "x": 0.72,
+          "y": 0.33,
+          "size": 82,
+          "text": "STRONGER"
+        }
+      ]
+    },
+    {
+      "start": 24,
+      "end": 30,
+      "environment": "laboratory",
+      "description": "That is why learning a new language, riding a bicycle or solving a puzzle becomes easier when you practise.",
+      "caption": "PRACTISE • REPEAT • IMPROVE",
+      "subcaption": "Skills grow through repeated experience",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "child_13",
+          "name": "Kabir",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 650,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 760,
+              "y": 625,
+              "pose": "run",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "woman_1",
+          "name": "Coach",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 940,
+              "y": 625,
+              "pose": "idle",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 940,
+              "y": 625,
+              "pose": "happy",
+              "facing": -1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "book",
+          "x": 0.27,
+          "y": 0.35,
+          "size": 78,
+          "text": "LANGUAGE"
+        },
+        {
+          "id": "sparkles",
+          "x": 0.51,
+          "y": 0.28,
+          "size": 66
+        },
+        {
+          "id": "check",
+          "x": 0.77,
+          "y": 0.33,
+          "size": 76,
+          "text": "PROGRESS"
+        }
+      ]
+    },
+    {
+      "start": 30,
+      "end": 36,
+      "environment": "laboratory",
+      "description": "Sleep is important too. While you sleep, your brain organises and strengthens some of the memories you formed during the day.",
+      "caption": "SLEEP HELPS MEMORY",
+      "subcaption": "Rest supports learning and remembering",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "child_9",
+          "name": "Mira",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 650,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 650,
+              "y": 625,
+              "pose": "crouch",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "man_2",
+          "name": "Parent",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 900,
+              "y": 625,
+              "pose": "listen",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 900,
+              "y": 625,
+              "pose": "idle",
+              "facing": -1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "clock",
+          "x": 0.31,
+          "y": 0.33,
+          "size": 86,
+          "text": "REST"
+        },
+        {
+          "id": "brain",
+          "x": 0.69,
+          "y": 0.34,
+          "size": 100
+        },
+        {
+          "id": "sparkles",
+          "x": 0.86,
+          "y": 0.26,
+          "size": 64
+        }
+      ]
+    },
+    {
+      "start": 36,
+      "end": 42,
+      "environment": "laboratory",
+      "description": "A short break can help you return with fresh attention. Learning is not about rushing; it is about understanding and practising.",
+      "caption": "GIVE YOUR BRAIN A BREAK",
+      "subcaption": "Focus, pause, and return refreshed",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "man_2",
+          "name": "Parent",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 500,
+              "y": 625,
+              "pose": "reach",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 500,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "child_13",
+          "name": "Kabir",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 790,
+              "y": 625,
+              "pose": "run",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 900,
+              "y": 625,
+              "pose": "idle",
+              "facing": -1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "clock",
+          "x": 0.3,
+          "y": 0.32,
+          "size": 86,
+          "text": "PAUSE"
+        },
+        {
+          "id": "idea",
+          "x": 0.72,
+          "y": 0.31,
+          "size": 82,
+          "text": "REFRESH"
+        }
+      ]
+    },
+    {
+      "start": 42,
+      "end": 48,
+      "environment": "laboratory",
+      "description": "You can help your memory by paying attention, connecting new facts to things you already know, and testing yourself.",
+      "caption": "THREE MEMORY HABITS",
+      "subcaption": "Attention • Connections • Self-testing",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "woman_2",
+          "name": "Teacher",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 480,
+              "y": 625,
+              "pose": "reach",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 480,
+              "y": 625,
+              "pose": "reach",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "child_5",
+          "name": "Aarav",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 850,
+              "y": 625,
+              "pose": "listen",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 850,
+              "y": 625,
+              "pose": "reach",
+              "facing": -1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "idea",
+          "x": 0.25,
+          "y": 0.31,
+          "size": 76,
+          "text": "ATTENTION"
+        },
+        {
+          "id": "neuron",
+          "x": 0.52,
+          "y": 0.31,
+          "size": 78,
+          "text": "CONNECT"
+        },
+        {
+          "id": "check",
+          "x": 0.8,
+          "y": 0.31,
+          "size": 78,
+          "text": "RECALL"
+        }
+      ]
+    },
+    {
+      "start": 48,
+      "end": 54,
+      "environment": "laboratory",
+      "description": "Aarav tries to remember the three habits. He smiles as the ideas come back to him.",
+      "caption": "CAN YOU REMEMBER THEM?",
+      "subcaption": "Attention, connections, and self-testing",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "child_5",
+          "name": "Aarav",
+          "expression": "happy",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 650,
+              "y": 625,
+              "pose": "think",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 650,
+              "y": 625,
+              "pose": "happy",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "child_9",
+          "name": "Mira",
+          "expression": "happy",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 880,
+              "y": 625,
+              "pose": "idle",
+              "facing": -1
+            },
+            {
+              "t": 1,
+              "x": 880,
+              "y": 625,
+              "pose": "happy",
+              "facing": -1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "question",
+          "x": 0.5,
+          "y": 0.26,
+          "size": 76
+        },
+        {
+          "id": "check",
+          "x": 0.78,
+          "y": 0.31,
+          "size": 82,
+          "text": "GOT IT!"
+        }
+      ]
+    },
+    {
+      "start": 54,
+      "end": 60,
+      "environment": "laboratory",
+      "description": "Your brain changes as you learn. Stay curious, keep practising, and give yourself time to grow.",
+      "caption": "STAY CURIOUS. KEEP LEARNING.",
+      "subcaption": "Your brain grows with every new experience",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "woman_2",
+          "name": "Teacher",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 420,
+              "y": 625,
+              "pose": "reach",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 420,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "child_5",
+          "name": "Aarav",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 690,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 690,
+              "y": 625,
+              "pose": "happy",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "child_9",
+          "name": "Mira",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 840,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 840,
+              "y": 625,
+              "pose": "happy",
+              "facing": 1
+            }
+          ]
+        },
+        {
+          "species": "human",
+          "character_id": "child_13",
+          "name": "Kabir",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 990,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 990,
+              "y": 625,
+              "pose": "happy",
+              "facing": 1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "brain",
+          "x": 0.5,
+          "y": 0.28,
+          "size": 90
+        },
+        {
+          "id": "sparkles",
+          "x": 0.69,
+          "y": 0.24,
+          "size": 66
+        },
+        {
+          "id": "heart",
+          "x": 0.82,
+          "y": 0.34,
+          "size": 74
+        }
+      ]
+    }
+  ]
+}
