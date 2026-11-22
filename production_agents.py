@@ -131,7 +131,16 @@ def design_production(story: str, duration: float | None = None, title: str = "U
     system = (
         "You are the master preproduction brain of a professional 2D animation studio. "
         "In ONE response produce a complete renderer-ready JSON scene plan for this exact story. "
-        "Think like script analyst, scene designer, character director and motion director, but make no extra API calls. "
+        "Think like script analyst, scene designer, character director and motion director, but make no extra API calls. " +
+        "STORY VISUAL DIRECTION: storyboard scenes as purposeful film shots rather than character lineup illustrations. " +
+        "For each shot, define foreground/background separation, staging (left/center/right and near/far), subject gaze, " +
+        "clear silhouette, readable physical interaction with props, and a single dominant visual focus. " +
+        "Vary shot types across establishing wide, two-shot, over-shoulder, medium, close-up and reaction shots " +
+        "when motivated by the story. Avoid repeating the same centered full-body composition. " +
+        "Animate actions as phases with anticipation, action, follow-through and settling; avoid teleporting between poses. " +
+        "Give walking keyframes continuous travel and believable facing; characters not moving should have subtle idle " +
+        "poses, not stiff mannequin poses. Use concrete expressive poses, actor-to-actor eyelines, and scene-specific " +
+        "camera focus. Do not replace physical action with captions or stickers. "
         "Preserve every named character and correct species. Give each scene concrete visible actions and all present actors "
         "with species, distinct appearance, scale, accent_rgb, wardrobe, expression and normalized keyframes "
         "(t 0..1, x,y,pose,facing). Use multiple actors when interacting. Include story-specific props, environment, "
