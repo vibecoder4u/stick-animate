@@ -23,6 +23,8 @@ from human_cast import HUMAN_CAST, character_profile, apply_age_variant
 from sticker_library import draw_stickers
 from camera_director import apply_camera
 from environment_animation import render_environment_background, animate_environment
+from transition_engine import crossfade, transition_duration
+
 
 W, H = 1280, 720
 FPS = 24
@@ -697,6 +699,15 @@ def render(script_path: Path, output: Path) -> Path:
                 span = float(scene["end"]) - float(scene["start"])
                 local_t = min(1.0, max(0.0, (t - float(scene["start"])) / span))
                 frame = make_frame(script, scene, local_t, t, bg_cache)
+                # Blend the new shot in smoothly for the configured transition window.
+                scene_index = script["scenes"].index(scene)
+                trans_len = transition_duration(script, scene)
+                if scene_index > 0 and trans_len > 0 and local_t * span < trans_len:
+                    prior = script["scenes"][scene_index - 1]
+                    prior_span = float(prior["end"]) - float(prior["start"])
+                    prior_t = max(0.0, min(1.0, (float(prior["end"]) - 0.001 - float(prior["start"])) / prior_span))
+                    prior_frame = make_frame(script, prior, prior_t, float(prior["end"]) - 0.001, bg_cache)
+                    frame = crossfade(frame, prior_frame, (local_t * span) / trans_len)
                 if frame_no == total_frames // 2:
                     frame.save(poster_path, quality=95)
                 process.stdin.write(frame.tobytes())
