@@ -197,6 +197,34 @@ def gradient_background(kind: str) -> Image.Image:
         draw.rectangle((80, 430, 250, 495), fill=(37, 48, 57), outline=(112, 126, 136), width=3)
         draw.line((90, 430, 90, 500), fill=(112, 126, 136), width=5)
         return image
+    # Dedicated warm story locations (illustrated reusable plates, no generic corridor fallback).
+    if kind in ("bedroom", "home", "living_room", "house"):
+        draw.rectangle((0,105,W,525),fill=(220,203,177)); draw.rectangle((0,525,W,H),fill=(142,104,76))
+        draw.rectangle((75,165,430,420),fill=(117,169,205),outline=(245,234,212),width=18)
+        draw.line((250,165,250,420),fill=(245,234,212),width=12); draw.line((75,290,430,290),fill=(245,234,212),width=12)
+        draw.rectangle((790,360,1180,525),fill=(94,66,52)); draw.rectangle((820,330,1150,385),fill=(184,139,105))
+        draw.rectangle((900,250,1080,335),fill=(240,216,177)); draw.ellipse((935,265,1045,315),fill=(190,140,104))
+        draw.rectangle((0,510,W,530),fill=(91,68,53)); return image
+    if kind in ("classroom", "school"):
+        draw.rectangle((0,105,W,525),fill=(224,213,187)); draw.rectangle((0,525,W,H),fill=(138,102,72))
+        draw.rectangle((180,150,1100,385),fill=(42,93,77),outline=(192,177,142),width=16)
+        draw.text((450,220),"LEARN  •  GROW",font=font(40,True),fill=(234,235,211))
+        for x in (110,440,770):
+            draw.rectangle((x,420,x+250,490),fill=(166,111,68));draw.rectangle((x+20,490,x+40,565),fill=(90,66,48));draw.rectangle((x+210,490,x+230,565),fill=(90,66,48))
+        return image
+    if kind in ("office", "workplace"):
+        draw.rectangle((0,105,W,525),fill=(194,205,210));draw.rectangle((0,525,W,H),fill=(114,105,92))
+        for x in (90,470,850):
+            draw.rectangle((x,150,x+280,390),fill=(91,144,176),outline=(232,237,238),width=14)
+            draw.line((x+140,150,x+140,390),fill=(232,237,238),width=8)
+        draw.rectangle((300,440,980,500),fill=(127,91,66));draw.rectangle((360,500,390,590),fill=(78,59,48));draw.rectangle((900,500,930,590),fill=(78,59,48))
+        return image
+    if kind in ("park", "garden"):
+        draw.rectangle((0,105,W,525),fill=(151,205,230));draw.ellipse((940,80,1080,220),fill=(255,227,155))
+        draw.rectangle((0,430,W,H),fill=(83,156,88));draw.polygon([(500,430),(770,430),(1100,720),(180,720)],fill=(183,166,126))
+        for x in (100,300,1000,1180):
+            draw.rectangle((x-18,280,x+18,570),fill=(115,78,48));draw.ellipse((x-100,160,x+100,340),fill=(56,139,69));draw.ellipse((x-70,210,x+120,370),fill=(74,159,82))
+        return image
     # Architectural planes and a deliberately simple vanishing-point composition.
     draw.polygon([(0, 105), (W, 105), (W, 525), (0, 525)], fill=(17, 25, 38))
     draw.polygon([(0, 525), (W, 525), (W, H), (0, H)], fill=(8, 13, 22))
