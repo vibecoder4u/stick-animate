@@ -327,7 +327,37 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
     r = 29*s*head_scale
     d.ellipse((hx-r, hy-r, hx+r, hy+r), fill=skin, outline=(73,54,45), width=max(1,int(2*s)))
     eye_x = hx + f * 10*s
-    d.ellipse((eye_x-2*s, hy-5*s, eye_x+2*s, hy-1*s), fill=(26, 36, 48))
+    eye_y = hy - 5*s
+    d.ellipse((eye_x-3*s, eye_y-4*s, eye_x+3*s, eye_y+3*s), fill=(26, 36, 48))
+    # Character-specific silhouette details (hair, expression, shirt and footwear).
+    hair = str(actor.get("hair", "short")).lower()
+    hair_color = tuple(actor.get("hair_rgb", [42, 32, 28]))
+    if hair in ("short", "side_part"):
+        d.arc((hx-r*1.02,hy-r*1.08,hx+r*1.02,hy+r*.35),180,355,fill=hair_color,width=max(5,int(10*s)))
+        d.polygon([pt(-r*.72,head_y-r*.42),pt(-r*.38,head_y-r*1.02),pt(r*.2,head_y-r*1.04),pt(r*.88,head_y-r*.42)],fill=hair_color)
+        if hair=="side_part": d.line((pt(0,head_y-r*.92),pt(-r*.25,head_y-r*.42)),fill=(100,78,63),width=max(1,int(2*s)))
+    elif hair in ("long","curly"):
+        d.polygon([pt(-r*.9,head_y-r*.65),pt(-r*1.1,head_y+r*.8),pt(-r*.65,head_y+r*1.35),pt(-r*.35,head_y+r*.35)],fill=hair_color)
+        d.polygon([pt(r*.9,head_y-r*.65),pt(r*1.1,head_y+r*.8),pt(r*.65,head_y+r*1.35),pt(r*.35,head_y+r*.35)],fill=hair_color)
+        d.arc((hx-r,hy-r*1.1,hx+r,hy+r*.25),180,355,fill=hair_color,width=max(5,int(9*s)))
+    expression=str(actor.get("expression","neutral")).lower()
+    brow_y=hy-12*s
+    brow_color=(55,40,34)
+    if expression in ("angry","determined"):
+        d.line((eye_x-9*s,brow_y+3*s,eye_x+2*s,brow_y-2*s),fill=brow_color,width=max(2,int(3*s)))
+    elif expression in ("sad","worried","fear","scared"):
+        d.line((eye_x-8*s,brow_y-2*s,eye_x+2*s,brow_y+3*s),fill=brow_color,width=max(2,int(3*s)))
+    else:
+        d.line((eye_x-7*s,brow_y,eye_x+2*s,brow_y),fill=brow_color,width=max(2,int(3*s)))
+    mouth_y=hy+12*s
+    if expression in ("happy","joy","smile"):
+        d.arc((hx-9*s,mouth_y-4*s,hx+9*s,mouth_y+12*s),0,180,fill=(102,49,44),width=max(2,int(3*s)))
+    elif expression in ("surprised","shock"):
+        d.ellipse((hx-3*s, mouth_y,hx+4*s,mouth_y+8*s),outline=(102,49,44),width=max(2,int(3*s)))
+    elif expression in ("sad","worried","fear","scared"):
+        d.arc((hx-8*s,mouth_y+4*s,hx+8*s,mouth_y+13*s),180,350,fill=(102,49,44),width=max(2,int(3*s)))
+    else:
+        d.line((hx-6*s,mouth_y+4*s,hx+6*s,mouth_y+4*s),fill=(102,49,44),width=max(2,int(2*s)))
     # Neck/shoulder joints
     d.ellipse((pt(-24, shoulder_y-5)[0]-5*s, pt(-24, shoulder_y-5)[1]-5*s,
                pt(-24, shoulder_y-5)[0]+5*s, pt(-24, shoulder_y-5)[1]+5*s), fill=color)
