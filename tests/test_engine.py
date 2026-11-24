@@ -120,6 +120,20 @@ class AnimationEngineTests(unittest.TestCase):
             self.assertTrue(draw_species_character(image, actor, pose, 0.5), species)
             self.assertGreater(len(image.getcolors(1280 * 720) or []), 1)
 
+    def test_human_jump_and_push_have_distinct_action_silhouettes(self):
+        from PIL import ImageChops
+        idle = Image.new("RGB", (1280, 720), (245, 245, 245))
+        jump = idle.copy()
+        push = idle.copy()
+        actor = {"accent_rgb": [70, 145, 190], "skin_rgb": [205, 155, 120],
+                 "hair": "short", "_ground_y": 610}
+        stick_animate.draw_character(jump, 640, 556, "jump", 1, 0.5, 1.0, actor)
+        stick_animate.draw_character(push, 640, 610, "push", 1, 0.5, 1.0, actor)
+        self.assertIsNotNone(ImageChops.difference(idle, jump).getbbox())
+        self.assertIsNotNone(ImageChops.difference(idle, push).getbbox())
+        # The jump's contact shadow stays on the floor instead of floating with the body.
+        self.assertEqual(jump.getpixel((640, 610)), (2, 5, 9))
+
     def test_forest_environment_has_dedicated_illustrated_background(self):
         forest = stick_animate.gradient_background("forest")
         corridor = stick_animate.gradient_background("corridor")
