@@ -19,6 +19,11 @@ class HumanCastAndStickerTests(unittest.TestCase):
         self.assertEqual(sorted(x["scale"] for x in children), [0.76,0.86,0.94])
         self.assertEqual(sorted(x["head_scale"] for x in children), [1.07,1.14,1.22])
 
+    def test_every_approved_character_has_a_stable_trouser_palette(self):
+        palettes = [tuple(profile["pants_rgb"]) for profile in HUMAN_CAST.values()]
+        self.assertTrue(all(len(rgb) == 3 and all(0 <= value <= 255 for value in rgb) for rgb in palettes))
+        self.assertEqual(len(set(palettes)), len(palettes))
+
     def test_character_profiles_render_with_distinct_colour_and_scale(self):
         renders=[]
         for cid in ("man_1","woman_1","child_5","child_9","child_13"):
