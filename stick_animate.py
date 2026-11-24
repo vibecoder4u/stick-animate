@@ -308,10 +308,8 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
     skin = tuple(actor.get("skin_rgb", [222, 177, 145]))
     head_scale = max(0.85, min(1.35, float(actor.get("head_scale", 1.0))))
     shadow = (3, 6, 11)
-    d.ellipse((x - 32*s, foot_y - 11*s, x + 32*s, foot_y + 5*s), fill=(2, 5, 9))
-    action_progress = max(0.0, min(1.0, float(actor.get("_action_progress", 0.5))))
-    if pose == "jump":
-        foot_y -= 54.0 * math.sin(math.pi * action_progress)
+    ground_y = float(actor.get("_ground_y", foot_y))
+    d.ellipse((x - 32*s, ground_y - 11*s, x + 32*s, ground_y + 5*s), fill=(2, 5, 9))
     # Local skeleton, with small procedural motion layered over authored poses.
     head_y = -145
     shoulder_y = -104
@@ -674,8 +672,11 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
                 actor = apply_age_variant(actor, "elderly")
         pose_data = sample_keyframes(actor.get("keyframes", []), local_t)
         pose_data["facing"] = facing_sign(pose_data.get("facing", 1))
-        actor["_action_progress"] = local_t
+        pose_data["ground_y"] = float(pose_data.get("y", 610))
         pose_data["action_progress"] = local_t
+        if str(pose_data.get("pose", "idle")).lower() == "jump":
+            pose_data["y"] = float(pose_data["y"]) - 54.0 * math.sin(math.pi * local_t)
+        actor["_ground_y"] = pose_data["ground_y"]
         species = str(actor.get("species", "human")).lower()
         if not draw_species_character(image, actor, pose_data, global_t):
             draw_character(
