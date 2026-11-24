@@ -103,7 +103,7 @@ def classify_beat(text: str, index: int, total: int) -> dict[str, str]:
         role = "opening"
     elif any(term in lowered for term in ("because", "therefore", "as a result", "so that")):
         role = "consequence"
-    elif any(term in lowered for term in ("realized", "discovered", "revealed", "understood", "found out")):
+    elif any(term in lowered for term in ("discover", "realiz", "reveal", "understood", "found out")):
         role = "discovery"
     elif any(term in lowered for term in ("together", "helped", "handed", "asked", "replied", "said", "told")):
         role = "interaction"
