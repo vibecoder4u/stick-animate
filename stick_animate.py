@@ -309,6 +309,9 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
     head_scale = max(0.85, min(1.35, float(actor.get("head_scale", 1.0))))
     shadow = (3, 6, 11)
     d.ellipse((x - 32*s, foot_y - 11*s, x + 32*s, foot_y + 5*s), fill=(2, 5, 9))
+    action_progress = max(0.0, min(1.0, float(actor.get("_action_progress", 0.5))))
+    if pose == "jump":
+        foot_y -= 54.0 * math.sin(math.pi * action_progress)
     # Local skeleton, with small procedural motion layered over authored poses.
     head_y = -145
     shoulder_y = -104
@@ -382,6 +385,17 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
         d.line((pt(22, shoulder_y), pt(53, -112), pt(95, -133)), fill=color, width=max(5, int(8*s)), joint="curve")
         d.line((pt(-10, hip_y), pt(-17, -22), pt(-18, 0)), fill=color, width=max(6, int(9*s)))
         d.line((pt(10, hip_y), pt(18, -22), pt(21, 0)), fill=color, width=max(6, int(9*s)))
+    elif pose == "jump":
+        # Airborne silhouette: arms lift, knees tuck and the body follows a smooth arc.
+        for side in (-1, 1):
+            d.line((pt(side*22, shoulder_y), pt(side*39, -137), pt(side*48, -166)), fill=color, width=max(5, int(8*s)), joint="curve")
+            d.line((pt(side*10, hip_y), pt(side*29, -28), pt(side*34, -8)), fill=color, width=max(6, int(9*s)), joint="curve")
+    elif pose == "push":
+        # Both arms extend in the facing direction so the action reads as contact.
+        d.line((pt(-22, shoulder_y), pt(-42, -76), pt(-55, -48)), fill=color, width=max(5, int(8*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(48, -116), pt(82, -112)), fill=color, width=max(6, int(9*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-17, -22), pt(-18, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(10, hip_y), pt(24, -18), pt(30, 0)), fill=color, width=max(6, int(9*s)))
     elif pose == "look_back":
         d.line((pt(-22, shoulder_y), pt(-48, -78), pt(-58, -55)), fill=color, width=max(5, int(8*s)), joint="curve")
         d.line((pt(22, shoulder_y), pt(43, -122), pt(58, -145)), fill=color, width=max(5, int(8*s)), joint="curve")
@@ -660,6 +674,8 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
                 actor = apply_age_variant(actor, "elderly")
         pose_data = sample_keyframes(actor.get("keyframes", []), local_t)
         pose_data["facing"] = facing_sign(pose_data.get("facing", 1))
+        actor["_action_progress"] = local_t
+        pose_data["action_progress"] = local_t
         species = str(actor.get("species", "human")).lower()
         if not draw_species_character(image, actor, pose_data, global_t):
             draw_character(
