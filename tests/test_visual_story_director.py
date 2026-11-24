@@ -49,6 +49,31 @@ class VisualStoryDirectorTests(unittest.TestCase):
         self.assertEqual(plan["scenes"][0]["camera"]["shot_type"], "custom_tracking")
         self.assertEqual(plan["scenes"][0]["camera"]["zoom_start"], 1.2)
 
+    def test_scene_matching_prefers_specific_beat_over_repeated_common_words(self):
+        script = "Maya entered the classroom and sat down. Maya found a hidden letter beneath the desk. Maya ran outside to meet her brother."
+        plan = {"scenes": [
+            {"start": 0, "end": 2, "description": "Maya entered the classroom and sat down."},
+            {"start": 2, "end": 4, "description": "Maya found a hidden letter beneath the desk."},
+            {"start": 4, "end": 6, "description": "Maya ran outside to meet her brother."},
+        ]}
+        apply_visual_direction(plan, script)
+        indices = [scene["visual_direction"]["script_beat_index"] for scene in plan["scenes"]]
+        self.assertEqual(indices, [0, 1, 2])
+        self.assertEqual(plan["scenes"][1]["visual_direction"]["dominant_focus"], "letter")
+        self.assertEqual(plan["scenes"][2]["visual_direction"]["visible_action"], "run")
+
+    def test_inferred_emotion_uses_an_expression_supported_by_renderer(self):
+        plan = {"scenes": [{"start": 0, "end": 2, "description": "A terrified woman froze in fear.",
+                           "actors": [{"character_id": "woman_1", "expression": "neutral"}]}]}
+        apply_visual_direction(plan, "A terrified woman froze in fear.")
+        self.assertEqual(plan["scenes"][0]["actors"][0]["expression"], "fear")
+
+    def test_empty_or_non_dict_metadata_is_recovered(self):
+        plan = {"design_metadata": "old metadata", "scenes": [{"start": 0, "end": 1, "description": "A quiet room."}]}
+        apply_visual_direction(plan, "A quiet room.")
+        self.assertIsInstance(plan["design_metadata"], dict)
+        self.assertEqual(plan["design_metadata"]["visual_direction"]["version"], 2)
+
 
 if __name__ == "__main__":
     unittest.main()
