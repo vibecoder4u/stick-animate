@@ -7,6 +7,7 @@ from typing import Any
 from agent_runtime import AgentUnavailable, FreeLLM
 from scene_designer import design_story
 from capability_registry import capability_profile
+from visual_story_director import apply_visual_direction
 
 def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int = 24,
                    duration_mode: str = "auto", story: str | None = None) -> float:
@@ -119,6 +120,7 @@ def design_production(story: str, duration: float | None = None, title: str = "U
         raise ValueError("Strict duration mode requires a positive duration")
     if not llm.available:
         plan = design_story(story, None if duration_mode == "auto" else duration, title, fps)
+        apply_visual_direction(plan, story)
         if duration_mode == "strict":
             plan["scenes"][-1]["end"] = float(duration)
             plan["duration"] = float(duration)
@@ -171,6 +173,7 @@ def design_production(story: str, duration: float | None = None, title: str = "U
     try:
         plan = llm.json_completion(system, user, 0.35)
         _validate_plan(plan, duration, fps, duration_mode, story)
+        apply_visual_direction(plan, story)
         plan["design_metadata"].update({"designer": "groq-master-planner-v2",
             "pipeline": "single-groq-plan->local-specialists->renderer", "provider": "groq",
             "model": llm.model, "creative_mode": "ai", "scene_count": len(plan["scenes"]),
@@ -185,6 +188,7 @@ def design_production(story: str, duration: float | None = None, title: str = "U
             recovery = design_story(story, None if duration_mode == "auto" else duration,
                                     title, fps)
             _validate_plan(recovery, duration, fps, duration_mode, story)
+            apply_visual_direction(recovery, story)
             recovery["design_metadata"].update({
                 "designer": "groq-outline-local-storyboard-recovery",
                 "provider": "groq+local",
