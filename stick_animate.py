@@ -321,8 +321,13 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
     elif pose == "stumble":
         head_y, shoulder_y, hip_y = -125, -92, -44
     # torso and neck
-    d.line((pt(0, head_y + 31), pt(0, shoulder_y)), fill=color, width=max(5, int(9*s)))
-    d.line((pt(0, shoulder_y), pt(0, hip_y)), fill=color, width=max(7, int(12*s)))
+    wardrobe = str(actor.get("wardrobe", "hoodie")).lower()
+    torso_fill = (35, 48, 63) if wardrobe == "coat" else color
+    torso_outline = tuple(max(0, int(channel * 0.72)) for channel in color)
+    d.polygon([pt(-21, shoulder_y), pt(21, shoulder_y), pt(17, hip_y + 5), pt(-17, hip_y + 5)],
+              fill=torso_fill, outline=torso_outline)
+    d.line((pt(0, head_y + 31), pt(0, shoulder_y)), fill=skin, width=max(6, int(10*s)))
+    d.line((pt(0, shoulder_y), pt(0, hip_y)), fill=color, width=max(7, int(14*s)))
     # Head: clean readable silhouette with two tiny facial marks.
     hx, hy = pt(0, head_y)
     r = 29*s*head_scale
@@ -372,56 +377,56 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
             swing = stride * amp * side
             knee = (side * 12 + swing * 0.52, -26 - abs(stride) * 4)
             ankle = (side * 13 + swing, -max(0, lift * max(0, stride * side)))
-            d.line((pt(side*10, hip_y), pt(*knee), pt(*ankle)), fill=color, width=max(6, int(9*s)), joint="curve")
+            d.line((pt(side*10, hip_y), pt(*knee), pt(*ankle)), fill=color, width=max(8, int(12*s)), joint="curve")
         arm_amp = 24 if pose == "run" else 16
         for side in (-1, 1):
             elbow = (side * 39 - stride * arm_amp * side, -70)
             hand = (side * 47 - stride * arm_amp * 1.5 * side, -43)
-            d.line((pt(side*22, shoulder_y), pt(*elbow), pt(*hand)), fill=color, width=max(5, int(8*s)), joint="curve")
+            d.line((pt(side*22, shoulder_y), pt(*elbow), pt(*hand)), fill=color, width=max(7, int(11*s)), joint="curve")
     elif pose == "reach":
-        d.line((pt(-22, shoulder_y), pt(-42, -72), pt(-48, -35)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(22, shoulder_y), pt(53, -112), pt(95, -133)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(-10, hip_y), pt(-17, -22), pt(-18, 0)), fill=color, width=max(6, int(9*s)))
-        d.line((pt(10, hip_y), pt(18, -22), pt(21, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(-22, shoulder_y), pt(-42, -72), pt(-48, -35)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(53, -112), pt(95, -133)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-17, -22), pt(-18, 0)), fill=color, width=max(8, int(12*s)))
+        d.line((pt(10, hip_y), pt(18, -22), pt(21, 0)), fill=color, width=max(8, int(12*s)))
     elif pose == "jump":
         # Airborne silhouette: arms lift, knees tuck and the body follows a smooth arc.
         for side in (-1, 1):
-            d.line((pt(side*22, shoulder_y), pt(side*39, -137), pt(side*48, -166)), fill=color, width=max(5, int(8*s)), joint="curve")
-            d.line((pt(side*10, hip_y), pt(side*29, -28), pt(side*34, -8)), fill=color, width=max(6, int(9*s)), joint="curve")
+            d.line((pt(side*22, shoulder_y), pt(side*39, -137), pt(side*48, -166)), fill=color, width=max(7, int(11*s)), joint="curve")
+            d.line((pt(side*10, hip_y), pt(side*29, -28), pt(side*34, -8)), fill=color, width=max(8, int(12*s)), joint="curve")
     elif pose == "push":
         # Both arms extend in the facing direction so the action reads as contact.
-        d.line((pt(-22, shoulder_y), pt(-42, -76), pt(-55, -48)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(22, shoulder_y), pt(48, -116), pt(82, -112)), fill=color, width=max(6, int(9*s)), joint="curve")
-        d.line((pt(-10, hip_y), pt(-17, -22), pt(-18, 0)), fill=color, width=max(6, int(9*s)))
-        d.line((pt(10, hip_y), pt(24, -18), pt(30, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(-22, shoulder_y), pt(-42, -76), pt(-55, -48)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(48, -116), pt(82, -112)), fill=color, width=max(8, int(12*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-17, -22), pt(-18, 0)), fill=color, width=max(8, int(12*s)))
+        d.line((pt(10, hip_y), pt(24, -18), pt(30, 0)), fill=color, width=max(8, int(12*s)))
     elif pose == "look_back":
-        d.line((pt(-22, shoulder_y), pt(-48, -78), pt(-58, -55)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(22, shoulder_y), pt(43, -122), pt(58, -145)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(-10, hip_y), pt(-18, -24), pt(-20, 0)), fill=color, width=max(6, int(9*s)))
-        d.line((pt(10, hip_y), pt(18, -24), pt(20, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(-22, shoulder_y), pt(-48, -78), pt(-58, -55)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(43, -122), pt(58, -145)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-18, -24), pt(-20, 0)), fill=color, width=max(8, int(12*s)))
+        d.line((pt(10, hip_y), pt(18, -24), pt(20, 0)), fill=color, width=max(8, int(12*s)))
     elif pose == "listen":
-        d.line((pt(-22, shoulder_y), pt(-43, -80), pt(-38, -45)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(22, shoulder_y), pt(37, -88), pt(29, -52)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(-10, hip_y), pt(-18, -24), pt(-18, 0)), fill=color, width=max(6, int(9*s)))
-        d.line((pt(10, hip_y), pt(18, -24), pt(18, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(-22, shoulder_y), pt(-43, -80), pt(-38, -45)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(37, -88), pt(29, -52)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-18, -24), pt(-18, 0)), fill=color, width=max(8, int(12*s)))
+        d.line((pt(10, hip_y), pt(18, -24), pt(18, 0)), fill=color, width=max(8, int(12*s)))
     elif pose == "stumble":
-        d.line((pt(-22, shoulder_y), pt(-50, -132), pt(-75, -122)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(22, shoulder_y), pt(45, -68), pt(65, -48)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(-10, hip_y), pt(-42, -20), pt(-57, 0)), fill=color, width=max(6, int(9*s)))
-        d.line((pt(10, hip_y), pt(28, -16), pt(45, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(-22, shoulder_y), pt(-50, -132), pt(-75, -122)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(45, -68), pt(65, -48)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-42, -20), pt(-57, 0)), fill=color, width=max(8, int(12*s)))
+        d.line((pt(10, hip_y), pt(28, -16), pt(45, 0)), fill=color, width=max(8, int(12*s)))
     elif pose == "fear":
         for side in (-1, 1):
-            d.line((pt(side*22, shoulder_y), pt(side*45, -135), pt(side*30, -176)), fill=color, width=max(5, int(8*s)), joint="curve")
-            d.line((pt(side*10, hip_y), pt(side*16, -24), pt(side*18, 0)), fill=color, width=max(6, int(9*s)))
+            d.line((pt(side*22, shoulder_y), pt(side*45, -135), pt(side*30, -176)), fill=color, width=max(7, int(11*s)), joint="curve")
+            d.line((pt(side*10, hip_y), pt(side*16, -24), pt(side*18, 0)), fill=color, width=max(8, int(12*s)))
     elif pose == "crouch":
         for side in (-1, 1):
-            d.line((pt(side*20, shoulder_y), pt(side*43, -52), pt(side*54, -78)), fill=color, width=max(5, int(8*s)), joint="curve")
-            d.line((pt(side*10, hip_y), pt(side*35, -8), pt(side*24, 0)), fill=color, width=max(6, int(9*s)))
+            d.line((pt(side*20, shoulder_y), pt(side*43, -52), pt(side*54, -78)), fill=color, width=max(7, int(11*s)), joint="curve")
+            d.line((pt(side*10, hip_y), pt(side*35, -8), pt(side*24, 0)), fill=color, width=max(8, int(12*s)))
     else:
-        d.line((pt(-22, shoulder_y), pt(-40, -75), pt(-44, -42)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(22, shoulder_y), pt(40, -75), pt(44, -42)), fill=color, width=max(5, int(8*s)), joint="curve")
-        d.line((pt(-10, hip_y), pt(-16, -24), pt(-18, 0)), fill=color, width=max(6, int(9*s)))
-        d.line((pt(10, hip_y), pt(16, -24), pt(18, 0)), fill=color, width=max(6, int(9*s)))
+        d.line((pt(-22, shoulder_y), pt(-40, -75), pt(-44, -42)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(40, -75), pt(44, -42)), fill=color, width=max(7, int(11*s)), joint="curve")
+        d.line((pt(-10, hip_y), pt(-16, -24), pt(-18, 0)), fill=color, width=max(8, int(12*s)))
+        d.line((pt(10, hip_y), pt(16, -24), pt(18, 0)), fill=color, width=max(8, int(12*s)))
 
 
 def draw_shadow(image: Image.Image, x: int, foot_y: int, t: float, opacity: float = 1.0) -> None:
@@ -634,7 +639,10 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
     # A soft moving pool of light and a subtle practical flicker.
     d = ImageDraw.Draw(image)
     flicker = 0.92 + 0.08 * math.sin(global_t * 13.0)
-    if kind not in ("platform", "service_gate", "tunnel", "exit", "trackside", "forest", "road"):
+    if kind not in ("platform", "service_gate", "tunnel", "exit", "trackside", "forest", "road",
+                    "laboratory", "bedroom", "home", "living_room", "house", "classroom",
+                    "school", "office", "workplace", "park", "garden", "beach", "ocean",
+                    "sea", "underwater"):
         d.polygon([(640, 130), (930, 130), (1120, 530), (430, 530)], fill=(40, 55, 72))
         d.line((640, 130, 430, 530), fill=(49, 65, 82), width=2)
         d.line((930, 130, 1120, 530), fill=(49, 65, 82), width=2)
