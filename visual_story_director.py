@@ -84,7 +84,7 @@ def classify_beat(text: str, index: int, total: int) -> dict[str, str]:
         "door", "gate", "train", "window", "book", "phone", "letter", "tree",
         "road", "water", "bridge", "light", "shadow", "face", "hands",
         "brain", "memory", "habit", "choice", "friend", "family",
-    ) if re.search(r"\\b" + re.escape(term) + r"s?\\b", lowered)), "character_action")
+    ) if re.search(r"\b" + re.escape(term) + r"s?\b", lowered)), "character_action")
     return {"role": role, "emotion": emotion, "action": action, "focus": focus}
 
 
