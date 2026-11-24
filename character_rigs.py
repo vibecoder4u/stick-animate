@@ -94,7 +94,8 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
         lean = 7 * action_wave
     else:
         lean = 0
-    jump_lift = 32 * max(0.0, math.sin(math.pi * duration)) if action == "jump" else 0.0
+    ground_y = float(pose.get("ground_y", y))
+    jump_lift = 32 * max(0.0, math.sin(math.pi * duration)) if action == "jump" and "ground_y" not in pose else 0.0
     y -= jump_lift
 
     if species == "monkey":
@@ -188,7 +189,7 @@ def draw_species_character(image: Image.Image, actor: dict[str, Any],
             xx=-25+i*17
             d.polygon([p(xx,-105),p(xx+7,-119),p(xx+14,-101)],fill=dark)
 
-    ellipse(0,2,52 if species not in {"bird","fish"} else 34,5,(4,7,11))
+    ellipse(0,ground_y-y+2,52 if species not in {"bird","fish"} else 34,5,(4,7,11))
     return True
 
 
