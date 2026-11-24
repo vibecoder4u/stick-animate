@@ -68,6 +68,16 @@ class VisualStoryDirectorTests(unittest.TestCase):
         apply_visual_direction(plan, "A terrified woman froze in fear.")
         self.assertEqual(plan["scenes"][0]["actors"][0]["expression"], "fear")
 
+    def test_inferred_action_changes_idle_actor_keyframes(self):
+        plan = {"scenes": [{"start": 0, "end": 3, "description": "Maya ran toward the door.",
+                           "actors": [{"character_id": "woman_1", "species": "human",
+                                       "keyframes": [{"t": 0, "x": 300, "y": 610, "pose": "idle"},
+                                                     {"t": 1, "x": 500, "y": 610, "pose": "idle"}]}]}]}
+        apply_visual_direction(plan, "Maya ran toward the door.")
+        poses = [key["pose"] for key in plan["scenes"][0]["actors"][0]["keyframes"]]
+        self.assertEqual(poses, ["run", "run"])
+        self.assertEqual(plan["scenes"][0]["visual_direction"]["actors_given_inferred_action"], 1)
+
     def test_empty_or_non_dict_metadata_is_recovered(self):
         plan = {"design_metadata": "old metadata", "scenes": [{"start": 0, "end": 1, "description": "A quiet room."}]}
         apply_visual_direction(plan, "A quiet room.")
