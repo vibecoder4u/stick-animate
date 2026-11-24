@@ -428,6 +428,22 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
         d.line((pt(-10, hip_y), pt(-16, -24), pt(-18, 0)), fill=color, width=max(8, int(12*s)))
         d.line((pt(10, hip_y), pt(16, -24), pt(18, 0)), fill=color, width=max(8, int(12*s)))
 
+    # Finish the silhouette with visible hands and shoes.
+    if pose == "reach":
+        hand_points = [pt(-48, -35), pt(95, -133)]
+    elif pose == "jump":
+        hand_points = [pt(-48, -166), pt(48, -166)]
+    elif pose == "push":
+        hand_points = [pt(-55, -48), pt(82, -112)]
+    else:
+        hand_points = [pt(-44, -42), pt(44, -42)]
+    for hand_x, hand_y in hand_points:
+        radius = max(4, int(6*s))
+        d.ellipse((hand_x-radius, hand_y-radius, hand_x+radius, hand_y+radius), fill=skin)
+    for side in (-1, 1):
+        shoe_x, shoe_y = pt(side*18, -1)
+        d.ellipse((shoe_x-10*s, shoe_y-4*s, shoe_x+10*s, shoe_y+5*s), fill=(24, 31, 42))
+
 
 def draw_shadow(image: Image.Image, x: int, foot_y: int, t: float, opacity: float = 1.0) -> None:
     layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
