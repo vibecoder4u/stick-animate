@@ -2,16 +2,22 @@ from __future__ import annotations
 
 """Script-specific visual direction layered over renderer-ready scene plans.
 
-This module does not invent plot events or assets. It extracts narrative intent
-from the supplied script and gives each existing scene a distinct visual job.
-The output is deliberately renderer-compatible: it only adjusts supported
-camera defaults and actor expressions, while keeping a traceable script link.
+The director maps each shot to the closest ordered script beat, then supplies
+story purpose, actor emotion and camera defaults. It does not invent plot
+events or claim that metadata alone makes a rendered video original.
 """
 import re
 from collections import Counter
 from typing import Any
 
 _WORDS = re.compile(r"[a-z0-9']+")
+_STOP_WORDS = {
+    "about", "after", "again", "against", "also", "because", "before", "being",
+    "between", "could", "does", "from", "have", "into", "just", "like", "more",
+    "over", "said", "says", "some", "that", "them", "then", "there", "these",
+    "they", "this", "through", "their", "under", "very", "were", "what", "when",
+    "where", "which", "while", "with", "would", "your",
+}
 _EMOTIONS = {
     "fear": ("afraid", "fear", "terrified", "scared", "panic", "danger", "threat"),
     "sad": ("sad", "grief", "lost", "lonely", "cry", "regret", "heartbroken"),
@@ -41,13 +47,17 @@ _SHOTS = {
     "consequence": ("low_angle", 1.0, 1.055),
     "reflection": ("close_up", 1.025, 1.075),
 }
+_RENDERER_EXPRESSIONS = {
+    "fear": "fear", "sad": "sad", "happy": "happy", "angry": "angry",
+    "surprised": "surprised", "worried": "worried", "thinking": "curious",
+}
 
 
 def split_script_beats(script: str) -> list[str]:
-    """Split paragraphs into sentence beats without losing paragraph boundaries."""
+    """Split paragraphs into ordered sentence beats without losing paragraphs."""
     beats: list[str] = []
-    for paragraph in (p.strip() for p in script.splitlines() if p.strip()):
-        sentences = [s.strip() for s in re.split(r"(?<=[.!?])\\s+", paragraph) if s.strip()]
+    for paragraph in (part.strip() for part in str(script or "").splitlines() if part.strip()):
+        sentences = [part.strip() for part in re.split(r"(?<=[.!?])\s+", paragraph) if part.strip()]
         beats.extend(sentences or [paragraph])
     return beats
 
@@ -55,6 +65,33 @@ def split_script_beats(script: str) -> list[str]:
 def _contains(text: str, terms: tuple[str, ...]) -> bool:
     lowered = text.lower()
     return any(term in lowered for term in terms)
+
+
+def _tokens(text: str) -> set[str]:
+    return {word for word in _WORDS.findall(text.lower()) if len(word) > 2 and word not in _STOP_WORDS}
+
+
+def _match_beat(description: str, beats: list[str], minimum_index: int) -> tuple[int, str]:
+    """Choose the strongest ordered lexical match; avoid first-common-word matches."""
+    scene_tokens = _tokens(description)
+    if not scene_tokens:
+        index = min(minimum_index, len(beats) - 1)
+        return index, beats[index]
+    candidates = range(min(minimum_index, len(beats) - 1), len(beats))
+    scored = []
+    for index in candidates:
+        beat_tokens = _tokens(beats[index])
+        overlap = len(scene_tokens & beat_tokens)
+        if overlap:
+            precision = overlap / max(1, len(scene_tokens))
+            recall = overlap / max(1, len(beat_tokens))
+            score = (2 * precision * recall / (precision + recall)) + min(overlap, 4) * 0.015
+            scored.append((score, overlap, index))
+    if scored:
+        _, _, index = max(scored, key=lambda item: (item[0], item[1], -item[2]))
+        return index, beats[index]
+    index = min(minimum_index, len(beats) - 1)
+    return index, beats[index]
 
 
 def classify_beat(text: str, index: int, total: int) -> dict[str, str]:
@@ -78,8 +115,6 @@ def classify_beat(text: str, index: int, total: int) -> dict[str, str]:
         role = "reflection"
     else:
         role = "action"
-    if index == total - 1 and role == "opening":
-        role = "reflection"
     focus = next((term for term in (
         "door", "gate", "train", "window", "book", "phone", "letter", "tree",
         "road", "water", "bridge", "light", "shadow", "face", "hands",
@@ -89,7 +124,7 @@ def classify_beat(text: str, index: int, total: int) -> dict[str, str]:
 
 
 def apply_visual_direction(plan: dict[str, Any], script: str) -> dict[str, Any]:
-    """Annotate every planned shot with script-derived intent and useful camera defaults."""
+    """Annotate shots with ordered script intent and camera defaults."""
     scenes = plan.get("scenes") or []
     beats = split_script_beats(script)
     if not scenes or not beats:
@@ -97,30 +132,26 @@ def apply_visual_direction(plan: dict[str, Any], script: str) -> dict[str, Any]:
 
     scene_summaries: list[str] = []
     directed_roles: list[str] = []
+    beat_cursor = 0
     for index, scene in enumerate(scenes):
-        description = " ".join(str(scene.get(k, "")) for k in ("description", "caption", "narration"))
-        # Prefer the scene's own script wording; map to the nearest beat when the
-        # AI has paraphrased it, keeping order as a stable fallback.
-        beat = beats[min(index, len(beats) - 1)]
-        if description:
-            candidate = next((b for b in beats if any(
-                token in description.lower() for token in _WORDS.findall(b.lower()) if len(token) > 5
-            )), None)
-            beat = candidate or beat
-        intent = classify_beat(beat, min(index, len(beats) - 1), len(beats))
+        description = " ".join(str(scene.get(key, "")) for key in ("description", "caption", "narration", "voiceover"))
+        matched_index, beat = _match_beat(description, beats, beat_cursor)
+        beat_cursor = min(matched_index + 1, len(beats) - 1)
+        intent = classify_beat(beat, matched_index, len(beats))
         role = intent["role"]
         shot_type, zoom_start, zoom_end = _SHOTS[role]
+
         camera = scene.setdefault("camera", {})
         if not isinstance(camera, dict):
             camera = {}
             scene["camera"] = camera
-        # Preserve explicit creative camera choices; fill generic/incomplete plans.
         if not camera.get("shot_type") or camera.get("shot_type") in ("story_action", "default"):
             camera["shot_type"] = shot_type
         camera.setdefault("zoom_start", zoom_start)
         camera.setdefault("zoom_end", zoom_end)
         camera.setdefault("pan", (-0.055 if index % 2 else 0.045) if role in ("action", "interaction") else 0.0)
         camera.setdefault("track_subject", role in ("action", "emotion", "interaction"))
+
         shot_design = scene.setdefault("shot_design", {})
         if isinstance(shot_design, dict):
             shot_design.setdefault("narrative_role", role)
@@ -128,19 +159,23 @@ def apply_visual_direction(plan: dict[str, Any], script: str) -> dict[str, Any]:
             shot_design.setdefault("primary_action", intent["action"])
             shot_design.setdefault("emotional_tone", intent["emotion"])
             shot_design.setdefault("script_beat", beat[:240])
+
         actors = list(scene.get("actors") or [])
-        if scene.get("actor"):
+        if isinstance(scene.get("actor"), dict):
             actors.insert(0, scene["actor"])
-        if intent["emotion"] != "neutral":
+        renderer_expression = _RENDERER_EXPRESSIONS.get(intent["emotion"])
+        if renderer_expression:
             for actor in actors:
-                if str(actor.get("expression", "neutral")).lower() in ("", "neutral", "none"):
-                    actor["expression"] = intent["emotion"]
+                if isinstance(actor, dict) and str(actor.get("expression", "neutral")).lower() in ("", "neutral", "none"):
+                    actor["expression"] = renderer_expression
+
         scene["visual_direction"] = {
             "purpose": role,
             "emotional_tone": intent["emotion"],
             "visible_action": intent["action"],
             "dominant_focus": intent["focus"],
             "script_evidence": beat[:240],
+            "script_beat_index": matched_index,
             "composition_note": {
                 "opening": "establish the place and spatial relationships",
                 "action": "make the physical action readable in silhouette",
@@ -155,9 +190,12 @@ def apply_visual_direction(plan: dict[str, Any], script: str) -> dict[str, Any]:
         directed_roles.append(role)
 
     counts = Counter(directed_roles)
-    plan.setdefault("design_metadata", {})
-    plan["design_metadata"]["visual_direction"] = {
-        "version": 1,
+    metadata = plan.setdefault("design_metadata", {})
+    if not isinstance(metadata, dict):
+        metadata = {}
+        plan["design_metadata"] = metadata
+    metadata["visual_direction"] = {
+        "version": 2,
         "source": "script_derived",
         "beat_count": len(beats),
         "scene_count": len(scenes),
