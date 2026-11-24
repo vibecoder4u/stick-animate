@@ -164,10 +164,25 @@ def apply_visual_direction(plan: dict[str, Any], script: str) -> dict[str, Any]:
         if isinstance(scene.get("actor"), dict):
             actors.insert(0, scene["actor"])
         renderer_expression = _RENDERER_EXPRESSIONS.get(intent["emotion"])
-        if renderer_expression:
-            for actor in actors:
-                if isinstance(actor, dict) and str(actor.get("expression", "neutral")).lower() in ("", "neutral", "none"):
-                    actor["expression"] = renderer_expression
+        applied_actions = 0
+        for actor in actors:
+            if not isinstance(actor, dict):
+                continue
+            if renderer_expression and str(actor.get("expression", "neutral")).lower() in ("", "neutral", "none"):
+                actor["expression"] = renderer_expression
+            keys = actor.get("keyframes") or []
+            poses = [str(key.get("pose", "idle")).lower() for key in keys if isinstance(key, dict)]
+            if keys and poses and all(pose in ("", "idle", "none") for pose in poses):
+                species = str(actor.get("species", "human")).lower()
+                action = intent["action"]
+                supported = {"walk", "run", "reach", "push", "stumble", "look_back", "listen", "jump"}
+                if species not in {"human", "boy", "girl", "man", "woman", "old_man"}:
+                    supported.update({"swim", "fly"})
+                if action in supported:
+                    for key in keys:
+                        if isinstance(key, dict):
+                            key["pose"] = action
+                    applied_actions += 1
 
         scene["visual_direction"] = {
             "purpose": role,
@@ -176,6 +191,7 @@ def apply_visual_direction(plan: dict[str, Any], script: str) -> dict[str, Any]:
             "dominant_focus": intent["focus"],
             "script_evidence": beat[:240],
             "script_beat_index": matched_index,
+            "actors_given_inferred_action": applied_actions,
             "composition_note": {
                 "opening": "establish the place and spatial relationships",
                 "action": "make the physical action readable in silhouette",
