@@ -397,7 +397,7 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
     elif pose == "push":
         # Both arms extend in the facing direction so the action reads as contact.
         d.line((pt(-22, shoulder_y), pt(-42, -76), pt(-55, -48)), fill=color, width=max(8, int(13*s)), joint="curve")
-        d.line((pt(22, shoulder_y), pt(48, -116), pt(82, -112)), fill=pants, width=max(9, int(14*s)), joint="curve")
+        d.line((pt(22, shoulder_y), pt(48, -116), pt(82, -112)), fill=color, width=max(8, int(13*s)), joint="curve")
         d.line((pt(-10, hip_y), pt(-17, -22), pt(-18, 0)), fill=pants, width=max(9, int(14*s)))
         d.line((pt(10, hip_y), pt(24, -18), pt(30, 0)), fill=pants, width=max(9, int(14*s)))
     elif pose == "look_back":
