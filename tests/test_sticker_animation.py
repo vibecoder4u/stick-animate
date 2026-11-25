@@ -13,7 +13,7 @@ class StickerAnimationTests(unittest.TestCase):
         late = early.copy()
         draw_stickers(early, scene, 0.02)
         draw_stickers(late, scene, 0.45)
-        self.assertIsNotNone(ImageChops.difference(early, late).getbbox())
+        self.assertNotEqual(early.tobytes(), late.tobytes())
 
     def test_float_animation_changes_frame(self):
         scene = {"stickers": [{"id": "brain", "x": 0.5, "y": 0.4,
@@ -23,7 +23,7 @@ class StickerAnimationTests(unittest.TestCase):
         second = first.copy()
         draw_stickers(first, scene, 0.15)
         draw_stickers(second, scene, 0.65)
-        self.assertIsNotNone(ImageChops.difference(first, second).getbbox())
+        self.assertNotEqual(first.tobytes(), second.tobytes())
 
     def test_unknown_sticker_is_ignored(self):
         image = Image.new("RGB", (320, 180), "black")
