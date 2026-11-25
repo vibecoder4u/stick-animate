@@ -745,7 +745,7 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         # Increase character screen presence while keeping children proportionally smaller.
         species_key = str(actor.get("species", "human")).lower()
         base_scale = float(actor.get("scale", 1.0))
-        actor["scale"] = base_scale * (1.28 if species_key in {"human", "boy", "girl", "man", "woman", "old_man"} else 1.18)
+        actor["scale"] = base_scale * (1.48 if species_key in {"human", "boy", "girl", "man", "woman", "old_man"} else 1.24)
         pose_data = sample_keyframes(actor.get("keyframes", []), local_t)
         pose_data["facing"] = facing_sign(pose_data.get("facing", 1))
         pose_data["ground_y"] = float(pose_data.get("y", 610))
