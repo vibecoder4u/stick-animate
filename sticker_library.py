@@ -24,6 +24,24 @@ STICKERS = {
     "magnify": {"category":"explanation","label":"Magnifier"},
 }
 
+# Keep editable SVG source alongside the Pillow renderer for every catalogue item.
+_SVG_SHAPES = {
+    "idea": '<path d="M50 8a29 29 0 0 0-18 52v12h36V60A29 29 0 0 0 50 8Z" fill="#F6BE3A" stroke="#253141" stroke-width="5"/><path d="M39 82h22M42 91h16" stroke="#253141" stroke-width="5"/>',
+    "question": '<path d="M27 34Q30 10 54 12Q80 14 77 37Q76 51 53 61V70" fill="none" stroke="#41A5DC" stroke-width="13" stroke-linecap="round"/><circle cx="53" cy="88" r="7" fill="#41A5DC"/>',
+    "exclamation": '<path d="M50 12v49" stroke="#EB5B49" stroke-width="15" stroke-linecap="round"/><circle cx="50" cy="85" r="8" fill="#EB5B49"/>',
+    "brain": '<path d="M49 18C28 2 10 25 22 41C5 54 23 82 43 75C49 91 62 83 61 72C83 82 96 58 79 44C91 22 67 7 55 22Z" fill="#EE91B2" stroke="#713C5A" stroke-width="5"/>',
+    "book": '<path d="M10 20Q34 12 50 29Q66 12 90 20V79Q65 70 50 87Q35 70 10 79Z" fill="#4D9DD3" stroke="#234B68" stroke-width="5"/>',
+    "clock": '<circle cx="50" cy="50" r="38" fill="#F5F5F2" stroke="#46596C" stroke-width="7"/><path d="M50 25v27l20 12" fill="none" stroke="#46596C" stroke-width="7" stroke-linecap="round"/>',
+    "arrow_up": '<path d="M50 8 12 49h22v42h32V49h22Z" fill="#43B27E" stroke="#235B47" stroke-width="5"/>',
+    "check": '<path d="m15 52 23 23 48-52" fill="none" stroke="#37B16F" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>',
+    "sparkles": '<path d="M50 5 60 39 95 50 60 61 50 95 40 61 5 50 40 39Z" fill="#F9C642"/>',
+    "heart": '<path d="M50 88 15 52C-5 25 27 2 50 29 73 2 105 25 85 52Z" fill="#E85E80" stroke="#7B3446" stroke-width="5"/>',
+    "neuron": '<circle cx="50" cy="50" r="12" fill="#F5C85C"/><g stroke="#8597DA" stroke-width="6" stroke-linecap="round"><path d="M50 38 50 8M40 43 15 22M60 43 85 20M38 55 10 73M62 56 90 76M50 62 50 94"/></g>',
+    "magnify": '<circle cx="42" cy="40" r="27" fill="none" stroke="#5291CF" stroke-width="10"/><path d="m62 62 27 27" stroke="#5291CF" stroke-width="13" stroke-linecap="round"/>',
+}
+for _sid, _item in STICKERS.items():
+    _item["svg"] = '<svg viewBox="0 0 100 100">' + _SVG_SHAPES[_sid] + '</svg>'
+
 PALETTE = {
     "idea": (246,190,58), "question": (65,165,220), "exclamation": (235,91,73),
     "brain": (238,145,178), "book": (77,157,211), "clock": (93,116,139),
