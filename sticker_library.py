@@ -196,9 +196,9 @@ def draw_stickers(image: Image.Image, scene: dict, local_t: float = 0.5) -> None
         if rotation:
             tile=tile.rotate(rotation,resample=Image.Resampling.BICUBIC,expand=False)
         px,py=cx-tile_size//2,cy-tile_size//2
-        layer=Image.new("RGBA",(w,h),(0,0,0,0))
-        layer.alpha_composite(tile,(px,py))
-        canvas=Image.alpha_composite(canvas,layer)
+        # Composite only the sticker's small bounding tile. Building and
+        # blending a full-canvas layer per sticker per frame is prohibitively slow.
+        canvas.alpha_composite(tile,(px,py))
     if base_mode == "RGB":
         image.paste(canvas.convert("RGB"))
     else:
