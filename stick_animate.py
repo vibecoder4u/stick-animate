@@ -475,6 +475,14 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
         hand_points = [pt(-48, -166), pt(48, -166)]
     elif pose == "push":
         hand_points = [pt(-55, -48), pt(82, -112)]
+    elif pose == "wave":
+        hand_points = [pt(-44, -42), pt(62, -164)]
+    elif pose == "point":
+        hand_points = [pt(-44, -42), pt(94, -112)]
+    elif pose == "think":
+        hand_points = [pt(-34, -46), pt(23, -143)]
+    elif pose == "celebrate":
+        hand_points = [pt(-48, -169), pt(48, -169)]
     else:
         hand_points = [pt(-44, -42), pt(44, -42)]
     for hand_x, hand_y in hand_points:
