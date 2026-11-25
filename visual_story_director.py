@@ -30,10 +30,10 @@ _EMOTIONS = {
 _ACTIONS = {
     "run": ("ran", "running", "sprinted", "chased", "escaped", "fled"),
     "walk": ("walked", "approached", "entered", "left", "crossed", "travelled", "traveled"),
-    "reach": ("reached", "picked up", "handed", "helped", "rescued", "grabbed"),
-    "push": ("pushed", "lifted", "moved", "dragged", "pulled", "together"),
-    "stumble": ("fell", "tripped", "stumbled", "dropped"),
-    "look_back": ("noticed", "saw", "watched", "looked back", "turned"),
+    "reach": ("reached", "helped", "rescued", "grabbed"),
+    "push": ("pushed", "moved", "dragged", "pulled", "together"),
+    "stumble": ("tripped", "stumbled"),
+    "look_back": ("noticed", "saw", "watched", "looked back"),
     "listen": ("heard", "listened", "whispered", "whisper", "sound"),
     "jump": ("jumped", "leapt", "leaped"),
     "swim": ("swam", "swimming", "underwater", "dived"),
@@ -50,7 +50,7 @@ _ACTIONS = {
     "fall": ("fell", "falling", "collapsed", "dropped down"),
     "sit": ("sat", "sitting", "settled into the chair"),
     "kneel": ("knelt", "kneeling", "got down on one knee"),
-    "turn": ("turned around", "spun around", "faced"),
+    "turn": ("turned", "spun around", "faced"),
 }
 _SHOTS = {
     "opening": ("establishing_wide", 1.0, 1.045),
