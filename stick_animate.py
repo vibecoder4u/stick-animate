@@ -24,6 +24,7 @@ from sticker_library import draw_stickers
 from camera_director import apply_camera
 from environment_animation import render_environment_background, animate_environment
 from transition_engine import crossfade, transition_duration
+from motion_composer import motion_for_actor
 
 
 W, H = 1280, 720
@@ -297,12 +298,19 @@ def draw_door(draw: ImageDraw.ImageDraw, opening: float = 0.0, glow: float = 0.0
 
 def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facing: int, t: float, scale: float = 1.0, actor: dict[str, Any] | None = None) -> None:
     d = ImageDraw.Draw(image)
-    phase = t * (11.5 if pose == "run" else 7.0)
+    motion = actor.get("_motion", {}) if actor else {}
+    phase = float(motion.get("phase", t * (11.5 if pose == "run" else 7.0)))
     stride = math.sin(phase)
     f = 1 if facing >= 0 else -1
     s = scale
+    lean = float(motion.get("torso_lean", 0.0))
+    bob = float(motion.get("body_bob", 0.0))
+    head_bob = float(motion.get("head_bob", 0.0))
+    arm_swing = float(motion.get("arm_swing", 0.0))
     def pt(px: float, py: float) -> tuple[int, int]:
-        return (int(x + px * s * f), int(foot_y + py * s))
+        height_weight = max(0.0, min(1.0, -py / 145.0))
+        return (int(x + (px + lean * height_weight) * s * f),
+                int(foot_y + (py * s) + bob * height_weight + head_bob * height_weight))
     actor = actor or {}
     color = tuple(actor.get("accent_rgb", [87, 151, 177]))
     pants = tuple(actor.get("pants_rgb", [40, 49, 63]))
@@ -423,6 +431,37 @@ def draw_character(image: Image.Image, x: float, foot_y: float, pose: str, facin
         for side in (-1, 1):
             d.line((pt(side*20, shoulder_y), pt(side*43, -52), pt(side*54, -78)), fill=color, width=max(8, int(13*s)), joint="curve")
             d.line((pt(side*10, hip_y), pt(side*35, -8), pt(side*24, 0)), fill=pants, width=max(9, int(14*s)))
+    elif pose in ("wave", "point", "talk", "think", "celebrate", "comfort", "hand_over", "pick_up", "open", "climb", "fall", "sit", "kneel", "turn"):
+        # Procedural gesture family: shared joint landmarks, distinct silhouettes.
+        gesture = float(motion.get("gesture", 0.5))
+        if pose == "wave":
+            d.line((pt(-22, shoulder_y), pt(-40, -75), pt(-44, -42)), fill=color, width=max(8, int(13*s)), joint="curve")
+            d.line((pt(22, shoulder_y), pt(43, -132-8*gesture), pt(62, -164-10*gesture)), fill=color, width=max(8, int(13*s)), joint="curve")
+        elif pose == "point":
+            d.line((pt(-22, shoulder_y), pt(-40, -75), pt(-44, -42)), fill=color, width=max(8, int(13*s)), joint="curve")
+            d.line((pt(22, shoulder_y), pt(48, -105), pt(94, -112)), fill=color, width=max(8, int(13*s)), joint="curve")
+        elif pose in ("talk", "comfort", "hand_over", "open"):
+            d.line((pt(-22, shoulder_y), pt(-43, -78), pt(-35, -47)), fill=color, width=max(8, int(13*s)), joint="curve")
+            d.line((pt(22, shoulder_y), pt(45, -92), pt(65 if pose != "hand_over" else 83, -70)), fill=color, width=max(8, int(13*s)), joint="curve")
+        elif pose == "think":
+            d.line((pt(-22, shoulder_y), pt(-42, -76), pt(-34, -46)), fill=color, width=max(8, int(13*s)), joint="curve")
+            d.line((pt(22, shoulder_y), pt(38, -118), pt(23, -143)), fill=color, width=max(8, int(13*s)), joint="curve")
+        elif pose == "celebrate":
+            for side in (-1, 1):
+                d.line((pt(side*22, shoulder_y), pt(side*42, -137), pt(side*48, -169)), fill=color, width=max(8, int(13*s)), joint="curve")
+        elif pose in ("pick_up", "fall", "sit", "kneel", "climb"):
+            d.line((pt(-22, shoulder_y), pt(-43, -76), pt(-55, -35 if pose == "pick_up" else -48)), fill=color, width=max(8, int(13*s)), joint="curve")
+            d.line((pt(22, shoulder_y), pt(44, -76), pt(57, -40)), fill=color, width=max(8, int(13*s)), joint="curve")
+        else:
+            d.line((pt(-22, shoulder_y), pt(-40, -75), pt(-44, -42)), fill=color, width=max(8, int(13*s)), joint="curve")
+            d.line((pt(22, shoulder_y), pt(40, -75), pt(44, -42)), fill=color, width=max(8, int(13*s)), joint="curve")
+        if pose in ("sit", "kneel"):
+            for side in (-1, 1):
+                d.line((pt(side*10, hip_y), pt(side*30, -22), pt(side*28, -5)), fill=pants, width=max(9, int(14*s)), joint="curve")
+        else:
+            for side in (-1, 1):
+                swing = arm_swing * 8 if pose in ("talk", "think") else 0
+                d.line((pt(side*10, hip_y), pt(side*16+swing, -24), pt(side*18+swing, 0)), fill=pants, width=max(9, int(14*s)), joint="curve")
     else:
         d.line((pt(-22, shoulder_y), pt(-40, -75), pt(-44, -42)), fill=color, width=max(8, int(13*s)), joint="curve")
         d.line((pt(22, shoulder_y), pt(40, -75), pt(44, -42)), fill=color, width=max(8, int(13*s)), joint="curve")
@@ -699,6 +738,7 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         pose_data["facing"] = facing_sign(pose_data.get("facing", 1))
         pose_data["ground_y"] = float(pose_data.get("y", 610))
         pose_data["action_progress"] = local_t
+        actor["_motion"] = motion_for_actor(actor, local_t)
         if str(pose_data.get("pose", "idle")).lower() == "jump":
             pose_data["y"] = float(pose_data["y"]) - 54.0 * math.sin(math.pi * local_t)
         actor["_ground_y"] = pose_data["ground_y"]
