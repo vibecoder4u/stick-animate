@@ -47,9 +47,9 @@ def compose_motion(pose: str, progress: float, seed: int = 0) -> dict[str, float
     }
 
 
-def motion_for_actor(actor: dict[str, Any], progress: float) -> dict[str, float]:
+def motion_for_actor(actor: dict[str, Any], progress: float, pose_override: str | None = None) -> dict[str, float]:
     keys = actor.get("keyframes") or []
-    pose = str(keys[0].get("pose", "idle")) if keys else "idle"
+    pose = str(pose_override or (keys[0].get("pose", "idle") if keys else "idle"))
     seed_text = str(actor.get("character_id", actor.get("id", "actor")))
     seed = sum(ord(char) for char in seed_text)
     return compose_motion(pose, progress, seed)
