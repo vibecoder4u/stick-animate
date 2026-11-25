@@ -8,6 +8,7 @@ from agent_runtime import AgentUnavailable, FreeLLM
 from scene_designer import design_story
 from capability_registry import capability_profile
 from visual_story_director import apply_visual_direction
+from storyboard_qa import audit_storyboard
 
 def _validate_plan(plan: dict[str, Any], duration: float | None = None, fps: int = 24,
                    duration_mode: str = "auto", story: str | None = None) -> float:
@@ -121,6 +122,7 @@ def design_production(story: str, duration: float | None = None, title: str = "U
     if not llm.available:
         plan = design_story(story, None if duration_mode == "auto" else duration, title, fps)
         apply_visual_direction(plan, story)
+        plan.setdefault("design_metadata", {})["visual_quality"] = audit_storyboard(plan)
         if duration_mode == "strict":
             plan["scenes"][-1]["end"] = float(duration)
             plan["duration"] = float(duration)
@@ -192,6 +194,7 @@ def design_production(story: str, duration: float | None = None, title: str = "U
                                     title, fps)
             _validate_plan(recovery, duration, fps, duration_mode, story)
             apply_visual_direction(recovery, story)
+        recovery.setdefault("design_metadata", {})["visual_quality"] = audit_storyboard(recovery)
             recovery["design_metadata"].update({
                 "designer": "groq-outline-local-storyboard-recovery",
                 "provider": "groq+local",
