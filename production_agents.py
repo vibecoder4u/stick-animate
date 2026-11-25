@@ -139,7 +139,10 @@ def design_production(story: str, duration: float | None = None, title: str = "U
         "clear silhouette, readable physical interaction with props, and a single dominant visual focus. " +
         "Vary shot types across establishing wide, two-shot, over-shoulder, medium, close-up and reaction shots " +
         "when motivated by the story. Avoid repeating the same centered full-body composition. " +
-        "Animate actions as phases with anticipation, action, follow-through and settling; avoid teleporting between poses. " +
+        "Animate actions as phases with anticipation, action, follow-through and settling; avoid teleporting between poses. " "Use the procedural gesture vocabulary when the story supports it: wave, point, talk, think, celebrate, comfort, hand_over, pick_up, open, climb, fall, sit, kneel and turn, in addition to walk, run, reach, push, stumble and jump. " +
+        "Do not assign the same pose to every keyframe when an action has phases: use a preparatory pose, active pose and recovery pose with smoothly interpolated numeric controls. " +
+        "Vary the actor silhouette through arm height, elbow bend, torso lean, head angle, stance width, facing and gaze; avoid repeated neutral standing. " +
+        "For interactions, specify both participants and the connecting prop or hand contact; use complementary poses rather than mirrored idle poses. " + +
         "Give walking keyframes continuous travel and believable facing; characters not moving should have subtle idle " +
         "poses, not stiff mannequin poses. Use concrete expressive poses, actor-to-actor eyelines, and scene-specific " +
         "camera focus. Do not replace physical action with captions or stickers. "
