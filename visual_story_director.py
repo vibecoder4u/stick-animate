@@ -198,6 +198,34 @@ def apply_visual_direction(plan: dict[str, Any], script: str) -> dict[str, Any]:
                             key["pose"] = action
                     applied_actions += 1
 
+        # Add one story-relevant animated visual aid when the planner did not
+        # author an overlay. Keep it away from the main character staging.
+        if not scene.get("stickers"):
+            lower_beat = beat.lower()
+            sticker_id = None
+            sticker_label = None
+            sticker_rules = (
+                (("brain", "memory", "remember", "mind", "neuron", "nervous system"), "brain", "BRAIN"),
+                (("learn", "study", "book", "school", "practice", "practise"), "book", "LEARN"),
+                (("time", "wait", "later", "before", "after", "hour", "minute"), "clock", "TIME"),
+                (("idea", "realize", "realise", "understood", "discover", "thought"), "idea", "IDEA"),
+                (("question", "wonder", "why", "how", "uncertain"), "question", "WHY?"),
+                (("success", "achieved", "improved", "stronger", "progress", "won"), "check", "PROGRESS"),
+                (("love", "care", "friend", "kind", "comfort", "family"), "heart", "CARE"),
+                (("rise", "growth", "increase", "stronger", "upward"), "arrow_up", "GROWTH"),
+                (("signal", "connection", "connect", "network", "neuron"), "neuron", "SIGNAL"),
+            )
+            for terms, candidate, label in sticker_rules:
+                if any(term in lower_beat for term in terms):
+                    sticker_id, sticker_label = candidate, label
+                    break
+            if sticker_id:
+                scene["stickers"] = [{
+                    "id": sticker_id, "x": 0.86, "y": 0.28, "size": 142,
+                    "text": sticker_label, "start": 0.08, "end": 0.92,
+                    "animation": "pop" if index % 2 == 0 else "float",
+                }]
+
         scene["visual_direction"] = {
             "purpose": role,
             "emotional_tone": intent["emotion"],
