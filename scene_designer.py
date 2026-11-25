@@ -79,26 +79,35 @@ def _species(text: str) -> str | None:
 
 def _pose(text: str) -> str:
     lowered = text.lower()
-    if any(w in lowered for w in ("swam", "swimming", "underwater", "dives")):
-        return "swim"
-    if any(w in lowered for w in ("flew", "flying", "soared", "flapped", "takes flight")):
-        return "fly"
-    if any(w in lowered for w in ("ran", "running", "chased", "sprinted", "fled", "escape")):
-        return "run"
-    if any(w in lowered for w in ("looked back", "turned", "noticed", "saw", "watched")):
-        return "look_back"
-    if any(w in lowered for w in ("listened", "heard", "whisper", "sound")):
-        return "listen"
-    if any(w in lowered for w in ("fell", "stumbled", "tripped")):
-        return "stumble"
-    if any(w in lowered for w in ("pushed", "push", "moved the tree", "lifted", "together")):
-        return "push"
-    if any(w in lowered for w in ("picked up", "reached", "handed", "helped", "rescued")):
-        return "reach"
-    if any(w in lowered for w in ("afraid", "terrified", "fear", "horror", "shaking")):
-        return "fear"
-    if any(w in lowered for w in ("walked", "walking", "approached", "entered")):
-        return "walk"
+    rules = (
+        ("swim", ("swam", "swimming", "underwater", "dives", "dived")),
+        ("fly", ("flew", "flying", "soared", "flapped", "takes flight")),
+        ("run", ("ran", "running", "chased", "sprinted", "fled", "escape", "escaped")),
+        ("jump", ("jumped", "leapt", "leaped", "jumping")),
+        ("climb", ("climbed", "climbing", "scrambled up")),
+        ("fall", ("fell", "falling", "collapsed", "dropped down")),
+        ("stumble", ("stumbled", "tripped")),
+        ("push", ("pushed", "push", "moved the tree", "dragged", "pulled")),
+        ("pick_up", ("picked up", "lifted", "collected")),
+        ("hand_over", ("handed", "passed", "gave")),
+        ("comfort", ("hugged", "comforted", "reassured", "consoled", "cuddled")),
+        ("celebrate", ("celebrated", "cheered", "clapped", "rejoiced", "won")),
+        ("wave", ("waved", "waving", "waved goodbye", "said hello")),
+        ("point", ("pointed", "pointing", "indicated", "showed")),
+        ("open", ("opened", "unlocked", "pulled open")),
+        ("sit", ("sat down", "sitting", "settled into the chair")),
+        ("kneel", ("knelt", "kneeling", "got down on one knee")),
+        ("think", ("thought", "wondered", "considered", "remembered", "realized", "realised")),
+        ("talk", ("said", "asked", "replied", "explained", "shouted", "whispered", "told")),
+        ("look_back", ("looked back", "turned around", "noticed", "saw", "watched")),
+        ("listen", ("listened", "heard", "sound")),
+        ("fear", ("afraid", "terrified", "fear", "horror", "shaking", "panicked")),
+        ("reach", ("reached", "helped", "rescued", "grabbed")),
+        ("walk", ("walked", "walking", "approached", "entered", "crossed", "travelled", "traveled", "left")),
+    )
+    for pose, terms in rules:
+        if any(term in lowered for term in terms):
+            return pose
     return "idle"
 
 def design_story(story: str, duration: float | None = None, title: str = "Untitled Story", fps: int = 24) -> dict[str, Any]:
@@ -125,7 +134,7 @@ def design_story(story: str, duration: float | None = None, title: str = "Untitl
     # Keep a human protagonist visible across environment-only story beats.
     # Explicit animal species in an individual beat always takes precedence.
     has_human_protagonist = bool(re.search(
-        r"\b(he|she|him|her|his|hers|boy|girl|man|woman|person|detective|stranger|traveller|traveler)\b",
+        r"\b(he|she|him|her|his|hers|you|your|we|our|people|student|teacher|friend|parent|child|adult|boy|girl|man|woman|person|detective|stranger|traveller|traveler)\b",
         story.lower(),
     ))
     count = len(beats)
@@ -168,7 +177,11 @@ def design_story(story: str, duration: float | None = None, title: str = "Untitl
         if any(w in beat.lower() for w in ("rain", "raining", "storm")):
             scene["weather"] = "rain"
         species = _species(beat)
+        # Human-led scripts always receive a visible approved human protagonist,
+        # even when a sentence describes an abstract idea (e.g. memory or learning).
         if species is None and has_human_protagonist:
+            species = "human"
+        if species is None and not any(name in beat.lower() for name in ("animal", "creature", "monster")):
             species = "human"
         lower_beat = beat.lower()
         if any(word in lower_beat for word in ("apple", "apples", "fruit")):
@@ -178,9 +191,20 @@ def design_story(story: str, duration: float | None = None, title: str = "Untitl
         if pose != "idle" or species:
             scene["actor"] = {
                 "species": species or "human",
-                "character_id": "protagonist" if species == "human" else f"{species}-{i+1}",
+                "character_id": (
+                    "child_9" if any(term in lower_beat for term in ("child", "kid", "student", "boy", "girl")) and "adult" not in lower_beat
+                    else "woman_1" if any(term in lower_beat for term in ("woman", "mother", "mom", "girl", "she "))
+                    else "man_3" if any(term in lower_beat for term in ("old", "elder", "grandfather", "grandpa"))
+                    else "man_1"
+                ) if species == "human" else f"{species}-{i+1}",
                 "scale": 1.0, "wardrobe": "coat", "hair": "short",
-                "expression": "fear" if pose in ("fear", "look_back", "listen") else "neutral",
+                "age_variant": "elderly" if species == "human" and any(term in lower_beat for term in ("old", "elder", "grandfather", "grandpa")) else "adult",
+                "expression": (
+                    "fear" if pose in ("fear", "look_back", "listen") else
+                    "happy" if pose in ("celebrate", "wave", "comfort") else
+                    "curious" if pose in ("think", "point") else
+                    "determined" if pose in ("push", "run", "climb") else "neutral"
+                ),
                 "keyframes": [
                     {"t": 0.0, "x": 350 + (i % 3) * 100, "y": 608, "pose": pose, "facing": 1},
                     {"t": 1.0, "x": 390 + (i % 3) * 100, "y": 608, "pose": pose, "facing": 1},
