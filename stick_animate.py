@@ -738,7 +738,7 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
         pose_data["facing"] = facing_sign(pose_data.get("facing", 1))
         pose_data["ground_y"] = float(pose_data.get("y", 610))
         pose_data["action_progress"] = local_t
-        actor["_motion"] = motion_for_actor(actor, local_t)
+        actor["_motion"] = motion_for_actor(actor, local_t, str(pose_data.get("pose", "idle")) )
         if str(pose_data.get("pose", "idle")).lower() == "jump":
             pose_data["y"] = float(pose_data["y"]) - 54.0 * math.sin(math.pi * local_t)
         actor["_ground_y"] = pose_data["ground_y"]
