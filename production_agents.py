@@ -156,8 +156,9 @@ def design_production(story: str, duration: float | None = None, title: str = "U
         "Use ONLY these approved human character_id values for human actors: man_1, man_2, man_3, woman_1, woman_2, child_5 (age 5), child_9 (age 9), child_13 (age 13). " +
         "Choose child IDs by the script's stated age; preserve the visual profile and do not invent a ninth human identity. " +
         "Use actor fields character_id, expression, wardrobe, hair and keyframes. Older people may be an adult identity with age_variant='elderly'. " +
-        "Each scene may include a stickers array; each sticker has id,x,y,size,text,start,end. Supported sticker IDs: idea, question, exclamation, brain, book, clock, arrow_up, check, sparkles, heart, neuron, magnify. " +
-        "Use stickers only when they explain or emphasize narration; use normalized x/y from 0 to 1 and scene-local start/end from 0 to 1. " +
+        "Each scene may include a stickers array; each sticker has id,x,y,size,text,start,end,animation. Supported sticker IDs: idea, question, exclamation, brain, book, clock, arrow_up, check, sparkles, heart, neuron, magnify. " +
+        "Stickers are large animated visual props, not tiny decorations: usually size 115-180 pixels, use pop, bounce, float, pulse or spin animation, and time their entrance to the exact narration beat. " +
+        "Use stickers only when they explain or emphasize narration; use normalized x/y from 0 to 1 and scene-local start/end from 0 to 1. Avoid covering faces or the main action. " +
         "Animals and non-human special characters are NOT part of the default cast; do not add them unless the script plan explicitly contains approved_special_characters metadata. " +
         "Canvas 1280x720, 24fps. For scripts over 60 words create at least 8 distinct shots, and generally "
         "at least one shot for every two sentence beats. Give each shot a specific visible action, not just an "
