@@ -37,6 +37,20 @@ _ACTIONS = {
     "listen": ("heard", "listened", "whispered", "whisper", "sound"),
     "jump": ("jumped", "leapt", "leaped"),
     "swim": ("swam", "swimming", "underwater", "dived"),
+    "wave": ("waved", "waving", "goodbye", "hello"),
+    "point": ("pointed", "pointing", "indicated"),
+    "talk": ("talked", "speaking", "explained", "replied", "said"),
+    "think": ("thought", "wondered", "considered", "remembered"),
+    "celebrate": ("celebrated", "cheered", "rejoiced", "clapped"),
+    "comfort": ("comforted", "hugged", "reassured", "consoled"),
+    "hand_over": ("handed", "passed", "gave"),
+    "pick_up": ("picked up", "lifted", "collected"),
+    "open": ("opened", "unlocked", "pulled open"),
+    "climb": ("climbed", "climbing", "scrambled"),
+    "fall": ("fell", "falling", "collapsed", "dropped down"),
+    "sit": ("sat", "sitting", "settled into the chair"),
+    "kneel": ("knelt", "kneeling", "got down on one knee"),
+    "turn": ("turned around", "spun around", "faced"),
 }
 _SHOTS = {
     "opening": ("establishing_wide", 1.0, 1.045),
@@ -175,7 +189,7 @@ def apply_visual_direction(plan: dict[str, Any], script: str) -> dict[str, Any]:
             if keys and poses and all(pose in ("", "idle", "none") for pose in poses):
                 species = str(actor.get("species", "human")).lower()
                 action = intent["action"]
-                supported = {"walk", "run", "reach", "push", "stumble", "look_back", "listen", "jump"}
+                supported = {"walk", "run", "reach", "push", "stumble", "look_back", "listen", "jump", "wave", "point", "talk", "think", "celebrate", "comfort", "hand_over", "pick_up", "open", "climb", "fall", "sit", "kneel", "turn"}
                 if species not in {"human", "boy", "girl", "man", "woman", "old_man"}:
                     supported.update({"swim", "fly"})
                 if action in supported:
