@@ -1,0 +1,333 @@
+{
+  "title": "The 1% Rule: Tiny Habits, Big Change",
+  "size": [
+    1280,
+    720
+  ],
+  "fps": 24,
+  "duration": 32,
+  "design_metadata": {
+    "purpose": "chart-and-sticker animation proof",
+    "chart_system": "chart_library.py",
+    "story": "An original short explainer about compounding daily improvement."
+  },
+  "scenes": [
+    {
+      "start": 0,
+      "end": 8,
+      "environment": "laboratory",
+      "description": "A young professional feels overwhelmed by a huge goal, then notices a tiny daily step on a notebook.",
+      "caption": "BIG CHANGE STARTS SMALL",
+      "subcaption": "You don't need a giant leap. You need a repeatable step.",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "man_1",
+          "name": "Arin",
+          "expression": "worried",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 310,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 0.45,
+              "x": 310,
+              "y": 625,
+              "pose": "think",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 330,
+              "y": 625,
+              "pose": "reach",
+              "facing": 1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "question",
+          "x": 0.28,
+          "y": 0.27,
+          "size": 72,
+          "animation": "pop",
+          "start": 0.05,
+          "end": 0.65
+        },
+        {
+          "id": "idea",
+          "x": 0.43,
+          "y": 0.28,
+          "size": 82,
+          "animation": "bounce",
+          "start": 0.5,
+          "end": 1
+        }
+      ],
+      "charts": [
+        {
+          "type": "progress",
+          "x": 0.75,
+          "y": 0.48,
+          "width": 420,
+          "height": 270,
+          "title": "TODAY'S TARGET",
+          "value": 1,
+          "color": "green",
+          "start": 0.12,
+          "end": 0.95
+        }
+      ]
+    },
+    {
+      "start": 8,
+      "end": 16,
+      "environment": "office",
+      "description": "Arin repeats one small improvement each day. A line graph traces the growing effect of consistent effort.",
+      "caption": "1% BETTER, EVERY DAY",
+      "subcaption": "Small gains can compound into a surprisingly large result.",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "man_1",
+          "name": "Arin",
+          "expression": "curious",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 310,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            },
+            {
+              "t": 0.5,
+              "x": 310,
+              "y": 625,
+              "pose": "point",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 310,
+              "y": 625,
+              "pose": "happy",
+              "facing": 1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "arrow_up",
+          "x": 0.43,
+          "y": 0.3,
+          "size": 66,
+          "animation": "float",
+          "start": 0.1,
+          "end": 0.9
+        }
+      ],
+      "charts": [
+        {
+          "type": "line",
+          "x": 0.73,
+          "y": 0.48,
+          "width": 570,
+          "height": 330,
+          "title": "COMPOUNDING OVER 6 STEPS",
+          "values": [
+            1,
+            1.8,
+            3.2,
+            5.7,
+            10.2,
+            18.3,
+            32.9
+          ],
+          "labels": [
+            "DAY 1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "color": "cyan",
+          "start": 0.05,
+          "end": 0.98
+        }
+      ]
+    },
+    {
+      "start": 16,
+      "end": 24,
+      "environment": "laboratory",
+      "description": "A comparison chart shows how steady practice builds more progress than waiting for one perfect burst of motivation.",
+      "caption": "CONSISTENCY BEATS INTENSITY",
+      "subcaption": "A little, repeated, is more powerful than rarely doing a lot.",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "man_1",
+          "name": "Arin",
+          "expression": "happy",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 300,
+              "y": 625,
+              "pose": "walk",
+              "facing": 1
+            },
+            {
+              "t": 0.5,
+              "x": 340,
+              "y": 625,
+              "pose": "point",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 340,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "check",
+          "x": 0.39,
+          "y": 0.3,
+          "size": 68,
+          "animation": "pop",
+          "start": 0.3,
+          "end": 0.95
+        },
+        {
+          "id": "sparkles",
+          "x": 0.45,
+          "y": 0.48,
+          "size": 55,
+          "animation": "pulse",
+          "start": 0.45,
+          "end": 0.95
+        }
+      ],
+      "charts": [
+        {
+          "type": "bar",
+          "x": 0.73,
+          "y": 0.48,
+          "width": 560,
+          "height": 320,
+          "title": "PRACTICE SESSIONS THIS WEEK",
+          "values": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "labels": [
+            "M",
+            "T",
+            "W",
+            "T",
+            "F",
+            "S",
+            "S"
+          ],
+          "color": "green",
+          "start": 0.08,
+          "end": 0.95
+        }
+      ]
+    },
+    {
+      "start": 24,
+      "end": 32,
+      "environment": "office",
+      "description": "Arin closes the notebook, confident that one small action repeated tomorrow is enough to keep the chain going.",
+      "caption": "MAKE THE NEXT STEP TINY",
+      "subcaption": "Start today. Repeat tomorrow. Let time do its work.",
+      "actors": [
+        {
+          "species": "human",
+          "character_id": "man_1",
+          "name": "Arin",
+          "expression": "happy",
+          "keyframes": [
+            {
+              "t": 0,
+              "x": 330,
+              "y": 625,
+              "pose": "reach",
+              "facing": 1
+            },
+            {
+              "t": 0.55,
+              "x": 360,
+              "y": 625,
+              "pose": "happy",
+              "facing": 1
+            },
+            {
+              "t": 1,
+              "x": 360,
+              "y": 625,
+              "pose": "idle",
+              "facing": 1
+            }
+          ]
+        }
+      ],
+      "stickers": [
+        {
+          "id": "clock",
+          "x": 0.42,
+          "y": 0.32,
+          "size": 78,
+          "animation": "float",
+          "start": 0.1,
+          "end": 0.9
+        },
+        {
+          "id": "heart",
+          "x": 0.34,
+          "y": 0.28,
+          "size": 60,
+          "animation": "pulse",
+          "start": 0.55,
+          "end": 0.98
+        }
+      ],
+      "charts": [
+        {
+          "type": "progress",
+          "x": 0.74,
+          "y": 0.48,
+          "width": 420,
+          "height": 270,
+          "title": "THE NEXT 1%",
+          "value": 100,
+          "color": "orange",
+          "start": 0.08,
+          "end": 0.96
+        }
+      ]
+    }
+  ]
+}
