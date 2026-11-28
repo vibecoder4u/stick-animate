@@ -21,6 +21,7 @@ from production_agents import design_production
 from character_rigs import draw_species_character
 from human_cast import HUMAN_CAST, character_profile, apply_age_variant
 from sticker_library import draw_stickers
+from chart_library import draw_charts
 from camera_director import apply_camera
 from environment_animation import render_environment_background, animate_environment
 from transition_engine import crossfade, transition_duration
@@ -763,6 +764,7 @@ def make_frame(script: dict[str, Any], scene: dict[str, Any], local_t: float, gl
             )
             draw_character_design(image, actor, pose_data)
     draw_stickers(image, scene, local_t)
+    draw_charts(image, scene, local_t)
     caption = scene.get("caption", "")
     sub = scene.get("subcaption", "")
     # Fade captions in and out at shot boundaries.
