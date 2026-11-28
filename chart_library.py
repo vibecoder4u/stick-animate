@@ -89,7 +89,7 @@ def draw_charts(image: Image.Image, scene: dict[str, Any], local_t: float = 0.5)
             d.arc((bx-radius, by-radius, bx+radius, by+radius), -90,
                   -90 + 360 * value / 100 * reveal, fill=(*color, alpha), width=22)
             txt = f"{int(value * reveal)}%"
-            box = d.textbbox((0, 0), txt, font=_font( thirty := 30, True))
+            box = d.textbbox((0, 0), txt, font=_font(30, True))
             d.text((bx-(box[2]-box[0])/2, by-18), txt, font=_font(30, True), fill=(*PALETTE["white"], alpha))
         elif kind == "bar":
             maximum = max(max(values), 1.0)
