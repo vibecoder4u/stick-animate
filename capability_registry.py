@@ -4,6 +4,7 @@ from typing import Any
 from character_rigs import available_species
 from human_cast import HUMAN_CAST
 from sticker_library import sticker_catalog
+from chart_library import chart_catalog
 
 ANIMATED_ENVIRONMENTS = ("beach", "ocean", "sea", "underwater")
 BASE_PLATE_ENVIRONMENTS = ("forest", "jungle", "river", "platform", "service_gate",
@@ -28,13 +29,14 @@ def capability_profile() -> dict[str, Any]:
         "environments": {"animated_backgrounds": list(ANIMATED_ENVIRONMENTS),
                          "base_plate_only": list(BASE_PLATE_ENVIRONMENTS),
                          "unknown_environment_policy": "base_plate_fallback; do not claim dynamic environmental animation"},
-        "stickers": sticker_catalog(),
+        "stickers": sticker_catalog(), "charts": chart_catalog(),
         "props": list(PROPS), "motion_actions": list(MOTION_ACTIONS),
         "camera": list(CAMERA_FEATURES), "timeline": list(TIMELINE_FEATURES),
         "transitions": list(TRANSITIONS),
         "limitations": [
             "Only beach/ocean/sea/underwater have dedicated animated environmental layers.",
             "Character rigs are procedural 2D drawings, not full skeletal or 3D rigs.",
+            "Charts are frame-synchronised Pillow vector overlays; browser-based HTML/SVG rendering is a future frontend option."
             "Only the eight approved human identities are in the default cast; animals and other special characters require user approval and asset creation.",
             "The language model plans scenes; it does not itself generate raster artwork or new character rigs.",
         ],
