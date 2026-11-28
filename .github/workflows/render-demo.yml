@@ -82,23 +82,23 @@ jobs:
             echo "To create a video: open **Actions → Render Stick Animate demo → Run workflow**, paste your story and set the title. Automatic story-led timing is the default."
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Render 60-second human-cast and sticker proof
+      - name: Render 32-second character, sticker and animated-chart proof
         if: github.event_name == 'push' && github.ref == 'refs/heads/feature/2-5d-camera-environments'
         env:
           STICK_ANIMATE_OFFLINE_AUDIO: "1"
         run: |
-          python stick_animate.py --script demo/brain-learning-stickers-60s.json --output output/brain-learning-stickers-60s.mp4
-          test -s output/brain-learning-stickers-60s.mp4
-          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,r_frame_rate -of json output/brain-learning-stickers-60s.mp4
+          python stick_animate.py --script demo/one-percent-habits-chart-proof.json --output output/one-percent-habits-chart-proof.mp4
+          test -s output/one-percent-habits-chart-proof.mp4
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_name,width,height,r_frame_rate -of json output/one-percent-habits-chart-proof.mp4
 
       - name: Upload 60-second visual proof
         if: github.event_name == 'push' && github.ref == 'refs/heads/feature/2-5d-camera-environments'
         uses: actions/upload-artifact@v4
         with:
-          name: stick-animate-human-cast-sticker-proof-${{ github.run_number }}
+          name: stick-animate-chart-story-proof-${{ github.run_number }}
           path: |
             output/brain-learning-stickers-60s.mp4
-            output/brain-learning-stickers-60s-poster.png
+            output/one-percent-habits-chart-proof-poster.png
           if-no-files-found: error
           retention-days: 30
 
